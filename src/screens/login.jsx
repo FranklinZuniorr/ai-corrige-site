@@ -1,19 +1,42 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Form, Grid, Header, Input, Segment, Tab } from "semantic-ui-react";
 import iconAi from "../img/3483127.png"
 import AiCorrigeApi from "../services/AiCorrigeApi";
+import { gerarObjetoCondicional } from "../utils/FnUtils";
+import { toast } from "react-hot-toast";
 
 const Login = () => {
 
+    // Area register
+    const [textUserName, setTextUserName] = useState("");
+    const [textUserEmail, setTextUserEmail] = useState("");
+    const [textUserPassword, setTextUserPassword] = useState("");
+    const [isLoadingBtnSignUp, setIsLoadingBtnSignUp] = useState(false);
+    // Area register
+
     useEffect(() => {
-        newUser()
     },[]);
 
 
     const newUser = async () => {
-        const response = await AiCorrigeApi.newUser("tegdggd", "tegdggd@gmail.com", "As12@#$r");
+
+        setIsLoadingBtnSignUp(true);
+
+        const data = gerarObjetoCondicional({}, {textUserNameCond: textUserName, textUserEmailCond: textUserEmail, textUserPasswordCond: textUserPassword});
+
+        const {textUserNameCond, textUserEmailCond, textUserPasswordCond} = data;
+
+        const response = await AiCorrigeApi.newUser(textUserNameCond, textUserEmailCond, textUserPasswordCond);
+
+        if(!response.r){
+            toast.error(response.data.msg);
+        }else{
+            toast.success("Cadastrado com sucesso!")
+        }
 
         console.log(response)
+
+        setIsLoadingBtnSignUp(false);
     };
 
     const renderSignUp = () => {
@@ -23,22 +46,26 @@ const Login = () => {
                     <Grid.Row>
                         <Grid.Column>
                             <Header size="small" content="Cadastro:"/>
-                            <Form>
+                            <Form onSubmit={() => newUser()}>
                                 <Form.Group widths={16}>
                                     <Form.Field width={8}>
                                         <label>Nome de usuário:</label>
                                         <Input
+                                        value={textUserName}
                                         fluid
                                         size="mini"
                                         placeholder="Termo de cadastro..."
+                                        onChange={(ev, data) => setTextUserName(data.value)}
                                         />
                                     </Form.Field>
                                     <Form.Field width={8}>
                                         <label>E-mail:</label>
                                         <Input
+                                        value={textUserEmail}
                                         fluid
                                         size="mini"
                                         placeholder="Termo de cadastro..."
+                                        onChange={(ev, data) => setTextUserEmail(data.value)}
                                         />
                                     </Form.Field>
                                 </Form.Group>
@@ -46,14 +73,16 @@ const Login = () => {
                                     <Form.Field width={16}>
                                         <label>Senha:</label>
                                         <Input
+                                        value={textUserPassword}
                                         fluid
                                         size="mini"
                                         placeholder="Termo de cadastro..."
+                                        onChange={(ev, data) => setTextUserPassword(data.value)}
                                         />
                                     </Form.Field>
                                 </Form.Group>
 
-                                <Button size="mini" floated="right" color="green" content="Cadastrar" />
+                                <Button loading={isLoadingBtnSignUp} type="submit" size="mini" floated="right" color="green" content="Cadastrar" />
 
                             </Form>
                         </Grid.Column>
