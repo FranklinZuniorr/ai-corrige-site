@@ -31,9 +31,18 @@ class AiCorrigeApi{
 
     static loginUser = async (email, password) => {
         try {
+
+            const data = {
+                email,
+                password
+            };
+
+            const response = await AxiosAiCorrige.post(`login`, data);
+
+            return response.data;
             
         } catch (error) {
-            
+            return error.response.data;
         }
     };
 };
