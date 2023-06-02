@@ -4,6 +4,8 @@ import iconAi from "../img/3483127.png"
 import AiCorrigeApi from "../services/AiCorrigeApi";
 import { gerarObjetoCondicional } from "../utils/FnUtils";
 import { toast } from "react-hot-toast";
+import Cookies from "js-cookie";
+import { KEY_COOKIE_ACCESS, KEY_COOKIE_REFRESH } from "./constants";
 
 const Login = () => {
 
@@ -67,6 +69,12 @@ const Login = () => {
             toast.error(response.data.msg);
         }else{
             toast.success("Logado com sucesso!");
+            const data = response.data;
+            Cookies.set(KEY_COOKIE_ACCESS, data.token);
+            Cookies.set(KEY_COOKIE_REFRESH, data.refreshToken);
+            setTimeout(() => {
+                window.location.reload();
+            }, 400);
             console.log(response)
         };
 

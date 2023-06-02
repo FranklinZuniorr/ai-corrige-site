@@ -45,6 +45,22 @@ class AiCorrigeApi{
             return error.response.data;
         }
     };
+
+    static verifyAccessToken = async (accessToken) => {
+        try {
+
+            const data = {
+                accessToken
+            };
+
+            const response = await AxiosAiCorrige.post(`access-token`, data);
+
+            return response.data;
+            
+        } catch (error) {
+            return error.response.data;
+        }
+    };
 };
 
 export default AiCorrigeApi;

@@ -16,7 +16,7 @@ code {
 }
 
 .App{
-  width: 90%;
+  width: 100%;
 }
 
 .screen-login{
@@ -40,4 +40,19 @@ code {
 
 .margin-top-min{
   margin-top: 0.5rem !important;
+}
+
+.display-global{
+  display: flex;
+  justify-content: center;
+}
+
+.top-menu{
+  background-color: aliceblue;
+  width: 100%;
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 1rem;
 }
