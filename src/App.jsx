@@ -10,6 +10,7 @@ import AiCorrigeApi, { setTokenJwtAxios } from './services/AiCorrigeApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAccessToken, setIsLoggedUser, setRefreshToken, setUserData } from './store';
 import Home from './screens/Home';
+import Menu from './screens/Menu';
 
 function App() {
 
@@ -28,7 +29,7 @@ function App() {
       const response = await AiCorrigeApi.verifyAccessToken(accessToken);
 
       if(!response.r){
-        toast.error(response.data.msg);
+        return
       }else{
         const data = response.data.verify.user;
         dispatch(setIsLoggedUser(true));
@@ -50,18 +51,21 @@ function App() {
       <Toaster position="bottom-center" />
       {
         access?
-        <div className="App">
-          <BrowserRouter>
-            <Routes>
-              <Route
-                path={"/"}
-                element={
-                  <Home/>
-                }
-              />
-            </Routes>
-          </BrowserRouter>
-        </div>:
+        <>
+          <Menu/>
+            <BrowserRouter>
+              <div className="App">
+                <Routes>
+                    <Route
+                      path={"/"}
+                      element={
+                        <Home/>
+                      }
+                    />
+                </Routes>
+              </div>
+            </BrowserRouter>
+        </>:
         <Login/>
       }
 

@@ -61,6 +61,21 @@ class AiCorrigeApi{
             return error.response.data;
         }
     };
+
+    static logoutUser = async () => {
+        try {
+            
+            const response = await AxiosAiCorrige.post(`logout`);
+
+            console.log(response)
+
+            return response.data;
+
+        } catch (error) {
+            console.log(error)
+            return error.response.data;
+        }
+    };
 };
 
 export default AiCorrigeApi;

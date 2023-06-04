@@ -10,9 +10,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <>
     <Provider store={store}>
-      <div className="display-global">
         <App />
-      </div>
     </Provider>
   </>
 );

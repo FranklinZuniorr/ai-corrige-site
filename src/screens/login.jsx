@@ -181,12 +181,12 @@ const Login = () => {
 
     const panes = [
         {
-          menuItem: 'Cadastro',
-          render: () => <Tab.Pane attached={false}>{renderSignUp()}</Tab.Pane>,
-        },
-        {
           menuItem: 'Login',
           render: () => <Tab.Pane attached={false}>{renderSignIn()}</Tab.Pane>,
+        },
+        {
+          menuItem: 'Cadastro',
+          render: () => <Tab.Pane attached={false}>{renderSignUp()}</Tab.Pane>,
         },
     ];
     
