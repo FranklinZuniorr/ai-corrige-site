@@ -5,7 +5,7 @@ import AiCorrigeApi from "../services/AiCorrigeApi";
 import { gerarObjetoCondicional } from "../utils/FnUtils";
 import { toast } from "react-hot-toast";
 import Cookies from "js-cookie";
-import { KEY_COOKIE_ACCESS, KEY_COOKIE_REFRESH } from "./constants";
+import { KEY_COOKIE_ACCESS, KEY_COOKIE_REFRESH } from "../utils/constants";
 
 const Login = () => {
 
@@ -25,6 +25,11 @@ const Login = () => {
     const [showPasswordLogin, setShowPasswordLogin] = useState(true);
     // Area login
 
+    // Area forget password
+    const [textUserEmailForgetPassword, setTextUserEmailForgetPassword] = useState("");
+    const [isLoadingBtnForgetPassword, setIsLoadingBtnForgetPassword] = useState(false);
+    // Area forget password
+
     useEffect(() => {
     },[]);
 
@@ -37,7 +42,7 @@ const Login = () => {
 
         const {textUserNameCond, textUserEmailCond, textUserPasswordCond} = data;
 
-        const response = await AiCorrigeApi.newUser(textUserNameCond, textUserEmailCond, textUserPasswordCond);
+        const response = await AiCorrigeApi.newUser(textUserNameCond.replaceAll(" ", "_"), textUserEmailCond, textUserPasswordCond);
 
         if(!response.r){
             toast.error(response.data.msg);
@@ -48,7 +53,7 @@ const Login = () => {
             setTextUserEmailSignUp("");
             setTextUserNameSignUp("");
             setTextUserPasswordSignUp("");
-            setActiveIndexOfPane(1);
+            setActiveIndexOfPane(0);
         };
 
         console.log(response)
@@ -81,6 +86,19 @@ const Login = () => {
         setIsLoadingBtnLogin(false);
     };
 
+    const forgetPassword = async () => {
+        setIsLoadingBtnForgetPassword(true);
+        const response = await AiCorrigeApi.forgetPassword(textUserEmailForgetPassword);
+
+        if(!response.r){
+            toast.error(response.data.msg);
+        }else{
+            toast.success(response.data.msg);
+        };
+
+        setIsLoadingBtnForgetPassword(false);
+    };
+
     const renderSignUp = () => {
         return(
             <>
@@ -90,7 +108,7 @@ const Login = () => {
                             <Header size="small" content="Cadastro:"/>
                             <Form onSubmit={() => newUser()}>
                                 <Form.Group widths={16}>
-                                    <Form.Field width={8}>
+                                    <Form.Field width={16}>
                                         <label>Nome de usuário:</label>
                                         <Input
                                         value={textUserNameSignUp}
@@ -100,7 +118,9 @@ const Login = () => {
                                         onChange={(ev, data) => setTextUserNameSignUp(data.value)}
                                         />
                                     </Form.Field>
-                                    <Form.Field width={8}>
+                                </Form.Group>
+                                <Form.Group widths={16}>
+                                    <Form.Field width={16}>
                                         <label>E-mail:</label>
                                         <Input
                                         value={textUserEmailSignUp}
@@ -145,7 +165,7 @@ const Login = () => {
                             <Header size="small" content="Login:"/>
                             <Form onSubmit={() => login()}>
                                 <Form.Group widths={16}>
-                                    <Form.Field width={8}>
+                                    <Form.Field width={16}>
                                         <label>E-mail:</label>
                                         <Input
                                         value={textUserEmailLogin}
@@ -155,7 +175,9 @@ const Login = () => {
                                         onChange={(ev, data) => setTextUserEmailLogin(data.value)}
                                         />
                                     </Form.Field>
-                                    <Form.Field width={8}>
+                                </Form.Group>
+                                <Form.Group widths={16}>
+                                    <Form.Field width={16}>
                                         <label>Senha:</label>
                                         <Input
                                         type={showPasswordLogin? "text":"password"}
@@ -179,6 +201,37 @@ const Login = () => {
         );
     };
 
+    const renderForgetPassword = () => {
+        return(
+            <>
+                <Grid>
+                    <Grid.Row>
+                        <Grid.Column>
+                            <Header size="small" content="Restaurar senha:"/>
+                            <Form onSubmit={() => forgetPassword()}>
+                                <Form.Group widths={16}>
+                                    <Form.Field width={16}>
+                                        <label>E-mail:</label>
+                                        <Input
+                                        value={textUserEmailForgetPassword}
+                                        fluid
+                                        size="mini"
+                                        placeholder="Termo de busca..."
+                                        onChange={(ev, data) => setTextUserEmailForgetPassword(data.value)}
+                                        />
+                                    </Form.Field>
+                                </Form.Group>
+
+                                <Button className="margin-top-min" type="submit" loading={isLoadingBtnForgetPassword} size="mini" floated="right" color="green" content="Enviar e-mail de restauração" />
+
+                            </Form>
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+            </>
+        );
+    };
+
     const panes = [
         {
           menuItem: 'Login',
@@ -187,6 +240,10 @@ const Login = () => {
         {
           menuItem: 'Cadastro',
           render: () => <Tab.Pane attached={false}>{renderSignUp()}</Tab.Pane>,
+        },
+        {
+          menuItem: 'Restaurar senha',
+          render: () => <Tab.Pane attached={false}>{renderForgetPassword()}</Tab.Pane>,
         },
     ];
     

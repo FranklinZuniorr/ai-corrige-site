@@ -32,11 +32,30 @@ code {
   }
   
   .area-login{
-    width: 20rem;
+    width: 30rem;
     height: 36rem;
     border-radius: 1rem;
     padding-top: 3rem;
     padding-bottom: 3rem;
+}
+
+.screen-forget-password{
+  width: 100%;
+  height: 100%;
+  background-color: rgb(247 247 247);
+  position: absolute;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.area-forget-password{
+  width: 30rem;
+  height: 36rem;
+  border-radius: 1rem;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
 }
 
 .margin-top-min{

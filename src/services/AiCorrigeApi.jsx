@@ -2,7 +2,7 @@ import axios from "axios";
 
 const AxiosAiCorrige = axios.create({
 
-    baseURL: "https://api-ai-corrige.herokuapp.com",
+    baseURL: "https://ai-corrige.herokuapp.com",
 
 });
 
@@ -67,12 +67,55 @@ class AiCorrigeApi{
             
             const response = await AxiosAiCorrige.post(`logout`);
 
-            console.log(response)
-
             return response.data;
 
         } catch (error) {
-            console.log(error)
+            return error.response.data;
+        }
+    };
+
+    static deleteUser = async () => {
+        try {
+
+            const response = await AxiosAiCorrige.delete(`delete-user`);
+
+            return response.data;
+            
+        } catch (error) {
+            return error.response.data;
+        }
+    };
+
+    static forgetPassword = async (email) => {
+        try {
+
+            const data = {
+                email
+            };
+
+            const response = await AxiosAiCorrige.post(`forget-password`, data);
+
+            return response.data;
+            
+        } catch (error) {
+            return error.response.data;
+        }
+    };
+
+    static editUser = async (username, email, password) => {
+        try {
+
+            const data = {
+                username,
+                email,
+                password
+            };
+
+            const response = await AxiosAiCorrige.put(`edit-user`, data);
+
+            return response.data;
+            
+        } catch (error) {
             return error.response.data;
         }
     };
