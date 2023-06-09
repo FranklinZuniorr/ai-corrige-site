@@ -119,6 +119,21 @@ class AiCorrigeApi{
             return error.response.data;
         }
     };
+
+    static uploadImage = async (file, code) => {
+        try {
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const response = await AxiosAiCorrige.post(`upload-image?code=${code}`, formData);
+
+            return response.data;
+            
+        } catch (error) {
+            return error.response.data;
+        }
+    };
 };
 
 export default AiCorrigeApi;

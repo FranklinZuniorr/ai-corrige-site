@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getParamsInQs, resetUrlSearchParam } from "../utils/FnUtils";
-import { Button, Form, Grid, Header, Input, Segment } from "semantic-ui-react";
+import { Button, Form, Grid, Header, Input, Message, Segment } from "semantic-ui-react";
 import AiCorrigeApi, { setTokenJwtAxios } from "../services/AiCorrigeApi";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -11,23 +11,35 @@ const ForgetPassword = () => {
     const [textUserPasswordNewPassword, setTextUserPasswordNewPassword] = useState("");
     const [isLoadingBtnNewPassword, setIsLoadingBtnNewPassword] = useState(false);
     const [showPasswordNewPassword, setShowPasswordNewPassword] = useState(true);
+    const [isTokenOk, setIsTokenOk] = useState(false);
     // Area new password
 
     useEffect(() => {
         const execute = async () => {
             const data = getParamsInQs()
-            console.log(data)
 
             if(data.r){
                 const filter = data.data;
                 const { accessToken } = filter;
-                setTokenJwtAxios(accessToken);
-                resetUrlSearchParam({});
+
+                verifyAccessToken(accessToken);
             }
         };
 
         execute();
     }, []);
+
+    const verifyAccessToken = async (accessToken) => {
+        const response = await AiCorrigeApi.verifyAccessToken(accessToken);
+
+        if(!response.r){
+            toast.error(response.data.msg);
+        }else{
+            setIsTokenOk(true);
+            setTokenJwtAxios(accessToken);
+            resetUrlSearchParam({});
+        };
+    };
 
     const editUser = async () => {
         setIsLoadingBtnNewPassword(true);
@@ -54,25 +66,28 @@ const ForgetPassword = () => {
                             <Grid.Row>
                                 <Grid.Column>
                                     <Header size="small" content="Restaurar senha:"/>
-                                    <Form onSubmit={() => editUser()}>
-                                        <Form.Group widths={16}>
-                                            <Form.Field width={16}>
-                                            <label>Nova senha:</label>
-                                            <Input
-                                            type={showPasswordNewPassword? "text":"password"}
-                                            value={textUserPasswordNewPassword}
-                                            fluid
-                                            size="mini"
-                                            placeholder="Termo de cadastro..."
-                                            onChange={(ev, data) => setTextUserPasswordNewPassword(data.value)}
-                                            icon={{ name: showPasswordNewPassword? "eye":"eye slash", circular: true, link: true, onClick: () => setShowPasswordNewPassword(!showPasswordNewPassword)}}
-                                            />
-                                            </Form.Field>
-                                        </Form.Group>
+                                    {
+                                        isTokenOk?
+                                        <Form onSubmit={() => editUser()}>
+                                            <Form.Group widths={16}>
+                                                <Form.Field width={16}>
+                                                <label>Nova senha:</label>
+                                                <Input
+                                                type={showPasswordNewPassword? "text":"password"}
+                                                value={textUserPasswordNewPassword}
+                                                fluid
+                                                size="mini"
+                                                placeholder="Termo de cadastro..."
+                                                onChange={(ev, data) => setTextUserPasswordNewPassword(data.value)}
+                                                icon={{ name: showPasswordNewPassword? "eye":"eye slash", circular: true, link: true, onClick: () => setShowPasswordNewPassword(!showPasswordNewPassword)}}
+                                                />
+                                                </Form.Field>
+                                            </Form.Group>
 
-                                        <Button className="margin-top-min" type="submit" loading={isLoadingBtnNewPassword} size="mini" floated="right" color="green" content="Redefinir" />
+                                            <Button className="margin-top-min" type="submit" loading={isLoadingBtnNewPassword} size="mini" floated="right" color="green" content="Redefinir" />
 
-                                    </Form>
+                                        </Form>:<Message color="red" content="Redefinição indisponível!" />
+                                    }
                                 </Grid.Column>
                             </Grid.Row>
                         </Grid>
