@@ -40,7 +40,7 @@ function App() {
       if(!response.r){
         return
       }else{
-        const data = response.data.verify.user;
+        const data = response.data.user;
         dispatch(setIsLoggedUser(true));
         dispatch(setAccessToken(accessToken));
         dispatch(setRefreshToken(refreshToken));

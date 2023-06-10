@@ -48,15 +48,35 @@ code {
   align-items: center;
   flex-direction: column;
   justify-content: center;
+  
+  .area-forget-password{
+    width: 22rem;
+    height: 36rem;
+    border-radius: 1rem;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
 }
 
-.area-forget-password{
-  width: 22rem;
-  height: 36rem;
-  border-radius: 1rem;
-  padding-top: 3rem;
-  padding-bottom: 3rem;
+.screen-edit-image{
+  width: 100%;
+  height: 100%;
+  background-color: rgb(247 247 247);
+  position: absolute;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  
+  .area-edit-image{
+    width: 22rem;
+    height: 36rem;
+    border-radius: 1rem;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
 }
+
 
 .margin-top-min{
   margin-top: 0.5rem !important;
@@ -125,4 +145,11 @@ code {
   height: 6rem;
   border-radius: 1rem;
   margin-bottom: 1rem;
+}
+
+.image-profile-bar-top{
+  width: 4rem !important;
+  height: 4rem !important;
+  border-radius: 2rem !important;
+  border: 2px solid black !important;
 }

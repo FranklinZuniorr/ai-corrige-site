@@ -6,6 +6,8 @@ import suportLogoUser from "../img/suporte-user.png";
 import AiCorrigeApi from "../services/AiCorrigeApi";
 import Cookies from "js-cookie";
 import { toast } from "react-hot-toast";
+import { gerarObjetoCondicional, getParamsInQs } from "../utils/FnUtils";
+import { verifyUser } from "../utils/Options";
 
 const Menu = () => {
 
@@ -19,6 +21,7 @@ const Menu = () => {
 
     // Modal - edit user
     const [isOpenModalEditUser, setIsOpenModalEditUser] = useState(false);
+    const [textDropboxCode, setTextDropboxCode] = useState("");
     // Area - edit
     const [textUserNameEdit, setTextUserNameEdit] = useState("");
     const [textUserEmailEdit, setTextUserEmailEdit] = useState("");
@@ -33,6 +36,24 @@ const Menu = () => {
 
     useEffect(() => {
         console.log(access)
+
+        const execute = async () => {
+            const data = getParamsInQs()
+
+            if(data.r){
+                const filter = data.data;
+                const { code } = filter;
+
+                if("code" in filter){
+                    setTextDropboxCode(code);
+                    setIsOpenModalEditUser(true);
+                    console.log(window.location.pathname)
+                    window.history.pushState({}, '', window.location.pathname);
+                };
+            }
+        };
+
+        execute();
     }, []);
 
     const logoutUser = async () => {
@@ -68,21 +89,54 @@ const Menu = () => {
         };
     };
 
-    const uploadImage = async (code = "") => {
+    const uploadImage = async () => {
         setIsLoadingBtnEditImage(true);
-        const response = await AiCorrigeApi.uploadImage(imageFileEdit, code);
+        const response = await AiCorrigeApi.uploadImage(imageFileEdit, textDropboxCode);
 
         if(!response.r){
             toast.error(response.data.msg);
         }else{
             toast.success(response.data.msg);
             const data = response.data;
-            const opcoes = `width=500,height=800,top=100,left=100,resizable=yes,scrollbars=yes`;
-            window.open(data.url, "_blank", opcoes);
-            console.log(response)
+            if(response.data.msg == "O login no dropBox é necessário!"){
+                window.location.href = data.url;
+            }else{
+                verifyUser();
+                setTextDropboxCode("");
+                setIsOpenModalEditUser(false);
+            };
         };
 
         setIsLoadingBtnEditImage(false);
+    };
+
+    const editUser = async () => {
+        setIsLoadingBtnEdit(true);
+
+        const data = gerarObjetoCondicional({}, {
+            textUserNameEditCond: textUserNameEdit.replaceAll(" ", "_"), 
+            textUserEmailEditCond: textUserEmailEdit, 
+            textUserPasswordEditCond: textUserPasswordEdit
+        });
+        console.log(data)
+
+        const {textUserNameEditCond, textUserEmailEditCond, textUserPasswordEditCond} = data;
+
+        const response = await AiCorrigeApi.editUser(textUserNameEditCond, textUserEmailEditCond, textUserPasswordEditCond);
+
+        if(!response.r){
+            toast.error(response.data.msg);
+        }else{
+            toast.success(response.data.msg);
+            verifyUser();
+            setTextDropboxCode("");
+            setIsOpenModalEditUser(false);
+            setTextUserEmailEdit("");
+            setTextUserNameEdit("");
+            setTextUserPasswordEdit("");
+        };
+
+        setIsLoadingBtnEdit(false);
     };
 
     return(
@@ -93,7 +147,9 @@ const Menu = () => {
                 floated="left" 
                 className="margin-top-mini" 
                 textAlign="left" 
-                image={access.img || suportLogoUser} 
+                image={
+                    <Image className="image-profile-bar-top" src={access.img || suportLogoUser} avatar bordered />
+                } 
                 content={access.username} 
                 subheader={`Coins: ${access.coins}`} 
                 />
@@ -176,6 +232,7 @@ const Menu = () => {
                                                 <label>Arquivo:</label>
                                                 <Input
                                                 type="file"
+                                                disabled={textDropboxCode == ""}
                                                 onChange={(ev, data) => {
 
                                                     const file = ev.target.files[0];
@@ -191,15 +248,17 @@ const Menu = () => {
                                                 />
                                             </Form.Field>
                                         </Form.Group>
-
                                         <Button 
                                         loading={isLoadingBtnEditImage}
+                                        disabled={isLoadingBtnEditImage}
                                         type="submit" 
                                         className="margin-top-mini" 
-                                        content="Enviar arquivo" 
-                                        color="green" 
+                                        content={textDropboxCode == ""? "Permitir envio de imagem ao DropBox":"Enviar arquivo"} 
+                                        icon="dropbox"
+                                        color="blue" 
                                         floated="right" 
                                         />
+
                                     </Form>
                                 </Grid.Column>
                             </Grid.Row>
@@ -211,7 +270,7 @@ const Menu = () => {
                     <Grid>
                         <Grid.Row>
                             <Grid.Column>
-                                <Form>
+                                <Form onSubmit={() => editUser()}>
                                     <Form.Group widths={16}>
                                         <Form.Field width={16}>
                                             <label>Nome de usuário:</label>
@@ -252,7 +311,14 @@ const Menu = () => {
                                         </Form.Field>
                                     </Form.Group>
 
-                                    <Button className="margin-top-mini" floated="right" content="Salvar alterações" color="green" />
+                                    <Button 
+                                    loading={isLoadingBtnEdit}
+                                    type="submit" 
+                                    className="margin-top-mini" 
+                                    floated="right" 
+                                    content="Salvar alterações" 
+                                    color="green" 
+                                    />
                                 </Form>
                             </Grid.Column>
                         </Grid.Row>
