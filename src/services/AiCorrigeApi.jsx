@@ -62,6 +62,22 @@ class AiCorrigeApi{
         }
     };
 
+    static verifyRefreshToken = async (refreshToken) => {
+        try {
+
+            const data = {
+                refreshToken
+            };
+
+            const response = await AxiosAiCorrige.post(`refresh-token`, data);
+
+            return response.data;
+            
+        } catch (error) {
+            return error.response.data;
+        }
+    };
+
     static logoutUser = async () => {
         try {
             

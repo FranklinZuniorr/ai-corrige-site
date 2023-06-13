@@ -1,5 +1,9 @@
 import moment from "moment/moment";
 import queryString from "query-string";
+import AiCorrigeApi from "../services/AiCorrigeApi";
+import Cookies from "js-cookie";
+import { KEY_COOKIE_REFRESH } from "./constants";
+import { toast } from "react-hot-toast";
 
 
 export const setUrlSearchParam = (object) => {
@@ -112,4 +116,29 @@ export const splitInCaracter = (string, caractere, start) => {
 
 export const setToIsoString = (date, valueToSub = 3) => {
    return moment(date).subtract(valueToSub, 'hours').toISOString().slice(0, -1) + "-03:00";
+};
+
+export const verifyReqTokenExpiration = async (data, error, type, fn) => {
+    if(error == "AccessTokenExpiredError!"){
+        const refreshToken = Cookies.get(KEY_COOKIE_REFRESH);
+        const response = await AiCorrigeApi.verifyRefreshToken(refreshToken);
+
+        console.log(response);
+
+        if(!response.r){
+            toast.error(response.data.msg);
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
+        }else{
+            switch (type) {
+                case "QUERY":
+                    
+                    break;
+            
+                default:
+                    break;
+            }
+        };
+    };
 };
