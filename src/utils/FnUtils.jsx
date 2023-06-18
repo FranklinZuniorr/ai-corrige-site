@@ -135,33 +135,15 @@ export const verifyReqTokenExpiration = async (data, error, type, fn) => {
 
             switch (type) {
                 case "QUERY":
-                    const response1 = await fn({...data});
-                    console.log(response1)
-
-                    if(!response.r){
-                        toast.error(response1.data.msg);
-                    }else{
-                        return response1;
-                    }
+                    await fn({...data});
                     break;
                 case "BODY":
-                    const response2 = await fn({...data});
-                    console.log(response2)
-
-                    if(!response2.r){
-                        toast.error(response2.data.msg);
-                    }else{
-                        return response2;
-                    }
+                    await fn({...data});
                     break;
                 default:
                     break;
             }
         };
-    };
-
-    if(error.response.data.data.msg == "Token inválido!"){
-        return error.response.data;
     };
 
     return error.response.data;

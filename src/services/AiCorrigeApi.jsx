@@ -1,6 +1,8 @@
 import axios from "axios";
 import { verifyReqTokenExpiration } from "../utils/FnUtils";
 import { toast } from "react-hot-toast";
+import { KEY_COOKIE_ACCESS, KEY_COOKIE_REFRESH } from "../utils/constants";
+import Cookies from "js-cookie";
 
 const AxiosAiCorrige = axios.create({
 
@@ -168,13 +170,16 @@ AxiosAiCorrige.interceptors.response.use(function (response) {
             const error = data.data.msg;
 
             if (error === 'Token inválido!' || error === 'RefreshTokenExpiredError!') {
+                Cookies.set(KEY_COOKIE_ACCESS, "");
+                Cookies.set(KEY_COOKIE_REFRESH, "");
+                setTokenJwtAxios("");
                 setTimeout(() => {
                     window.location.reload();
                 }, 1000);
             };
         };
     } else if (error.message === 'Network Error') {
-        toast.error('📡❗️ Sem conexão com o servidor');
+        return {data: {r:false, data: {msg: '📡❗️ Sem conexão com o servidor'}}}
     };
 
     return Promise.reject(error);
