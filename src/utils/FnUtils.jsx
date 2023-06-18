@@ -1,8 +1,8 @@
 import moment from "moment/moment";
 import queryString from "query-string";
-import AiCorrigeApi from "../services/AiCorrigeApi";
+import AiCorrigeApi, { setTokenJwtAxios } from "../services/AiCorrigeApi";
 import Cookies from "js-cookie";
-import { KEY_COOKIE_REFRESH } from "./constants";
+import { KEY_COOKIE_ACCESS, KEY_COOKIE_REFRESH } from "./constants";
 import { toast } from "react-hot-toast";
 
 
@@ -119,26 +119,51 @@ export const setToIsoString = (date, valueToSub = 3) => {
 };
 
 export const verifyReqTokenExpiration = async (data, error, type, fn) => {
-    if(error == "AccessTokenExpiredError!"){
+    if(error.response.data.data.msg == "AccessTokenExpiredError!"){
         const refreshToken = Cookies.get(KEY_COOKIE_REFRESH);
         const response = await AiCorrigeApi.verifyRefreshToken(refreshToken);
 
-        console.log(response);
+        console.log(response)
 
         if(!response.r){
-            toast.error(response.data.msg);
-            setTimeout(() => {
-                window.location.reload();
-            }, 500);
+            return response;
         }else{
+            const dataReq = response.data;
+            Cookies.set(KEY_COOKIE_ACCESS, dataReq.token);
+            Cookies.set(KEY_COOKIE_REFRESH, dataReq.refreshToken);
+            setTokenJwtAxios(dataReq.token);
+
             switch (type) {
                 case "QUERY":
-                    
+                    const response1 = await fn({...data});
+                    console.log(response1)
+
+                    if(!response.r){
+                        toast.error(response1.data.msg);
+                    }else{
+                        return response1;
+                    }
                     break;
-            
+                case "BODY":
+                    const response2 = await fn({...data});
+                    console.log(response2)
+
+                    if(!response2.r){
+                        toast.error(response2.data.msg);
+                    }else{
+                        return response2;
+                    }
+                    break;
                 default:
                     break;
             }
         };
     };
+
+    if(error.response.data.data.msg == "Token inválido!"){
+        return error.response.data;
+    };
+
+    return error.response.data;
+
 };

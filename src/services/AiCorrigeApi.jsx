@@ -1,4 +1,6 @@
 import axios from "axios";
+import { verifyReqTokenExpiration } from "../utils/FnUtils";
+import { toast } from "react-hot-toast";
 
 const AxiosAiCorrige = axios.create({
 
@@ -86,7 +88,8 @@ class AiCorrigeApi{
             return response.data;
 
         } catch (error) {
-            return error.response.data;
+            return verifyReqTokenExpiration(null, error, "BODY", this.logoutUser);
+            
         }
     };
 
@@ -153,3 +156,26 @@ class AiCorrigeApi{
 };
 
 export default AiCorrigeApi;
+
+AxiosAiCorrige.interceptors.response.use(function (response) {
+    return response;
+}, function (error) {
+
+    if (error.response) {
+        const { response: { status, data } } = error;
+
+        if (data.data) {
+            const error = data.data.msg;
+
+            if (error === 'Token inválido!' || error === 'RefreshTokenExpiredError!') {
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            };
+        };
+    } else if (error.message === 'Network Error') {
+        toast.error('📡❗️ Sem conexão com o servidor');
+    };
+
+    return Promise.reject(error);
+});
