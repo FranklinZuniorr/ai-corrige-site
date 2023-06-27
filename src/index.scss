@@ -148,8 +148,15 @@ code {
 }
 
 .image-profile-bar-top{
-  width: 4rem !important;
-  height: 4rem !important;
+  width: 3rem !important;
+  height: 3rem !important;
   border-radius: 2rem !important;
   border: 2px solid black !important;
+}
+
+.area-stripe-buy-tickets{
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  flex-wrap: wrap;
 }

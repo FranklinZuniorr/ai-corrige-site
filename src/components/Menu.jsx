@@ -8,6 +8,7 @@ import Cookies from "js-cookie";
 import { toast } from "react-hot-toast";
 import { gerarObjetoCondicional, getParamsInQs } from "../utils/FnUtils";
 import { verifyUser } from "../utils/Options";
+import Stripe from "./Stripe/Stripe";
 
 const Menu = () => {
 
@@ -33,6 +34,10 @@ const Menu = () => {
     const [isLoadingBtnEditImage, setIsLoadingBtnEditImage] = useState(false);
     // Area - edit
     // Modal - edit user
+
+    // Modal - buy tickets
+    const [isOpenModalBuyTickets, setIsOpenModalBuyTickets] = useState(false);
+    // Modal - buy tickets
 
     useEffect(() => {
         console.log(access)
@@ -151,14 +156,22 @@ const Menu = () => {
                     <Image className="image-profile-bar-top" src={access.img || suportLogoUser} avatar bordered />
                 } 
                 content={access.username} 
-                subheader={`Coins: ${access.coins}`} 
+                subheader={`Tickets: ${access.coins}`} 
                 />
-                <Popup inverted content="Opções" trigger={
-                    <Button color="black" floated="right" icon={isOpenedAreaMenu? "x":"bars"}  onClick={() => {
-                        setIsOpenedAreaMenu(!isOpenedAreaMenu);
-                    }} 
-                    />
-                } />
+                <div className="area-action-btns">
+                    <Popup inverted content="Opções" trigger={
+                        <Button size="mini" color="black" floated="right" icon={isOpenedAreaMenu? "x":"bars"}  onClick={() => {
+                            setIsOpenedAreaMenu(!isOpenedAreaMenu);
+                        }} 
+                        />
+                    } />
+                    <Popup inverted content="Comprar tickets" trigger={
+                        <Button size="mini" color="green" floated="right" icon="dollar sign" content="COMPRAR +10 TICKETS" onClick={() => {
+                            setIsOpenModalBuyTickets(true);
+                        }} 
+                        />
+                    } />
+                </div>
                 <div id="area-menu" className={isOpenedAreaMenu? "opened":"closed"}>
                     <div>
                         Editar usuário
@@ -332,6 +345,24 @@ const Menu = () => {
             </Modal.Actions>
             </Modal>
             {/* Modal - edit user */}
+
+            {/*  Modal - buy tickets */}
+            <Modal
+            onClose={() => setIsOpenModalBuyTickets(false)}
+            onOpen={() => setIsOpenModalBuyTickets(true)}
+            open={isOpenModalBuyTickets}
+            >
+            <Modal.Header>COMPRAR +10 TICKETS</Modal.Header>
+            <Modal.Content>
+                <Stripe/>
+            </Modal.Content>
+            <Modal.Actions>
+                <Button color="red" onClick={() => setIsOpenModalBuyTickets(false)}>
+                Fechar
+                </Button>
+            </Modal.Actions>
+            </Modal>
+            {/*  Modal - buy tickets */}
         </>
     )
 };

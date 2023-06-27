@@ -171,7 +171,7 @@ const Login = () => {
                                         value={textUserEmailLogin}
                                         fluid
                                         size="mini"
-                                        placeholder="Termo de cadastro..."
+                                        placeholder="Termo de login..."
                                         onChange={(ev, data) => setTextUserEmailLogin(data.value)}
                                         />
                                     </Form.Field>
@@ -184,7 +184,7 @@ const Login = () => {
                                         value={textUserPasswordLogin}
                                         fluid
                                         size="mini"
-                                        placeholder="Termo de cadastro..."
+                                        placeholder="Termo de login..."
                                         onChange={(ev, data) => setTextUserPasswordLogin(data.value)}
                                         icon={{ name: showPasswordLogin? "eye":"eye slash", circular: true, link: true, onClick: () => setShowPasswordLogin(!showPasswordLogin)}}
                                         />

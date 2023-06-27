@@ -155,6 +155,18 @@ class AiCorrigeApi{
             return error.response.data;
         }
     };
+
+    static stripeCheckout = async () => {
+        try {
+
+            const response = await AxiosAiCorrige.post(`stripe/create-checkout-session`);
+
+            return response.data;
+            
+        } catch (error) {
+            return error.response.data;
+        }
+    };
 };
 
 export default AiCorrigeApi;
