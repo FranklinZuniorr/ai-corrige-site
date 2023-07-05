@@ -35,8 +35,8 @@ const Stripe = () => {
                 </div>
             </div>
 
-            <Message color="green" content="Os tickets dão acesso a correções de redações pela inteligência artificial." />
-            <Message color="blue" content="Um ticket dá direito a uma correção, com R$ 5.00 você adquire 10 tickets = 10 avaliações." />
+            <Message color="green" content="Os tickets dão acesso a geração de atividades pela inteligência artificial." />
+            <Message color="blue" content="Um ticket dá direito a uma atividade, com R$ 5.00 você adquire 10 tickets = 10 atividades." />
         </>
     );
 };

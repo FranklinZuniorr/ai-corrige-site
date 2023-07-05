@@ -133,12 +133,24 @@ export const verifyReqTokenExpiration = async (data, error, type, fn) => {
             Cookies.set(KEY_COOKIE_REFRESH, dataReq.refreshToken);
             setTokenJwtAxios(dataReq.token);
 
+            if("accessToken" in data){
+                data = {...data, accessToken: dataReq.token}
+            };
+
             switch (type) {
                 case "QUERY":
-                    await fn({...data});
+                    if(data == null){
+                        return await AiCorrigeApi[fn]();
+                    }else{
+                        return await AiCorrigeApi[fn](...Object.values(data));
+                    }
                     break;
                 case "BODY":
-                    await fn({...data});
+                    if(data == null){
+                        return await AiCorrigeApi[fn]();
+                    }else{
+                        return await AiCorrigeApi[fn](...Object.values(data));
+                    }
                     break;
                 default:
                     break;
@@ -148,4 +160,17 @@ export const verifyReqTokenExpiration = async (data, error, type, fn) => {
 
     return error.response.data;
 
+};
+
+export const filterDifficulty = (value) => {
+    if(value < 100) return [{key: "FÁCIL", text: "Fácil", value: "Fácil"}];
+    if(value >= 100 && value < 200) return [
+        {key: "MÉDIO", text: "Médio", value: "Médio"},
+        {key: "FÁCIL", text: "Fácil", value: "Fácil"},
+    ];
+    if(value >= 200) return [
+        {key: "DIFÍCIL", text: "Difícil", value: "difícil"},
+        {key: "MÉDIO", text: "Médio", value: "Médio"},
+        {key: "FÁCIL", text: "Fácil", value: "Fácil"},
+    ];
 };

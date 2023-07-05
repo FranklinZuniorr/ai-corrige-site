@@ -17,7 +17,7 @@ code {
 
 .App{
   width: 100%;
-  padding-top: 10rem;
+  padding-top: 8rem;
 }
 
 .screen-login{
@@ -92,6 +92,7 @@ code {
   padding-left: 1rem;
   padding-right: 1rem;
   position: fixed;
+  z-index: 1;
 
   #area-menu{
     position: fixed;
@@ -160,3 +161,55 @@ code {
   justify-content: space-between;
   flex-wrap: wrap;
 }
+
+.display-home{
+  margin: 1rem 1rem 1rem 1rem;
+}
+
+.btn-home-search-ai{
+  margin-top: 1.8rem !important;
+}
+
+.area-cadastro-line-global {
+  display: flex;
+
+  button {
+      margin-left: 1rem !important;
+  }
+
+  @media only screen and (max-width: 360px) {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: flex-start;
+
+      button {
+          margin-top: 1rem !important;
+          margin-left: 0rem !important;
+      }
+  }
+}
+
+.area-form-home-search{
+  @media only screen and (max-width: 770px) {
+    div{
+      margin-top: 0.2rem !important;
+    }
+
+    button{
+      margin-top: 1rem !important;
+    }
+  }
+}
+
+// ---> xyz
+
+.margin-top-mini{
+  margin-top: 1rem !important;
+}
+
+.margin-top-medium{
+  margin-top: 2rem !important;
+}
+
+// ---> xyz

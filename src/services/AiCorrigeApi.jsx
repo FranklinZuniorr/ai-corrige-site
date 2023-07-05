@@ -62,7 +62,7 @@ class AiCorrigeApi{
             return response.data;
             
         } catch (error) {
-            return error.response.data;
+            return verifyReqTokenExpiration({accessToken}, error, "BODY", "verifyAccessToken");
         }
     };
 
@@ -90,7 +90,7 @@ class AiCorrigeApi{
             return response.data;
 
         } catch (error) {
-            return verifyReqTokenExpiration(null, error, "BODY", this.logoutUser);
+            return verifyReqTokenExpiration(null, error, "BODY", "logoutUser");
             
         }
     };
@@ -103,7 +103,7 @@ class AiCorrigeApi{
             return response.data;
             
         } catch (error) {
-            return error.response.data;
+            return verifyReqTokenExpiration(null, error, "BODY", "deleteUser");
         }
     };
 
@@ -119,7 +119,7 @@ class AiCorrigeApi{
             return response.data;
             
         } catch (error) {
-            return error.response.data;
+            return verifyReqTokenExpiration({email}, error, "BODY", "forgetPassword");
         }
     };
 
@@ -137,7 +137,7 @@ class AiCorrigeApi{
             return response.data;
             
         } catch (error) {
-            return error.response.data;
+            return verifyReqTokenExpiration({username, email, password}, error, "BODY", "editUser");
         }
     };
 
@@ -152,7 +152,7 @@ class AiCorrigeApi{
             return response.data;
             
         } catch (error) {
-            return error.response.data;
+            return verifyReqTokenExpiration({file, code}, error, "QUERY", "uploadImage");
         }
     };
 
@@ -164,7 +164,7 @@ class AiCorrigeApi{
             return response.data;
             
         } catch (error) {
-            return error.response.data;
+            return verifyReqTokenExpiration(null, error, "BODY", "stripeCheckout");
         }
     };
 };
