@@ -119,7 +119,7 @@ class AiCorrigeApi{
             return response.data;
             
         } catch (error) {
-            return verifyReqTokenExpiration({email}, error, "BODY", "forgetPassword");
+            return error.response.data;
         }
     };
 

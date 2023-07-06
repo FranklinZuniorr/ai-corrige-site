@@ -133,7 +133,7 @@ export const verifyReqTokenExpiration = async (data, error, type, fn) => {
             Cookies.set(KEY_COOKIE_REFRESH, dataReq.refreshToken);
             setTokenJwtAxios(dataReq.token);
 
-            if("accessToken" in data){
+            if(data != null && "accessToken" in data){
                 data = {...data, accessToken: dataReq.token}
             };
 

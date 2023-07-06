@@ -12,6 +12,7 @@ import { setAccessToken, setIsLoggedUser, setRefreshToken, setUserData } from '.
 import Home from './screens/Home';
 import Menu from './components/Menu';
 import ForgetPassword from './screens/ForgetPassword';
+import LoadingScreen from './components/LoadingScreen';
 
 function App() {
 
@@ -19,8 +20,16 @@ function App() {
   const access = useSelector(store => store.isLoggedUser);
   const [pathname, setPathname] = useState("");
 
+  const [isLoadingOnStart, setIsLoadingOnStart] = useState(true);
+
   useEffect(() => {
-    verifyCookie();
+
+    if(window.location.pathname != "/forget-password"){
+      verifyCookie();
+    }else{
+      dispatch(setIsLoggedUser(false));
+      setIsLoadingOnStart(false);
+    };
 
     const execute = async () => {
       console.log(window.location.pathname)
@@ -36,6 +45,7 @@ function App() {
 
     if(accessToken){
       const response = await AiCorrigeApi.verifyAccessToken(accessToken);
+      setIsLoadingOnStart(false);
 
       if(!response.r){
         return
@@ -51,6 +61,7 @@ function App() {
       console.log(response);
     }else{
       dispatch(setIsLoggedUser(false));
+      setIsLoadingOnStart(false);
     }
 
   };
@@ -60,18 +71,23 @@ function App() {
       <Toaster position="bottom-center" />
         <>
           {
-            pathname == "/forget-password"? <ForgetPassword />:
-            access?
+            isLoadingOnStart? <LoadingScreen />:
             <>
-              <Menu/>
-              <BrowserRouter>
-                <div className="App">
-                  <Routes>
-                      <Route path="/" element={<Home />} />
-                  </Routes>
-                </div>
-              </BrowserRouter>
-            </>:<Login/>
+              {
+                pathname == "/forget-password"? <ForgetPassword />:
+                access?
+                <>
+                  <Menu/>
+                  <BrowserRouter>
+                    <div className="App">
+                      <Routes>
+                          <Route path="/" element={<Home />} />
+                      </Routes>
+                    </div>
+                  </BrowserRouter>
+                </>:<Login/>
+              }
+            </>
           }
         </>
     </>

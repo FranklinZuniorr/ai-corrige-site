@@ -22,22 +22,74 @@ code {
 
 .screen-login{
     width: 100%;
-    height: 100%;
-    background-color: rgb(247 247 247);
+    background-color: rgb(247, 247, 247);
     position: absolute;
     display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: center;
-  }
-  
-  .area-login{
-    width: 22rem;
-    height: 36rem;
-    border-radius: 1rem;
-    padding-top: 3rem;
-    padding-bottom: 3rem;
+    justify-content: space-between;
+
+    @media only screen and (max-width: 700px) {
+      flex-direction: column;
+    }
+
+    div.area-1{
+      width: 50%;
+      background-image: linear-gradient(to bottom, #ebebeb, #d7dbef00, #b7cdf54f, #88c3f88a, #2cbaf8c7);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+
+      @media only screen and (max-width: 700px) {
+        width: 100%;
+      }
+    }
+
+    div.area-line{
+      padding: 0.1rem;
+      background-color: #747474;
+      box-shadow: 0px 0px 40px 1px;
+
+      @media only screen and (max-width: 700px) {
+        width: 100%;
+        padding: 0.1rem;
+      }
+    }
+
+    div.area-2{
+      width: 50%;
+      background-image: linear-gradient(to top, #ebebeb, #eeeeee, #f0f0f0, #f3f3f3, #f6f6f6);
+      display: flex;
+      flex-direction: column;
+
+      div.area-2-info{
+        padding: 2rem;
+      }
+
+      div.area-2-footer{
+        width: 100%;
+        height: 15rem;
+        background-color: #e1e1e1;
+      }
+
+      @media only screen and (max-width: 700px) {
+        width: 100%;
+      }
+    }
+
+    div.area-login{
+      width: 22rem;
+      height: 36rem;
+      border-radius: 1rem;
+      padding-top: 3rem;
+      position: sticky;
+      padding-bottom: 3rem;
+      top: 6rem;
+
+      @media only screen and (max-width: 700px) {
+        margin-top: 4rem;
+      }
+    }
 }
+  
 
 .screen-forget-password{
   width: 100%;

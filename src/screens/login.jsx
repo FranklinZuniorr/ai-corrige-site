@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form, Grid, Header, Icon, Input, Segment, Tab } from "semantic-ui-react";
+import { Button, Divider, Form, Grid, Header, Icon, Input, List, Segment, Tab } from "semantic-ui-react";
 import iconAi from "../img/3483127.png"
 import AiCorrigeApi from "../services/AiCorrigeApi";
 import { gerarObjetoCondicional } from "../utils/FnUtils";
@@ -249,11 +249,71 @@ const Login = () => {
     
     return(
         <div className="screen-login">
-            <div className="area-login">
-                <Header content="Ai corrige" subheader="Login ou cadastro" image={iconAi} />
-                <Segment>
-                    <Tab onTabChange={(ev, data) => setActiveIndexOfPane(data.activeIndex)} activeIndex={activeIndexOfPane} menu={{ secondary: true, pointing: true }} panes={panes} />
-                </Segment>
+            <div className="area-1">
+                <div className="area-login">
+                    <Header content="Ai corrige" subheader="Login ou cadastro" image={iconAi} />
+                    <Segment>
+                        <Tab onTabChange={(ev, data) => setActiveIndexOfPane(data.activeIndex)} activeIndex={activeIndexOfPane} menu={{ secondary: true, pointing: true }} panes={panes} />
+                    </Segment>
+                </div>
+            </div>
+            <div className="area-line" />
+            <div className="area-2">
+
+                <div className="area-2-info">
+                    <Segment>
+                        <Header content="Ai corrige" subheader="Sistema de aprendizado virtual com o uso de inteligência artificial." />
+                    </Segment>
+
+                    <Divider />
+
+                    <Header content="Alguns dos objetivos:" />
+
+                    <List>
+                        <List.Item>
+                        <List.Icon name='check' />
+                        <List.Content>Absorver conteúdos de forma rápida.</List.Content>
+                        </List.Item>
+                        <List.Item>
+                        <List.Icon name='check' />
+                        <List.Content>Gerar feedback com gráficos sobre a evolução do usuário ao decorrer do tempo.</List.Content>
+                        </List.Item>
+                        <List.Item>
+                        <List.Icon name='check' />
+                        <List.Content>Motivar a evolução com um sistema de níveis.</List.Content>
+                        </List.Item>
+                        <List.Item>
+                        <List.Icon name='check' />
+                        <List.Content>Desenvolver competitividade saudável por meio de ranking de pontos entre os usuários.</List.Content>
+                        </List.Item>
+                        <List.Item>
+                        <List.Icon name='check' />
+                        <List.Content>Aprimorar a confiaça e a capacidade de adaptação ao responder atividades completamente aleatórias geradas pela inteligência artificial de acordo com o assunto escolhido.</List.Content>
+                        </List.Item>
+                        <List.Item>
+                        <List.Icon name='check' />
+                        <List.Content>Incitar à curiosidade por meio dos aspectos da aleatoriedade e surpreendimento ao gerar uma atividade.</List.Content>
+                        </List.Item>
+                    </List>
+
+                    <Header content="Foco:" />
+
+                    <List>
+                        <List.Item>
+                        <List.Icon name='address book' />
+                        <List.Content>Estudantes do enem.</List.Content>
+                        </List.Item>
+                    </List>
+
+                    <Divider />
+
+                    <Header content="Curtiu? Que tal fazer o seu cadastro!?" subheader="É fácil, só vai precisar do seu melhor e-mail, nome de usuário e uma senha. Simples, não?" />
+                </div>
+
+                <div className="area-2-footer">
+
+                </div>
+            
             </div>
         </div>
     );
