@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Button, Divider, Form, Grid, Header, Icon, Input, List, Segment, Tab } from "semantic-ui-react";
+import { Button, Divider, Form, Grid, Header, Icon, Input, List, Message, Modal, Popup, Segment, Tab } from "semantic-ui-react";
 import iconAi from "../img/3483127.png"
 import AiCorrigeApi from "../services/AiCorrigeApi";
-import { gerarObjetoCondicional } from "../utils/FnUtils";
+import { gerarObjetoCondicional, verifyName, verifyPassword } from "../utils/FnUtils";
 import { toast } from "react-hot-toast";
 import Cookies from "js-cookie";
 import { KEY_COOKIE_ACCESS, KEY_COOKIE_REFRESH } from "../utils/constants";
+import logo from '../img/logo.svg';
+import PrivacyPolicy from "../components/PrivacyPolicy";
 
 const Login = () => {
 
@@ -29,6 +31,10 @@ const Login = () => {
     const [textUserEmailForgetPassword, setTextUserEmailForgetPassword] = useState("");
     const [isLoadingBtnForgetPassword, setIsLoadingBtnForgetPassword] = useState(false);
     // Area forget password
+
+    //Modal privacy policy
+    const [isOpenModalPrivacyPolicy, setIsOpenModalPrivacyPolicy] = useState(false);
+    //Modal privacy policy
 
     useEffect(() => {
     },[]);
@@ -110,13 +116,26 @@ const Login = () => {
                                 <Form.Group widths={16}>
                                     <Form.Field width={16}>
                                         <label>Nome de usuário:</label>
-                                        <Input
-                                        value={textUserNameSignUp}
-                                        fluid
-                                        size="mini"
-                                        placeholder="Termo de cadastro..."
-                                        onChange={(ev, data) => setTextUserNameSignUp(data.value)}
-                                        />
+                                        <Popup inverted size="mini" on="click" content={
+                                            <>
+                                                <div>
+                                                    <Icon className="info" />
+                                                    Caracteres: {textUserNameSignUp.length}
+                                                </div>
+                                                <div>
+                                                    {verifyName(textUserNameSignUp)? <Icon color="green" className="check" />:<Icon color="red" className="x" />}
+                                                    Quantidade maior ou igual a 15 e menor ou igual a 20.
+                                                </div>
+                                            </>
+                                        } trigger={
+                                            <Input
+                                            value={textUserNameSignUp}
+                                            fluid
+                                            size="mini"
+                                            placeholder="Termo de cadastro..."
+                                            onChange={(ev, data) => setTextUserNameSignUp(data.value)}
+                                            />
+                                        } />
                                     </Form.Field>
                                 </Form.Group>
                                 <Form.Group widths={16}>
@@ -134,18 +153,48 @@ const Login = () => {
                                 <Form.Group widths={16}>
                                     <Form.Field width={16}>
                                         <label>Senha:</label>
-                                        <Input
-                                        type={showPasswordSignUp? "text":"password"}
-                                        value={textUserPasswordSignUp}
-                                        fluid
-                                        size="mini"
-                                        placeholder="Termo de cadastro..."
-                                        onChange={(ev, data) => setTextUserPasswordSignUp(data.value)}
-                                        icon={{ name: showPasswordSignUp? "eye":"eye slash", circular: true, link: true, onClick: () => setShowPasswordSignUp(!showPasswordSignUp)}}
-                                        />
+                                        <Popup inverted size="mini" on="click" content={
+                                            <>
+                                                <div>
+                                                    <Icon className="info" />
+                                                    Caracteres: {textUserNameSignUp.length}
+                                                </div>
+                                                <div>
+                                                    {verifyPassword(textUserPasswordSignUp).capitalLetter? <Icon color="green" className="check" />:<Icon color="red" className="x" />}
+                                                    Letra maiúscula
+                                                </div>
+                                                <div>
+                                                    {verifyPassword(textUserPasswordSignUp).lowerCase? <Icon color="green" className="check" />:<Icon color="red" className="x" />}
+                                                    Letra minúscula
+                                                </div>
+                                                <div>
+                                                    {verifyPassword(textUserPasswordSignUp).oneNumber? <Icon color="green" className="check" />:<Icon color="red" className="x" />}
+                                                    Número
+                                                </div>
+                                                <div>
+                                                    {verifyPassword(textUserPasswordSignUp).specialCharacter? <Icon color="green" className="check" />:<Icon color="red" className="x" />}
+                                                    Caractere especial
+                                                </div>
+                                                <div>
+                                                    {verifyPassword(textUserPasswordSignUp).eightCharacters? <Icon color="green" className="check" />:<Icon color="red" className="x" />}
+                                                    Quantidade maior ou igual a 8
+                                                </div>
+                                            </>
+                                        } trigger={
+                                            <Input
+                                            type={showPasswordSignUp? "text":"password"}
+                                            value={textUserPasswordSignUp}
+                                            fluid
+                                            size="mini"
+                                            placeholder="Termo de cadastro..."
+                                            onChange={(ev, data) => setTextUserPasswordSignUp(data.value)}
+                                            icon={{ name: showPasswordSignUp? "eye":"eye slash", circular: true, link: true, onClick: () => setShowPasswordSignUp(!showPasswordSignUp)}}
+                                            />
+                                        } />
                                     </Form.Field>
                                 </Form.Group>
 
+                                <Message size="mini" content="Ao fazer o cadastro você concorda com o uso de cookies." />
                                 <Button className="margin-top-min" loading={isLoadingBtnSignUp} type="submit" size="mini" floated="right" color="green" content="Cadastrar" />
 
                             </Form>
@@ -248,74 +297,102 @@ const Login = () => {
     ];
     
     return(
-        <div className="screen-login">
-            <div className="area-1">
-                <div className="area-login">
-                    <Header content="Ai corrige" subheader="Login ou cadastro" image={iconAi} />
+        <>
+            <div className="screen-login">
+                <header className="area-1">
+                        <div className="area-login">
+                            <Header content="Ai corrige" subheader="Login ou cadastro" image={logo} />
+                            <Segment>
+                                <Tab onTabChange={(ev, data) => setActiveIndexOfPane(data.activeIndex)} activeIndex={activeIndexOfPane} menu={{ secondary: true, pointing: true }} panes={panes} />
+                            </Segment>
+                        </div>
+                </header>
+                <section className="area-2">
+
+                    <div className="area-2-info">
+                        <Segment>
+                            <Header content="Ai corrige" subheader="Plataforma de aprendizado virtual com o uso de inteligência artificial." />
+                        </Segment>
+
+                        <Divider />
+
+                        <Header content="Alguns dos objetivos:" />
+
+                        <List>
+                            <List.Item>
+                            <List.Icon name='check' />
+                            <List.Content>Absorver conteúdos de forma rápida.</List.Content>
+                            </List.Item>
+                            <List.Item>
+                            <List.Icon name='check' />
+                            <List.Content>Gerar feedback com gráficos sobre a evolução do usuário ao decorrer do tempo.</List.Content>
+                            </List.Item>
+                            <List.Item>
+                            <List.Icon name='check' />
+                            <List.Content>Motivar a evolução com um sistema de níveis.</List.Content>
+                            </List.Item>
+                            <List.Item>
+                            <List.Icon name='check' />
+                            <List.Content>Desenvolver competitividade saudável por meio de ranking de pontos entre os usuários.</List.Content>
+                            </List.Item>
+                            <List.Item>
+                            <List.Icon name='check' />
+                            <List.Content>Aprimorar a confiaça e a capacidade de adaptação ao responder atividades completamente aleatórias geradas pela inteligência artificial de acordo com o assunto escolhido.</List.Content>
+                            </List.Item>
+                            <List.Item>
+                            <List.Icon name='check' />
+                            <List.Content>Incitar à curiosidade por meio dos aspectos da aleatoriedade e surpreendimento ao gerar uma atividade.</List.Content>
+                            </List.Item>
+                        </List>
+
+                        <Header content="Foco:" />
+
+                        <List>
+                            <List.Item>
+                            <List.Icon name='address book' />
+                            <List.Content>Estudantes do enem.</List.Content>
+                            </List.Item>
+                        </List>
+
+                        <Divider />
+
+                        <Header content="Curtiu? Que tal fazer o seu cadastro!?" subheader="É fácil, só vai precisar do seu melhor e-mail, nome de usuário e uma senha. Simples, não?" />
+                    </div>
+
+                    <div className="area-2-footer">
+
+                        <Header image={logo} content="Ai corrige" subheader="Relaxe, aprenda comigo (:" />
+                        <Message size="mini" content={
+                            <Button size="mini" color="blue" content="Política de privacidade" onClick={() => setIsOpenModalPrivacyPolicy(true)} />
+                        } />
+
+                    </div>
+                
+                </section>
+                <div/>
+
+                {/* Modal - privacy policy */}
+                <Modal
+                onClose={() => setIsOpenModalPrivacyPolicy(false)}
+                onOpen={() => setIsOpenModalPrivacyPolicy(true)}
+                open={isOpenModalPrivacyPolicy}
+                >
+                <Modal.Header>Política de privacidade</Modal.Header>
+                <Modal.Content>
                     <Segment>
-                        <Tab onTabChange={(ev, data) => setActiveIndexOfPane(data.activeIndex)} activeIndex={activeIndexOfPane} menu={{ secondary: true, pointing: true }} panes={panes} />
+                        <PrivacyPolicy />
                     </Segment>
-                </div>
+                </Modal.Content>
+                <Modal.Actions>
+                    <Button color='red' onClick={() => setIsOpenModalPrivacyPolicy(false)}>
+                        Fechar
+                    </Button>
+                </Modal.Actions>
+                </Modal>
+                {/* Modal - privacy policy */}
             </div>
-            <div className="area-line" />
-            <div className="area-2">
-
-                <div className="area-2-info">
-                    <Segment>
-                        <Header content="Ai corrige" subheader="Sistema de aprendizado virtual com o uso de inteligência artificial." />
-                    </Segment>
-
-                    <Divider />
-
-                    <Header content="Alguns dos objetivos:" />
-
-                    <List>
-                        <List.Item>
-                        <List.Icon name='check' />
-                        <List.Content>Absorver conteúdos de forma rápida.</List.Content>
-                        </List.Item>
-                        <List.Item>
-                        <List.Icon name='check' />
-                        <List.Content>Gerar feedback com gráficos sobre a evolução do usuário ao decorrer do tempo.</List.Content>
-                        </List.Item>
-                        <List.Item>
-                        <List.Icon name='check' />
-                        <List.Content>Motivar a evolução com um sistema de níveis.</List.Content>
-                        </List.Item>
-                        <List.Item>
-                        <List.Icon name='check' />
-                        <List.Content>Desenvolver competitividade saudável por meio de ranking de pontos entre os usuários.</List.Content>
-                        </List.Item>
-                        <List.Item>
-                        <List.Icon name='check' />
-                        <List.Content>Aprimorar a confiaça e a capacidade de adaptação ao responder atividades completamente aleatórias geradas pela inteligência artificial de acordo com o assunto escolhido.</List.Content>
-                        </List.Item>
-                        <List.Item>
-                        <List.Icon name='check' />
-                        <List.Content>Incitar à curiosidade por meio dos aspectos da aleatoriedade e surpreendimento ao gerar uma atividade.</List.Content>
-                        </List.Item>
-                    </List>
-
-                    <Header content="Foco:" />
-
-                    <List>
-                        <List.Item>
-                        <List.Icon name='address book' />
-                        <List.Content>Estudantes do enem.</List.Content>
-                        </List.Item>
-                    </List>
-
-                    <Divider />
-
-                    <Header content="Curtiu? Que tal fazer o seu cadastro!?" subheader="É fácil, só vai precisar do seu melhor e-mail, nome de usuário e uma senha. Simples, não?" />
-                </div>
-
-                <div className="area-2-footer">
-
-                </div>
-            
-            </div>
-        </div>
+            <div></div>
+        </>
     );
 };
 

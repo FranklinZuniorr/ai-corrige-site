@@ -174,3 +174,23 @@ export const filterDifficulty = (value) => {
         {key: "FÁCIL", text: "Fácil", value: "Fácil"},
     ];
 };
+
+export const verifyName = (text) => {
+    if(text.length >= 15 & text.length <= 20){
+        return true
+    };
+
+    return false
+};
+
+export const verifyPassword = (text) => {
+    const configs = {
+        capitalLetter: /[A-Z]/.test(text)? true:false,
+        lowerCase: /[a-z]/.test(text)? true:false,
+        oneNumber: /\d/.test(text)? true:false,
+        specialCharacter: /[!@#$%^&*(),.?":{}|<>]/.test(text)? true:false,
+        eightCharacters: text.length >= 8? true:false
+    };
+
+    return configs
+};
