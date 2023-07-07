@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Divider, Form, Grid, Header, Icon, Input, List, Message, Modal, Popup, Segment, Tab } from "semantic-ui-react";
+import { Button, Divider, Form, Grid, Header, Icon, Image, Input, List, Message, Modal, Popup, Segment, Tab } from "semantic-ui-react";
 import iconAi from "../img/3483127.png"
 import AiCorrigeApi from "../services/AiCorrigeApi";
 import { gerarObjetoCondicional, verifyName, verifyPassword } from "../utils/FnUtils";
@@ -7,7 +7,9 @@ import { toast } from "react-hot-toast";
 import Cookies from "js-cookie";
 import { KEY_COOKIE_ACCESS, KEY_COOKIE_REFRESH } from "../utils/constants";
 import logo from '../img/logo.svg';
+import ai from '../img/ai.png';
 import PrivacyPolicy from "../components/PrivacyPolicy";
+import moment from "moment";
 
 const Login = () => {
 
@@ -157,7 +159,7 @@ const Login = () => {
                                             <>
                                                 <div>
                                                     <Icon className="info" />
-                                                    Caracteres: {textUserNameSignUp.length}
+                                                    Caracteres: {textUserPasswordSignUp.length}
                                                 </div>
                                                 <div>
                                                     {verifyPassword(textUserPasswordSignUp).capitalLetter? <Icon color="green" className="check" />:<Icon color="red" className="x" />}
@@ -298,6 +300,7 @@ const Login = () => {
     
     return(
         <>
+            <div className="display-screen-login">
             <div className="screen-login">
                 <header className="area-1">
                         <div className="area-login">
@@ -337,11 +340,15 @@ const Login = () => {
                             </List.Item>
                             <List.Item>
                             <List.Icon name='check' />
-                            <List.Content>Aprimorar a confiaça e a capacidade de adaptação ao responder atividades completamente aleatórias geradas pela inteligência artificial de acordo com o assunto escolhido.</List.Content>
+                            <List.Content>Aprimorar a confiança e a capacidade de adaptação ao responder atividades completamente surpreendentes geradas pela inteligência artificial de acordo com o assunto escolhido.</List.Content>
                             </List.Item>
                             <List.Item>
                             <List.Icon name='check' />
                             <List.Content>Incitar à curiosidade por meio dos aspectos da aleatoriedade e surpreendimento ao gerar uma atividade.</List.Content>
+                            </List.Item>
+                            <List.Item>
+                            <List.Icon name='check' />
+                            <List.Content>Promover os sentimentos de recompensa e motivação a cada atividade gerada e respondida.</List.Content>
                             </List.Item>
                         </List>
 
@@ -350,7 +357,7 @@ const Login = () => {
                         <List>
                             <List.Item>
                             <List.Icon name='address book' />
-                            <List.Content>Estudantes do enem.</List.Content>
+                            <List.Content>Estudantes do Enem.</List.Content>
                             </List.Item>
                         </List>
 
@@ -391,7 +398,26 @@ const Login = () => {
                 </Modal>
                 {/* Modal - privacy policy */}
             </div>
-            <div></div>
+
+            <footer>
+                <Grid celled stackable>
+                    <Grid.Row columns={3} verticalAlign="middle" textAlign="left">
+                        <Grid.Column>
+                            <Header size="tiny" image={ai} content="Ai corrige" subheader="Desenvolvido por Franklin Vieira Barbosa." />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Header size="tiny" icon="mail" content="E-mail para contato:" subheader={
+                            <div><a href="mailto:aicorrige763@gmail.com?subject=Uma dúvida...&body=Olá!" >aicorrige763@gmail.com</a></div>
+                            } />
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Header size="tiny" icon="copyright outline" content="Todos os direitos reservados:" subheader={`${moment().year()}, Franklin V. Barbosa.`} />
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+            </footer>
+
+            </div>
         </>
     );
 };

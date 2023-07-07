@@ -6,7 +6,7 @@ import suportLogoUser from "../img/suporte-user.png";
 import AiCorrigeApi from "../services/AiCorrigeApi";
 import Cookies from "js-cookie";
 import { toast } from "react-hot-toast";
-import { gerarObjetoCondicional, getParamsInQs } from "../utils/FnUtils";
+import { gerarObjetoCondicional, getParamsInQs, verifyName, verifyPassword } from "../utils/FnUtils";
 import { verifyUser } from "../utils/Options";
 import Stripe from "./Stripe/Stripe";
 
@@ -287,13 +287,26 @@ const Menu = () => {
                                     <Form.Group widths={16}>
                                         <Form.Field width={16}>
                                             <label>Nome de usuário:</label>
-                                            <Input
-                                            value={textUserNameEdit}
-                                            fluid
-                                            size="mini"
-                                            placeholder="Termo de edição..."
-                                            onChange={(ev, data) => setTextUserNameEdit(data.value)}
-                                            />
+                                            <Popup inverted size="mini" on="click" content={
+                                            <>
+                                                <div>
+                                                    <Icon className="info" />
+                                                    Caracteres: {textUserNameEdit.length}
+                                                </div>
+                                                <div>
+                                                    {verifyName(textUserNameEdit)? <Icon color="green" className="check" />:<Icon color="red" className="x" />}
+                                                    Quantidade maior ou igual a 15 e menor ou igual a 20.
+                                                </div>
+                                            </>
+                                            } trigger={
+                                                <Input
+                                                value={textUserNameEdit}
+                                                fluid
+                                                size="mini"
+                                                placeholder="Termo de edição..."
+                                                onChange={(ev, data) => setTextUserNameEdit(data.value)}
+                                                />
+                                            } />
                                         </Form.Field>
                                     </Form.Group>
                                     <Form.Group widths={16}>
@@ -311,16 +324,45 @@ const Menu = () => {
                                     <Form.Group widths={16}>
                                         <Form.Field width={16}>
                                             <label>Senha:</label>
-                                            <Input
-                                            type={showPasswordEdit? "text":"password"}
-                                            value={textUserPasswordEdit}
-                                            fluid
-                                            size="mini"
-                                            placeholder="Termo de edição..."
-                                            onChange={(ev, data) => setTextUserPasswordEdit(data.value)}
-                                            icon={{ name: showPasswordEdit? "eye":"eye slash", circular: true, link: true, 
-                                            onClick: () => setShowPasswordEdit(!showPasswordEdit)}}
-                                            />
+                                            <Popup inverted size="mini" on="click" content={
+                                                <>
+                                                    <div>
+                                                        <Icon className="info" />
+                                                        Caracteres: {textUserPasswordEdit.length}
+                                                    </div>
+                                                    <div>
+                                                        {verifyPassword(textUserPasswordEdit).capitalLetter? <Icon color="green" className="check" />:<Icon color="red" className="x" />}
+                                                        Letra maiúscula
+                                                    </div>
+                                                    <div>
+                                                        {verifyPassword(textUserPasswordEdit).lowerCase? <Icon color="green" className="check" />:<Icon color="red" className="x" />}
+                                                        Letra minúscula
+                                                    </div>
+                                                    <div>
+                                                        {verifyPassword(textUserPasswordEdit).oneNumber? <Icon color="green" className="check" />:<Icon color="red" className="x" />}
+                                                        Número
+                                                    </div>
+                                                    <div>
+                                                        {verifyPassword(textUserPasswordEdit).specialCharacter? <Icon color="green" className="check" />:<Icon color="red" className="x" />}
+                                                        Caractere especial
+                                                    </div>
+                                                    <div>
+                                                        {verifyPassword(textUserPasswordEdit).eightCharacters? <Icon color="green" className="check" />:<Icon color="red" className="x" />}
+                                                        Quantidade maior ou igual a 8
+                                                    </div>
+                                                </>
+                                            } trigger={
+                                                <Input
+                                                type={showPasswordEdit? "text":"password"}
+                                                value={textUserPasswordEdit}
+                                                fluid
+                                                size="mini"
+                                                placeholder="Termo de edição..."
+                                                onChange={(ev, data) => setTextUserPasswordEdit(data.value)}
+                                                icon={{ name: showPasswordEdit? "eye":"eye slash", circular: true, link: true, 
+                                                onClick: () => setShowPasswordEdit(!showPasswordEdit)}}
+                                                />
+                                            } />
                                         </Form.Field>
                                     </Form.Group>
 
