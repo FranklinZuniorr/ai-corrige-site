@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Button, Dropdown, Form, Grid, Header, Icon, Image, Input, Label, Message, Popup, Progress, Segment, Step } from "semantic-ui-react";
+import { Button, Dropdown, Form, Grid, Header, Icon, Image, Input, Label, Loader, Message, Popup, Progress, Segment, Step } from "semantic-ui-react";
 import store from "../store";
 import suportLogoUser from "../img/suporte-user.png";
 import { KEY_COOKIE_ACCESS, OPTIONS_DIFFICULTY, OPTIONS_INPUT_THEME } from "../utils/constants";
@@ -8,6 +8,7 @@ import { filterDifficulty } from "../utils/FnUtils";
 import AiCorrigeApi from "../services/AiCorrigeApi";
 import { toast } from "react-hot-toast";
 import Cookies from "js-cookie";
+import AiLoading from "../components/AiLoading";
 
 const Home = () => {
 
@@ -29,11 +30,16 @@ const Home = () => {
 
     useEffect(() => {
         console.log(resAiCurrent);
-        if(resAiCurrent != null && !resAiCurrent.r){
-            toast.error(resAiCurrent.msg);
-        };
-
         setIsLoadingGenerateActivity(false);
+        if(resAiCurrent != null){
+            if(!resAiCurrent.r){
+                toast.error(resAiCurrent.msg);
+                return
+            };
+    
+            toast.success(resAiCurrent.msg);
+
+        };
     }, [resAiCurrent]);
 
     const getPropsOfUser = async () => {
@@ -64,7 +70,8 @@ const Home = () => {
         const response = await AiCorrigeApi.aiJsonAmqp(data.title, data.msg, data.difficulty);
 
         if(!response.r){
-            toast.error(response.data.msg.join("\n"));
+            toast.error(typeof response.data.msg == Array? response.data.msg.join("\n"):response.data.msg);
+            setIsLoadingGenerateActivity(false);
         };
 
         toast.success(response.data.msg);
@@ -161,6 +168,13 @@ const Home = () => {
                             </Grid.Column>
                         </Grid.Row>
                     </Grid>
+                </Segment>
+                <Segment>
+                    {
+                        isLoadingGenerateActivity?
+                        <AiLoading />:
+                        "Adquira conhecimento, gere sua atividade, pode deixar comigo. (;"
+                    }
                 </Segment>
             </div>
         </>

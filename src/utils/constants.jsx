@@ -234,4 +234,4 @@ export const TEMPLATE_QUERY_AMQP = {
         ]
       }
     }
-  };
+};

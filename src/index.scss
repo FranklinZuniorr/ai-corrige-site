@@ -274,6 +274,82 @@ code {
   }
 }
 
+.ai-anim-loading{
+  width: 100%;
+  display: flex;
+  background-color: #90c9ff;
+  background-image: url(./img/805172.svg);
+  background-size: cover;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  animation: area-ai-entrance 1s ease 0s 1 normal backwards;
+
+  @keyframes area-ai-entrance {
+    0% {
+      transform: scaleX(0);
+    }
+  
+    100% {
+      transform: scaleX(1);
+    }
+  }
+
+  div.base{
+    height: 3rem;
+    width: 3rem;
+    background-image: linear-gradient(to bottom, #96cdff, #79b8f6, #5ba3ed, #3c8ee3, #1079d8);
+    margin: 1rem;
+    border-radius: 2rem;
+    animation: ai-circle-base 2s ease 0s infinite normal forwards;
+    box-shadow: 0px 0px 20px 2px blue;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    @keyframes ai-circle-base {
+      0% {
+        transform: scale(1);
+      }
+    
+      50% {
+        transform: scale(1.1);
+      }
+    
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    div.center{
+      width: 2rem;
+      height: 1rem;
+      background-image: linear-gradient(to bottom, #002342, #003765, #004c89, #0262b0, #1079d8);
+      border-radius: 1rem;
+      animation: ai-circle-center 2s ease 0s infinite alternate forwards;
+
+      @keyframes ai-circle-center {
+        0% {
+          width: 1rem;
+          height: 0.5rem;
+        }
+      
+        50% {
+          width: 2rem;
+          height: 0.5rem;
+        }
+      
+        100% {
+          width: 1rem;
+          height: 1rem;
+        }
+      }
+    }
+    
+  }
+
+}
+
 // ---> xyz
 
 .margin-top-mini{
