@@ -9,6 +9,8 @@ import AiCorrigeApi from "../services/AiCorrigeApi";
 import { toast } from "react-hot-toast";
 import Cookies from "js-cookie";
 import AiLoading from "../components/AiLoading";
+import CreateActivity from "../components/CreateActivity";
+import moment from "moment";
 
 const Home = () => {
 
@@ -17,6 +19,7 @@ const Home = () => {
 
     // Global
     const [currentUserData, setCurrentUserData] = useState(null);
+    const [currentActivity, setCurrentActivity] = useState(null);
     // Global
 
     // Search area
@@ -38,7 +41,7 @@ const Home = () => {
                 return
             };
             
-            const data = resAiCurrent;
+            setCurrentActivity(resAiCurrent);
             dispatch(setResAiCurrent(null));
             getPropsOfUser();
             toast.success(resAiCurrent.msg);
@@ -179,7 +182,23 @@ const Home = () => {
                         <AiLoading />:
                         "Adquira conhecimento, gere sua atividade, pode deixar comigo. (;"
                     }
+
                 </Segment>
+                {
+                    currentActivity != null &&
+                    <CreateActivity 
+                    date={moment(currentActivity.createdAt).format("DD/MM/YYYY")} 
+                    title={currentActivity.data.data.title} 
+                    difficulty={textDifficulty}
+                    summary={currentActivity.data.data.answer.resumo}
+                    question1={currentActivity.data.data.answer.questao1}
+                    question2={currentActivity.data.data.answer.questao2}
+                    question3={currentActivity.data.data.answer.questao3}
+                    question4={currentActivity.data.data.answer.questao4}
+                    question5={currentActivity.data.data.answer.questao5}
+                    setCurrentActivity={setCurrentActivity}
+                    />
+                }
             </div>
         </>
     );

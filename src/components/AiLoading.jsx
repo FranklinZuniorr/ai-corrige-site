@@ -9,6 +9,9 @@ const AiLoading = () => {
 
                     </div>
                 </div>
+                <div className="text">
+                    Gerando atividade...
+                </div>
             </div>
         </>
     );
