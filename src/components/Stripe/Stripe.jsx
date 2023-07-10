@@ -26,7 +26,7 @@ const Stripe = () => {
         <>
             <div className="area-stripe-buy-tickets">
                 <div>
-                    <Header size="large" icon="ticket" content="+10 Tikckets" subheader="R$ 5.00" />
+                    <Header size="large" icon="ticket" content="+10 Tickets" subheader="R$ 5.00" />
                 </div>
                 <div>
                     <Button loading={isLoadingBtnBuy} color="green" onClick={() => stripeCheckout()}>
@@ -35,7 +35,7 @@ const Stripe = () => {
                 </div>
             </div>
 
-            <Message color="green" content="Os tickets dão acesso a geração de atividades pela inteligência artificial." />
+            <Message color="green" content="Os tickets dão acesso à geração de atividades pela inteligência artificial." />
             <Message color="blue" content="Um ticket dá direito a uma atividade, com R$ 5.00 você adquire 10 tickets = 10 atividades." />
         </>
     );

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { verifyReqTokenExpiration } from "../utils/FnUtils";
 import { toast } from "react-hot-toast";
-import { KEY_COOKIE_ACCESS, KEY_COOKIE_REFRESH } from "../utils/constants";
+import { KEY_COOKIE_ACCESS, KEY_COOKIE_REFRESH, TEMPLATE_QUERY_AMQP } from "../utils/constants";
 import Cookies from "js-cookie";
 
 const AxiosAiCorrige = axios.create({
@@ -165,6 +165,26 @@ class AiCorrigeApi{
             
         } catch (error) {
             return verifyReqTokenExpiration(null, error, "BODY", "stripeCheckout");
+        }
+    };
+
+    static aiJsonAmqp = async (title, msg, difficulty) => {
+        try {
+
+            const data = {
+                ...TEMPLATE_QUERY_AMQP, 
+                title: title, 
+                msg: `Texto explicando sobre algum assunto aleatório de nível ${difficulty} referente a ${msg}`
+            };
+
+            console.log(data)
+            
+            const response = await AxiosAiCorrige.post(`ai/json-amqp`, data);
+
+            return response.data;
+
+        } catch (error) {
+            return verifyReqTokenExpiration({title, msg, difficulty}, error, "BODY", "aiJsonAmqp");
         }
     };
 };

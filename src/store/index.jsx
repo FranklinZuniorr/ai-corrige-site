@@ -5,7 +5,8 @@ const INITIAL_STATE = {
     isLoggedUser: false,
     accessToken: "",
     refreshToken: "",
-    userData: null
+    userData: null,
+    resAiCurrent: null
 };
 
 const ACTIONS = {
@@ -13,7 +14,8 @@ const ACTIONS = {
     SET_IS_LOGGED_USER: 'SET_IS_LOGGED_USER',
     SET_ACCESS_TOKEN: 'SET_ACCESS_TOKEN',
     SET_REFRESH_TOKEN: 'SET_REFRESH_TOKE',
-    SET_USER_DATA: 'SET_USER_DATA'
+    SET_USER_DATA: 'SET_USER_DATA',
+    SET_RES_AI_CURRENT: 'SET_RES_AI_CURRENT'
 };
 
 const setState = (state = INITIAL_STATE, action) => {
@@ -28,6 +30,8 @@ const setState = (state = INITIAL_STATE, action) => {
             return {...state, refreshToken: action.data};
         case ACTIONS.SET_USER_DATA:
             return {...state, userData: action.data};
+        case ACTIONS.SET_RES_AI_CURRENT:
+            return {...state, resAiCurrent: action.data};
         default:
             return state;
     };
@@ -57,4 +61,8 @@ export const setRefreshToken = (value) => {
 
 export const setUserData = (value) => {
     return { type: ACTIONS.SET_USER_DATA, data: value };
+};
+
+export const setResAiCurrent = (value) => {
+    return { type: ACTIONS.SET_RES_AI_CURRENT, data: value };
 };

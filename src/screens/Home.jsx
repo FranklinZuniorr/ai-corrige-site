@@ -11,17 +11,30 @@ import Cookies from "js-cookie";
 
 const Home = () => {
 
+    const resAiCurrent = useSelector(store => store.resAiCurrent);
+
     // Global
     const [currentUserData, setCurrentUserData] = useState(null);
     // Global
 
     // Search area
     const [textSubject, setTextSubject] = useState("");
+    const [textDifficulty, setTextDifficulty] = useState("Fácil");
+    const [isLoadingGenerateActivity, setIsLoadingGenerateActivity] = useState(false);
     // Search area
 
     useEffect(() => {
         getPropsOfUser();
     }, []);
+
+    useEffect(() => {
+        console.log(resAiCurrent);
+        if(resAiCurrent != null && !resAiCurrent.r){
+            toast.error(resAiCurrent.msg);
+        };
+
+        setIsLoadingGenerateActivity(false);
+    }, [resAiCurrent]);
 
     const getPropsOfUser = async () => {
         const accessToken = Cookies.get(KEY_COOKIE_ACCESS);
@@ -37,26 +50,49 @@ const Home = () => {
         setCurrentUserData(data);
     };
 
+    const aiJsonAmqp = async () => {
+
+        setTextSubject("");
+        setIsLoadingGenerateActivity(true);
+
+        const data = {
+            title: OPTIONS_INPUT_THEME.find(input => input.value == textSubject).text.replaceAll(" ", "_").toLowerCase(),
+            msg: textSubject,
+            difficulty: textDifficulty
+        };
+
+        const response = await AiCorrigeApi.aiJsonAmqp(data.title, data.msg, data.difficulty);
+
+        if(!response.r){
+            toast.error(response.data.msg.join("\n"));
+        };
+
+        toast.success(response.data.msg);
+    };
+
     return(
         <>
             <div className="display-home">
-                <Header content="Gerar atividade" />
                 <Segment>
+                    <Header textAlign="left" content="Gerar atividade" />
                     <Grid>
                         <Grid.Row textAlign="left">
                             <Grid.Column>
-                                <Form className="area-form-home-search">
+                                <Form className="area-form-home-search" onSubmit={() => aiJsonAmqp()}>
                                     <Form.Group>
                                         <Form.Field width={16}>
                                             <label>Assunto:</label>
                                             <Dropdown
                                             placeholder="Escolha um assunto!"
+                                            disabled={isLoadingGenerateActivity}
                                             selection
                                             clearable
+                                            value={textSubject}
                                             options={OPTIONS_INPUT_THEME}
                                             onChange={(ev, data) => {
                                                 getPropsOfUser();
-                                                setTextSubject(ev.target.innerText.replaceAll(" ", "_").toLowerCase())
+                                                setTextSubject(data.value);
+                                                /* console.log(ev.target.innerText) */
                                             }}
                                             />
                                         </Form.Field>
@@ -104,16 +140,19 @@ const Home = () => {
                                                 <Form.Field>
                                                     <label>Dificuldade:</label>
                                                     <Dropdown 
+                                                    value={textDifficulty}
                                                     placeholder="Escolha um nível!"
                                                     selection
+                                                    clearable
                                                     options={filterDifficulty(
                                                         currentUserData.queries[textSubject] != undefined? 
                                                         currentUserData.queries[textSubject]["totalNote"]:0
                                                     )}
+                                                    onChange={(ev, data) => setTextDifficulty(data.value)}
                                                     />
                                                 </Form.Field>
                                             </Form.Group>
-                                            <Button color="blue" floated="right" content="🤖 Gerar atividade" />
+                                            <Button type="submit" disabled={textDifficulty == ""} color="blue" floated="right" content="🤖 Gerar atividade" />
                                         </>
                                     }
 

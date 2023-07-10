@@ -13,6 +13,7 @@ import Home from './screens/Home';
 import Menu from './components/Menu';
 import ForgetPassword from './screens/ForgetPassword';
 import LoadingScreen from './components/LoadingScreen';
+import { startWs } from './services/AiCorrigeApiWs';
 
 function App() {
 
@@ -22,8 +23,8 @@ function App() {
 
   const [isLoadingOnStart, setIsLoadingOnStart] = useState(true);
 
+  
   useEffect(() => {
-
     if(window.location.pathname != "/forget-password"){
       verifyCookie();
     }else{
@@ -56,6 +57,7 @@ function App() {
         dispatch(setRefreshToken(refreshToken));
         dispatch(setUserData(data));
         setTokenJwtAxios(accessToken);
+        startWs(data);
       };
 
       console.log(response);
