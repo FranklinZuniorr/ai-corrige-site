@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Button, Dropdown, Form, Grid, Header, Icon, Image, Input, Label, Loader, Message, Popup, Progress, Segment, Step } from "semantic-ui-react";
-import store from "../store";
+import store, { setResAiCurrent, setUserData } from "../store";
 import suportLogoUser from "../img/suporte-user.png";
 import { KEY_COOKIE_ACCESS, OPTIONS_DIFFICULTY, OPTIONS_INPUT_THEME } from "../utils/constants";
 import { filterDifficulty } from "../utils/FnUtils";
@@ -13,6 +13,7 @@ import AiLoading from "../components/AiLoading";
 const Home = () => {
 
     const resAiCurrent = useSelector(store => store.resAiCurrent);
+    const dispatch = useDispatch();
 
     // Global
     const [currentUserData, setCurrentUserData] = useState(null);
@@ -36,9 +37,11 @@ const Home = () => {
                 toast.error(resAiCurrent.msg);
                 return
             };
-    
+            
+            const data = resAiCurrent;
+            dispatch(setResAiCurrent(null));
+            getPropsOfUser();
             toast.success(resAiCurrent.msg);
-
         };
     }, [resAiCurrent]);
 
@@ -53,6 +56,7 @@ const Home = () => {
 
         const data = response.data.user;
 
+        dispatch(setUserData(data));
         setCurrentUserData(data);
     };
 
