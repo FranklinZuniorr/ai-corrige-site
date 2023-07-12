@@ -22,7 +22,7 @@ code {
 
 .App{
   width: 100%;
-  padding-top: 8rem;
+  padding-top: 6rem;
   padding-bottom: 1rem;
 }
 
@@ -358,6 +358,37 @@ code {
     margin-top: -9px;
   }
 
+}
+
+.area-action-buttons{
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.area-modal-activities-pending{
+  overflow-y: auto;
+  max-height: 15rem;
+  padding: 1rem;
+}
+
+.area-modal-activity-pending{
+  word-break: break-all;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  flex-wrap: wrap;
+  align-items: center;
+
+  div.info{
+    margin-top: 0.2rem;
+    margin-bottom: 0.2rem;
+  }
+}
+
+.display-quantidade{
+  text-align: right;
+  font-size: 12px;
+  margin-top: 0.2rem;
 }
 
 // ---> xyz

@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Checkbox, Container, Divider, Header, List, Segment } from "semantic-ui-react";
+import AiCorrigeApi from "../services/AiCorrigeApi";
+import { toast } from "react-hot-toast";
+import moment from "moment";
 
 const CreateActivity = ({
     date = "Undefined", 
@@ -11,7 +14,8 @@ const CreateActivity = ({
     question3 = null, 
     question4 = null, 
     question5 = null,
-    setCurrentActivity
+    setCurrentActivity,
+    getPropsOfUser
     }) => {
     
     const [selectedQ1, setSelectedQ1] = useState("");
@@ -19,11 +23,62 @@ const CreateActivity = ({
     const [selectedQ3, setSelectedQ3] = useState("");
     const [selectedQ4, setSelectedQ4] = useState("");
     const [selectedQ5, setSelectedQ5] = useState("");
+    const [valueOfQuestion, setValueOfQuestion] = useState(0);
+    const [isLoadingSendActivity, setIsLoadingSendActivity] = useState(false);
+
+    useEffect(() => {
+        console.log(date)
+        switch (difficulty) {
+            case "Fácil":
+                setValueOfQuestion(2);
+                break;
+            case "Difícil":
+                setValueOfQuestion(3);
+                break;
+            case "Fácil":
+                setValueOfQuestion(5);
+                break;
+            default:
+                break;
+        }
+    }, []);
+
+    const uploadQueries = async () => {
+
+        const data = {
+            questao1: selectedQ1,
+            questao2: selectedQ2,
+            questao3: selectedQ3,
+            questao4: selectedQ4,
+            questao5: selectedQ5
+        };
+
+        setIsLoadingSendActivity(true);
+
+        console.log(JSON.stringify(valueOfQuestion))
+
+        const response = await AiCorrigeApi.uploadQueries(data, date, JSON.stringify(valueOfQuestion), title);
+
+        setIsLoadingSendActivity(false);
+
+        if(!response.r){
+            typeof response.data.msg === Array? toast.error(response.data.msg.join("\n")):toast.error(response.data.msg);
+
+            return
+        };
+
+        setCurrentActivity(null);
+        getPropsOfUser();
+        toast.success(response.data.msg);
+    };
     
     return(
         <>
             <Segment textAlign="left">
-                <Header size="small" content={title} subheader={`${date} - ${difficulty}`} />
+                <Header size="small" 
+                content={title.charAt(0).toUpperCase().replaceAll("_", " ") + title.slice(1).replaceAll("_", " ")} 
+                subheader={`${moment(date).format("DD/MM/YYYY")} - ${difficulty} - cada questão vale ${valueOfQuestion}`} 
+                />
                 <Divider />
                 <Container>{summary}</Container>
                 <Divider />
@@ -81,7 +136,7 @@ const CreateActivity = ({
                 <Button onClick={() => {
                     setCurrentActivity(null);
                 }} color="blue" content="Responder Depois" />
-                <Button color="green" content="Enviar respostas" />
+                <Button onClick={uploadQueries} loading={isLoadingSendActivity} color="green" content="Enviar respostas" />
             </Segment>
         </>
     );

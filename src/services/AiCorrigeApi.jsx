@@ -1,7 +1,7 @@
 import axios from "axios";
 import { verifyReqTokenExpiration } from "../utils/FnUtils";
 import { toast } from "react-hot-toast";
-import { KEY_COOKIE_ACCESS, KEY_COOKIE_REFRESH, TEMPLATE_QUERY_AMQP } from "../utils/constants";
+import { KEY_COOKIE_ACCESS, KEY_COOKIE_REFRESH, TEMPLATE_QUERY_AMQP, TEMPLATE_UPLOAD_QUERY } from "../utils/constants";
 import Cookies from "js-cookie";
 
 const AxiosAiCorrige = axios.create({
@@ -185,6 +185,24 @@ class AiCorrigeApi{
 
         } catch (error) {
             return verifyReqTokenExpiration({title, msg, difficulty}, error, "BODY", "aiJsonAmqp");
+        }
+    };
+
+    static uploadQueries = async (data, date, note, theme) => {
+        try {
+
+            const dataFilter = TEMPLATE_UPLOAD_QUERY;
+            dataFilter.query.data = {...data};
+            dataFilter.query.createdAt = date;
+            dataFilter.note = note;
+            dataFilter.theme = theme;
+
+            const response = await AxiosAiCorrige.post('upload-queries', dataFilter);
+
+            return response.data;
+            
+        } catch (error) {
+            return verifyReqTokenExpiration({data, date, note, theme}, error, "BODY", "uploadQueries");
         }
     };
 };

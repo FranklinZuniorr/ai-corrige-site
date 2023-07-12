@@ -175,6 +175,12 @@ export const filterDifficulty = (value) => {
     ];
 };
 
+export const filterDifficultyColor = (value) => {
+    if(value < 100) return 1;
+    if(value >= 100 && value < 200) return 2;
+    if(value >= 200) return 3;
+};
+
 export const verifyName = (text) => {
     if(text.length >= 15 & text.length <= 20){
         return true

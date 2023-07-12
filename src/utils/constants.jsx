@@ -235,3 +235,13 @@ export const TEMPLATE_QUERY_AMQP = {
       }
     }
 };
+
+export const TEMPLATE_UPLOAD_QUERY = {
+    query: {
+      data: {
+      },
+      createdAt: ""
+    },
+    note: "",
+    theme: ""
+};
