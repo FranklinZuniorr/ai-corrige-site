@@ -181,6 +181,12 @@ export const filterDifficultyColor = (value) => {
     if(value >= 200) return 3;
 };
 
+export const filterDifficultyText = (text) => {
+    if(text === "Fácil") return 2;
+    if(text === "Médio") return 3;
+    if(text === "Difícil") return 5;
+};
+
 export const verifyName = (text) => {
     if(text.length >= 15 & text.length <= 20){
         return true

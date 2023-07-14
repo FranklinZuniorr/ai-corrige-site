@@ -15,6 +15,7 @@ const Menu = () => {
     const access = useSelector(store => store.userData);
     const cookies = Cookies.get();
     const [isOpenedAreaMenu, setIsOpenedAreaMenu] = useState(false);
+    const [sizeWidthScreen, setSizeWidthScreen] = useState(0);
 
     // Modal - confirm delete user
     const [isOpenModalConfirmDeleteUser, setIsOpenModalConfirmDeleteUser] = useState(false);
@@ -42,6 +43,8 @@ const Menu = () => {
     useEffect(() => {
         console.log(access)
 
+        getSizeScreen();
+
         const execute = async () => {
             const data = getParamsInQs()
 
@@ -60,6 +63,15 @@ const Menu = () => {
 
         execute();
     }, []);
+
+    const getSizeScreen = () => {
+        var width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+        var height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+      
+        setSizeWidthScreen(width);
+    };
+
+    window.addEventListener('resize', getSizeScreen);
 
     const logoutUser = async () => {
         const response = await AiCorrigeApi.logoutUser();
@@ -146,7 +158,7 @@ const Menu = () => {
 
     return(
         <>
-            <div className="top-menu">
+            <div id="top-menu" className={isOpenedAreaMenu? "is-open-menu":"not-is-open-menu"}>
                 <Header 
                 as="h3" 
                 floated="left" 
@@ -166,7 +178,9 @@ const Menu = () => {
                         />
                     } />
                     <Popup inverted content="Comprar tickets" trigger={
-                        <Button size="mini" color="green" floated="right" icon="dollar sign" content="COMPRAR +10 TICKETS" onClick={() => {
+                        <Button size="mini" color="green" floated="right" icon="dollar sign" content={
+                            sizeWidthScreen <= 450? null:"COMPRAR +10 TICKETS"
+                        } onClick={() => {
                             setIsOpenModalBuyTickets(true);
                         }} 
                         />

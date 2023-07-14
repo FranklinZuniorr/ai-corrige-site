@@ -168,13 +168,14 @@ class AiCorrigeApi{
         }
     };
 
-    static aiJsonAmqp = async (title, msg, difficulty) => {
+    static aiJsonAmqp = async (title, msg, difficulty, note) => {
         try {
 
             const data = {
                 ...TEMPLATE_QUERY_AMQP, 
                 title: title, 
-                msg: `Texto explicando sobre algum assunto aleatório de nível ${difficulty} referente a ${msg}`
+                msg: `Texto explicando sobre algum assunto aleatório de nível ${difficulty} referente a ${msg}`,
+                note: note
             };
 
             console.log(data)
@@ -184,7 +185,7 @@ class AiCorrigeApi{
             return response.data;
 
         } catch (error) {
-            return verifyReqTokenExpiration({title, msg, difficulty}, error, "BODY", "aiJsonAmqp");
+            return verifyReqTokenExpiration({title, msg, difficulty, note}, error, "BODY", "aiJsonAmqp");
         }
     };
 

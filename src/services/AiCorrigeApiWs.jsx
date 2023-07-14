@@ -33,7 +33,7 @@ export const startWs = (data) => {
     // Evento de fechamento da conexão
     socket.onclose = () => {
         console.log('Conexão fechada');
-        /* window.location.reload(); */
+        window.location.reload();
     };
     
     // Evento de erro na conexão

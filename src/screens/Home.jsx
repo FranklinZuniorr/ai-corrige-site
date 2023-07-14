@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Dropdown, Form, Grid, Header, Icon, Image, Input, Label, Loader, Message, Modal, Popup, Progress, Segment, Step } from "semantic-ui-react";
+import { Button, Divider, Dropdown, Form, Grid, Header, Icon, Image, Input, Label, Loader, Message, Modal, Popup, Progress, Segment, Step } from "semantic-ui-react";
 import store, { setResAiCurrent, setUserData } from "../store";
 import suportLogoUser from "../img/suporte-user.png";
 import { KEY_COOKIE_ACCESS, OPTIONS_DIFFICULTY, OPTIONS_INPUT_THEME } from "../utils/constants";
-import { filterDifficulty, filterDifficultyColor } from "../utils/FnUtils";
+import { filterDifficulty, filterDifficultyColor, filterDifficultyText } from "../utils/FnUtils";
 import AiCorrigeApi from "../services/AiCorrigeApi";
 import { toast } from "react-hot-toast";
 import Cookies from "js-cookie";
 import AiLoading from "../components/AiLoading";
 import CreateActivity from "../components/CreateActivity";
 import moment from "moment";
+import ViewActivityRes from "../components/ViewActivityRes";
+import logo from '../img/logo.svg';
 
 const Home = () => {
 
@@ -35,6 +37,12 @@ const Home = () => {
     const [dataModalActivitiesPending, setDataModalActivitiesPending] = useState(null);
     // Modal activities pending
 
+    // Modal activities queries
+    const [isOpenModalActivitiesQueries, setIsOpenModalActivitiesQueries] = useState(false);
+    const [dataModalActivitiesQueries, setDataModalActivitiesQueries] = useState(null);
+    const [viewMoreDetails, setViewMoreDetails] = useState(false);
+    // Modal activities queries
+
     useEffect(() => {
         getPropsOfUser();
     }, []);
@@ -51,7 +59,7 @@ const Home = () => {
             setCurrentActivity(resAiCurrent);
             dispatch(setResAiCurrent(null));
             getPropsOfUser();
-            toast.success(resAiCurrent.msg);
+            toast.success("Atividade gerada com sucesso!");
         };
     }, [resAiCurrent]);
 
@@ -69,6 +77,7 @@ const Home = () => {
         dispatch(setUserData(data));
         setCurrentUserData(data);
         setDataModalActivitiesPending(data.questions);
+        setDataModalActivitiesQueries(getAllActivitiesInQueries(data));
         setDifficultyColor(filterDifficultyColor(data.queries != undefined && data.queries[textSubject] != undefined? currentUserData.queries[textSubject]["totalNote"]:0));
     };
 
@@ -80,10 +89,11 @@ const Home = () => {
         const data = {
             title: OPTIONS_INPUT_THEME.find(input => input.value == textSubject).text.replaceAll(" ", "_").toLowerCase(),
             msg: textSubject,
-            difficulty: textDifficulty
+            difficulty: textDifficulty,
+            note: filterDifficultyText(textDifficulty)
         };
 
-        const response = await AiCorrigeApi.aiJsonAmqp(data.title, data.msg, data.difficulty);
+        const response = await AiCorrigeApi.aiJsonAmqp(data.title, data.msg, data.difficulty, data.note);
 
         if(!response.r){
             toast.error(typeof response.data.msg == Array? response.data.msg.join("\n"):response.data.msg);
@@ -108,6 +118,35 @@ const Home = () => {
         return data;
     };
 
+    const sumTotalActivitiesInQueries = () => {
+        let qtd = 0;
+        currentUserData.queries != undefined && Object.keys(currentUserData.queries).forEach(theme => qtd+= currentUserData.queries[theme]["arr"]["length"]);
+        return qtd
+    };
+
+    const getAllActivitiesInQueries = (data) => {
+        if(data.queries != undefined){
+            const dataAll = [];
+            Object.keys(data.queries).forEach(theme => dataAll.push(...data.queries[theme]["arr"]));
+
+            return dataAll;
+        }; 
+
+        return null
+    };
+
+    const filterActivitiesInQueriesByInput = (text) => {
+        const replaceText = text.replaceAll(" ", "_").toLowerCase();
+
+        if(text == "") return getAllActivitiesInQueries(currentUserData);
+
+        if(currentUserData.queries != undefined && currentUserData.queries[replaceText] != undefined){
+            return currentUserData.queries[replaceText]["arr"];
+        }
+
+        return []
+    };
+
     return(
         <>
             <div className="display-home">
@@ -117,12 +156,15 @@ const Home = () => {
                         <Button onClick={() => {
                             setIsOpenModalActivitiesPending(true)
                         }} color="orange" icon="clock outline" size="mini" content={`Atividades pendentes: ${currentUserData.questions.length}`} />
+                        <Button onClick={() => {
+                            setIsOpenModalActivitiesQueries(true)
+                        }} color="green" icon="edit" size="mini" content={`Atividades respondidas: ${sumTotalActivitiesInQueries()}`} />
                     </div>
                 }
                 <Segment>
                     <Header textAlign="left" content="Gerar atividade" />
                     <Grid>
-                        <Grid.Row textAlign="left">
+                        <Grid.Row verticalAlign="middle" textAlign="left">
                             <Grid.Column>
                                 <Form className="area-form-home-search" onSubmit={() => aiJsonAmqp()}>
                                     <Form.Group>
@@ -143,6 +185,19 @@ const Home = () => {
                                                 console.log(ev.target.innerText.replaceAll(" ", "_").toLowerCase())
                                             }}
                                             />
+                                        </Form.Field>
+                                    </Form.Group>
+                                    <Form.Group>
+                                        <Form.Field>
+                                            {
+                                                (textSubject != "" && currentUserData != null) &&
+                                                <Header 
+                                                size="small"
+                                                content={`Pontuação: ${currentUserData.queries != undefined && currentUserData.queries[textSubjectTitle] != undefined? 
+                                                currentUserData.queries[textSubjectTitle]["totalNote"]:0}`} 
+                                                subheader="Essa é sua pontuação atual referente ao assunto escolhido."
+                                                />
+                                            }
                                         </Form.Field>
                                     </Form.Group>
                                     {
@@ -185,10 +240,6 @@ const Home = () => {
                                                         }/>
                                                     </Label.Group>
                                                 </Form.Field>
-                                                <Form.Field>
-                                                    <Message size="mini" content={`Sua pontuação: ${currentUserData.queries != undefined && currentUserData.queries[textSubjectTitle] != undefined? 
-                                                    currentUserData.queries[textSubjectTitle]["totalNote"]:0}`} />
-                                                </Form.Field>
                                             </Form.Group>
                                             <Form.Group>
                                                 <Form.Field>
@@ -229,7 +280,7 @@ const Home = () => {
                     <CreateActivity 
                     date={currentActivity.createdAt} 
                     title={currentActivity.data.data.title} 
-                    difficulty={textDifficulty}
+                    note={currentActivity.note}
                     summary={currentActivity.data.data.answer.resumo}
                     question1={currentActivity.data.data.answer.questao1}
                     question2={currentActivity.data.data.answer.questao2}
@@ -269,11 +320,11 @@ const Home = () => {
                             <Grid.Column>
                                 {
                                     dataModalActivitiesPending != null && dataModalActivitiesPending.length > 0?
-                                    <div className="area-modal-activities-pending">
+                                    <div className="area-modal-activities">
                                         {   
                                             dataModalActivitiesPending != null && dataModalActivitiesPending.map(question => (
                                                 <Segment size="mini" key={question.createdAt}>
-                                                    <div className="area-modal-activity-pending">
+                                                    <div className="area-modal-activity">
                                                         <div className="info">
                                                             <Header 
                                                             content={question.data.data.title.charAt(0).toUpperCase().replaceAll("_", " ") + question.data.data.title.slice(1).replaceAll("_", " ")} 
@@ -284,9 +335,11 @@ const Home = () => {
                                                             <Button onClick={() => {
                                                                 setCurrentActivity(question);
                                                                 setIsOpenModalActivitiesPending(false);
-                                                            }} color="green" size="mini" content="Ver"/>
+                                                            }} color="orange" size="mini" content="Responder"/>
                                                         </div>
                                                     </div>
+                                                    <Divider />
+                                                    {`${question.data.data.answer.resumo.slice(0, Math.floor(question.data.data.answer.resumo.length*0.1))}...`}
                                                 </Segment>
                                             ))
                                         }
@@ -303,6 +356,84 @@ const Home = () => {
                 </Modal.Actions>
                 </Modal>
             {/* Modal - activities pending */}
+
+            {/* Modal - activities queries */}
+                <Modal
+                onClose={() => setIsOpenModalActivitiesQueries(false)}
+                onOpen={() => setIsOpenModalActivitiesQueries(true)}
+                open={isOpenModalActivitiesQueries}
+                >
+                <Modal.Header>Atividades respondidas</Modal.Header>
+                <Modal.Content>
+                    <Grid>
+                        <Grid.Row>
+                            <Grid.Column>
+                                <label>Assunto:</label>
+                                <Dropdown
+                                placeholder="Escolha um assunto!"
+                                selection
+                                fluid
+                                clearable
+                                options={OPTIONS_INPUT_THEME}
+                                onChange={(ev, data) => setDataModalActivitiesQueries(filterActivitiesInQueriesByInput(ev.target.innerText))}
+                                />
+                                <div  className="display-quantidade">Quantidade: {dataModalActivitiesQueries != null && dataModalActivitiesQueries.length}</div>
+                            </Grid.Column>
+                        </Grid.Row>
+                        <Grid.Row>
+                            <Grid.Column>
+                                {
+                                    dataModalActivitiesQueries != null && dataModalActivitiesQueries.length > 0?
+                                    <div className="area-modal-activities">
+                                        {   
+                                            dataModalActivitiesQueries != null && dataModalActivitiesQueries.map((query, index) => (
+                                                <Segment size="mini" key={query.createdAt}>
+                                                    <div className="area-modal-activity">
+                                                        <div className="info">
+                                                            <Header 
+                                                            content={query.theme.charAt(0).toUpperCase().replaceAll("_", " ") + query.theme.slice(1).replaceAll("_", " ")} 
+                                                            subheader={moment(query.createdAt).format("DD/MM/YYYY - HH:MM")} 
+                                                            />
+                                                        </div>
+                                                        <div className="btn">
+                                                            {
+                                                                (viewMoreDetails !== false && viewMoreDetails === index)?
+                                                                <Button onClick={() => setViewMoreDetails(false)} size="mini" color="red" content="Deixar de exibir" />:
+                                                                <Button onClick={() => setViewMoreDetails(index)} color="green" size="mini" content="Analisar"/>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                    <Divider />
+                                                    {
+                                                        viewMoreDetails !== false && viewMoreDetails === index?
+                                                        <ViewActivityRes
+                                                        note={query.note}
+                                                        question1={query.query.questao1}
+                                                        question2={query.query.questao2}
+                                                        question3={query.query.questao3}
+                                                        question4={query.query.questao4}
+                                                        question5={query.query.questao5}
+                                                        summary={query.query.resumo}
+                                                        noteObtained={query.totalNote}
+                                                        setViewMoreDetails={setViewMoreDetails}
+                                                        />:`${query.query.resumo.slice(0, Math.floor(query.query.resumo.length*0.1))}...`
+                                                    }
+                                                </Segment>
+                                            ))
+                                        }
+                                    </div>:<Message content="Nenhuma atividade nessa área!" />
+                                }
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                </Modal.Content>
+                <Modal.Actions>
+                    <Button size="mini" color='red' onClick={() => setIsOpenModalActivitiesQueries(false)}>
+                        Fechar
+                    </Button>
+                </Modal.Actions>
+                </Modal>
+            {/* Modal - activities queries */}
         </>
     );
 };
