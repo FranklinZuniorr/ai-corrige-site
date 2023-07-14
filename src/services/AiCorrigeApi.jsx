@@ -206,6 +206,38 @@ class AiCorrigeApi{
             return verifyReqTokenExpiration({data, date, note, theme}, error, "BODY", "uploadQueries");
         }
     };
+
+    static getTop10 = async (text) => {
+        try {
+
+            const data = {
+                prop: text
+            };
+
+            const response = await AxiosAiCorrige.post('get-top-10', data);
+
+            return response.data;
+            
+        } catch (error) {
+            return verifyReqTokenExpiration({text}, error, "BODY", "getTop10");
+        }
+    };
+
+    static setExternalUrl = async (link) => {
+        try {
+            
+            const data = {
+                externalUrl: link
+            };
+
+            const response = await AxiosAiCorrige.post('set-external-url', data);
+
+            return response.data;
+            
+        } catch (error) {
+            return verifyReqTokenExpiration({link}, error, "BODY", "setExternalUrl");
+        }
+    };
 };
 
 export default AiCorrigeApi;

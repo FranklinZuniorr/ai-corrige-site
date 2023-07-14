@@ -14,6 +14,7 @@ import Menu from './components/Menu';
 import ForgetPassword from './screens/ForgetPassword';
 import LoadingScreen from './components/LoadingScreen';
 import { startWs } from './services/AiCorrigeApiWs';
+import Ranking from './screens/Ranking';
 
 function App() {
 
@@ -84,6 +85,7 @@ function App() {
                     <div className="App">
                       <Routes>
                           <Route path="/" element={<Home />} />
+                          <Route path="/ranking" element={<Ranking />} />
                       </Routes>
                     </div>
                   </BrowserRouter>

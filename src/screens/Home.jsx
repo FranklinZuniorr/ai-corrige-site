@@ -13,16 +13,20 @@ import CreateActivity from "../components/CreateActivity";
 import moment from "moment";
 import ViewActivityRes from "../components/ViewActivityRes";
 import logo from '../img/logo.svg';
+import { useNavigate } from "react-router-dom";
+import { Skeleton } from "@mui/material";
 
 const Home = () => {
 
     const resAiCurrent = useSelector(store => store.resAiCurrent);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     // Global
     const [currentUserData, setCurrentUserData] = useState(null);
     const [currentActivity, setCurrentActivity] = useState(null);
     const [difficultyColor, setDifficultyColor] = useState(0);
+    const [isLoadingOnStart, setIsLoadingOnStart] = useState(true);
     // Global
 
     // Search area
@@ -35,12 +39,14 @@ const Home = () => {
     // Modal activities pending
     const [isOpenModalActivitiesPending, setIsOpenModalActivitiesPending] = useState(false);
     const [dataModalActivitiesPending, setDataModalActivitiesPending] = useState(null);
+    const [textSelectedInputActvPending, setTextSelectedInputActvPending] = useState("");
     // Modal activities pending
 
     // Modal activities queries
     const [isOpenModalActivitiesQueries, setIsOpenModalActivitiesQueries] = useState(false);
     const [dataModalActivitiesQueries, setDataModalActivitiesQueries] = useState(null);
     const [viewMoreDetails, setViewMoreDetails] = useState(false);
+    const [textSelectedInputActvQueries, setTextSelectedInputActvQueries] = useState("");
     // Modal activities queries
 
     useEffect(() => {
@@ -66,6 +72,7 @@ const Home = () => {
     const getPropsOfUser = async () => {
         const accessToken = Cookies.get(KEY_COOKIE_ACCESS);
         const response = await AiCorrigeApi.verifyAccessToken(accessToken);
+        setIsLoadingOnStart(false);
 
         if(!response.r){
             toast.error(response.data.msg);
@@ -150,7 +157,12 @@ const Home = () => {
     return(
         <>
             <div className="display-home">
-                {
+                {   
+                    isLoadingOnStart? 
+                    <>
+                    <Skeleton animation="wave" />
+                    <Skeleton animation="wave" />
+                    </>:
                     currentUserData != null &&
                     <div className="area-action-buttons">
                         <Button onClick={() => {
@@ -159,6 +171,9 @@ const Home = () => {
                         <Button onClick={() => {
                             setIsOpenModalActivitiesQueries(true)
                         }} color="green" icon="edit" size="mini" content={`Atividades respondidas: ${sumTotalActivitiesInQueries()}`} />
+                        <Button onClick={() => {
+                            navigate("ranking")
+                        }} size="mini" icon="globe" color="blue" content="Ranking" />
                     </div>
                 }
                 <Segment>
@@ -193,9 +208,9 @@ const Home = () => {
                                                 (textSubject != "" && currentUserData != null) &&
                                                 <Header 
                                                 size="small"
-                                                content={`Pontuação: ${currentUserData.queries != undefined && currentUserData.queries[textSubjectTitle] != undefined? 
+                                                content={`Sua nota: ${currentUserData.queries != undefined && currentUserData.queries[textSubjectTitle] != undefined? 
                                                 currentUserData.queries[textSubjectTitle]["totalNote"]:0}`} 
-                                                subheader="Essa é sua pontuação atual referente ao assunto escolhido."
+                                                subheader="Essa é a sua nota atual referente ao assunto escolhido."
                                                 />
                                             }
                                         </Form.Field>
@@ -309,9 +324,13 @@ const Home = () => {
                                 placeholder="Escolha um assunto!"
                                 selection
                                 fluid
+                                value={textSelectedInputActvPending}
                                 clearable
                                 options={OPTIONS_INPUT_THEME}
-                                onChange={(ev, data) => setDataModalActivitiesPending(filterActivitiesPendingByInput(ev.target.innerText))}
+                                onChange={(ev, data) => {
+                                    setDataModalActivitiesPending(filterActivitiesPendingByInput(ev.target.innerText));
+                                    setTextSelectedInputActvPending(data.value);
+                                }}
                                 />
                                 <div  className="display-quantidade">Quantidade: {dataModalActivitiesPending != null && dataModalActivitiesPending.length}</div>
                             </Grid.Column>
@@ -373,9 +392,13 @@ const Home = () => {
                                 placeholder="Escolha um assunto!"
                                 selection
                                 fluid
+                                value={textSelectedInputActvQueries}
                                 clearable
                                 options={OPTIONS_INPUT_THEME}
-                                onChange={(ev, data) => setDataModalActivitiesQueries(filterActivitiesInQueriesByInput(ev.target.innerText))}
+                                onChange={(ev, data) => {
+                                    setDataModalActivitiesQueries(filterActivitiesInQueriesByInput(ev.target.innerText));
+                                    setTextSelectedInputActvQueries(data.value);
+                                }}
                                 />
                                 <div  className="display-quantidade">Quantidade: {dataModalActivitiesQueries != null && dataModalActivitiesQueries.length}</div>
                             </Grid.Column>

@@ -134,10 +134,10 @@ const CreateActivity = ({
                     </List>
                 }
                 <Divider />
-                <Button onClick={() => {
+                <Button className="margin-top-mini" onClick={() => {
                     setCurrentActivity(null);
                 }} color="blue" content="Responder Depois" />
-                <Button onClick={uploadQueries} loading={isLoadingSendActivity} color="green" content="Enviar respostas" />
+                <Button className="margin-top-mini" onClick={uploadQueries} loading={isLoadingSendActivity} color="green" content="Enviar respostas" />
             </Segment>
         </>
     );

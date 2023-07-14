@@ -171,12 +171,10 @@ const Menu = () => {
                 subheader={`Tickets: ${access.coins}`} 
                 />
                 <div className="area-action-btns">
-                    <Popup inverted content="Opções" trigger={
-                        <Button size="mini" color="black" floated="right" icon={isOpenedAreaMenu? "x":"bars"}  onClick={() => {
-                            setIsOpenedAreaMenu(!isOpenedAreaMenu);
-                        }} 
-                        />
-                    } />
+                    <Button size="mini" color="black" floated="right" icon={isOpenedAreaMenu? "x":"bars"}  onClick={() => {
+                        setIsOpenedAreaMenu(!isOpenedAreaMenu);
+                    }} 
+                    />
                     <Popup inverted content="Comprar tickets" trigger={
                         <Button size="mini" color="green" floated="right" icon="dollar sign" content={
                             sizeWidthScreen <= 450? null:"COMPRAR +10 TICKETS"
@@ -258,6 +256,8 @@ const Menu = () => {
                                             <Form.Field>
                                                 <label>Arquivo:</label>
                                                 <Input
+                                                style={{fontSize: "10px"}}
+                                                size="mini"
                                                 type="file"
                                                 disabled={textDropboxCode == ""}
                                                 onChange={(ev, data) => {
@@ -276,6 +276,7 @@ const Menu = () => {
                                             </Form.Field>
                                         </Form.Group>
                                         <Button 
+                                        size="mini"
                                         loading={isLoadingBtnEditImage}
                                         disabled={isLoadingBtnEditImage}
                                         type="submit" 
@@ -387,6 +388,7 @@ const Menu = () => {
                                     floated="right" 
                                     content="Salvar alterações" 
                                     color="green" 
+                                    size="mini"
                                     />
                                 </Form>
                             </Grid.Column>
