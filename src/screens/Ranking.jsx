@@ -1,18 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Breadcrumb, Button, Container, Divider, Dropdown, Form, Header, Input, Message, Segment, Table } from "semantic-ui-react";
-import { OPTIONS_INPUT_THEME } from "../utils/constants";
+import { Breadcrumb, Button, Container, Divider, Dropdown, Form, Header, Icon, Input, Item, Label, Loader, Message, Segment, Table } from "semantic-ui-react";
+import { KEY_COOKIE_ACCESS, OPTIONS_INPUT_THEME } from "../utils/constants";
 import AiCorrigeApi from "../services/AiCorrigeApi";
 import { toast } from "react-hot-toast";
 import suportImage from "../img/suporte-user.png"
 import { Skeleton } from "@mui/material";
-import { useSelector } from "react-redux";
-import store from "../store";
+import { useDispatch, useSelector } from "react-redux";
+import store, { setUserData } from "../store";
 import { pastValue } from "../utils/FnUtils";
+import Cookies from "js-cookie";
 
 const Ranking = () => {
     const navigate = useNavigate();
     const access = useSelector(store => store.userData);
+    const dispatch = useDispatch();
 
     // Table
     const [dataTable, setDataTable] = useState(null);
@@ -21,6 +23,7 @@ const Ranking = () => {
 
     // Global
     const [isLoadingOnStart, setIsLoadingOnStart] = useState(true);
+    const [currentUserData, setCurrentUserData] = useState(null);
     // Global
 
     // Input
@@ -31,6 +34,10 @@ const Ranking = () => {
     const [isLoadingBtnNewUrl, setIsLoadingBtnNewUrl] = useState(false);
     const [textInputNewUrl, setTextInputNewUrl] = useState("");
     // Area new externalUrl
+
+    useEffect(() => {
+        getPropsOfUser();
+    }, []);
 
     const getTop10 = async (text) => {
         setIsLoadingTable(true);
@@ -62,7 +69,24 @@ const Ranking = () => {
 
         toast.success(response.data.msg);
         setTextInputNewUrl("");
+        getPropsOfUser();
 
+    };
+
+    const getPropsOfUser = async () => {
+        const accessToken = Cookies.get(KEY_COOKIE_ACCESS);
+        const response = await AiCorrigeApi.verifyAccessToken(accessToken);
+        setIsLoadingOnStart(false);
+
+        if(!response.r){
+            toast.error(response.data.msg);
+            return
+        };
+
+        const data = response.data.user;
+
+        dispatch(setUserData(data));
+        setCurrentUserData(data);
     };
 
     return(
@@ -94,11 +118,25 @@ const Ranking = () => {
                 </Segment>
 
                 <Segment textAlign="left">
-                    <Header 
-                    size="tiny" 
-                    content="Seja descoberto" 
-                    subheader="Ao ficar no top 10 é possível mostrar um link de alguma rede social sua ou algo sobre você aos outros usuários." 
-                    />
+                    <Item className="margin-bottom-mini">
+                        <Item.Content>
+                            <Item.Header><Header content="Seja descoberto" /></Item.Header>
+                            <Item.Meta>Ao ficar no top 10 é possível mostrar um link de alguma rede social sua ou algo sobre você aos outros usuários.</Item.Meta>
+                            <Item.Description>
+                                <Label size="mini">
+                                    {
+                                        isLoadingOnStart? <Loader size="mini" active inline="centered" />:
+                                        <>
+                                            <Icon loading={isLoadingBtnNewUrl} name='linkify' />
+                                            {(currentUserData != null && currentUserData.externalUrl != undefined)? 
+                                            `${currentUserData.externalUrl.slice(0, Math.floor(currentUserData.externalUrl.length*0.2))}.....
+                                            ${currentUserData.externalUrl.slice(-Math.floor(currentUserData.externalUrl.length*0.2))}`:"Nenhum link adicionado."}
+                                        </>
+                                    }
+                                </Label>
+                            </Item.Description>
+                        </Item.Content>
+                    </Item>
                     <Input
                     size="mini"
                     value={textInputNewUrl}
@@ -106,10 +144,10 @@ const Ranking = () => {
                     action={
                         <>
                         <Button onClick={async () => setTextInputNewUrl(await pastValue())} size="mini" icon="paste" />
-                        <Button onClick={setExternalUrl} size="mini" icon="paper plane" color="green" />
+                        <Button loading={isLoadingBtnNewUrl} onClick={setExternalUrl} size="mini" icon="paper plane" color="green" />
                         </>
                     }
-                    placeholder="Insira seu link aqui..."
+                    placeholder="Insira o seu link aqui..."
                     />
                 </Segment>
 
@@ -155,9 +193,9 @@ const Ranking = () => {
                                                 <Table.Cell><Header size="small" content={user.username} subheader={user.email} image={user.img || suportImage}/></Table.Cell>
                                                 <Table.Cell>
                                                     {
-                                                        user.externalLink == ""?
-                                                        <Message content="Não quer ser descoberto." />:
-                                                        <Button onClick={() => window.open(user.externalLink)} content="Descobrir" color="green" size="mini" />
+                                                        user.externalUrl === ""?
+                                                        <Message size="mini" content="Não quer ser descoberto." />:
+                                                        <Button onClick={() => window.open(user.externalUrl)} content="Descobrir" color="green" size="mini" />
                                                     }
                                                 </Table.Cell>
                                                 <Table.Cell>{user.queries[Object.keys(user.queries)[0]]["totalNote"]}</Table.Cell>

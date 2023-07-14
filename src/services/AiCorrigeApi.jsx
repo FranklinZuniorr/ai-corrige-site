@@ -3,12 +3,33 @@ import { verifyReqTokenExpiration } from "../utils/FnUtils";
 import { toast } from "react-hot-toast";
 import { KEY_COOKIE_ACCESS, KEY_COOKIE_REFRESH, TEMPLATE_QUERY_AMQP, TEMPLATE_UPLOAD_QUERY } from "../utils/constants";
 import Cookies from "js-cookie";
+import { isArray } from "lodash";
 
 const AxiosAiCorrige = axios.create({
 
     baseURL: "https://ai-corrige.herokuapp.com",
 
 });
+
+const onResponse = (response) => {
+    const filter = response.data;
+    if(isArray(filter.data.msg)){
+        filter.msg = filter.msg.join("\n");
+    };
+    return response;
+  };
+  
+  const onError = (error) => {
+    if (error.response) {
+        if(isArray(error.response.data.data.msg)){
+            const filter = error.response.data;
+            filter.data.msg = filter.data.msg.join("\n");
+        };
+    };
+    return Promise.reject(error);
+  };
+  
+  AxiosAiCorrige.interceptors.response.use(onResponse, onError);
 
 export const setTokenJwtAxios = (token) => {
     AxiosAiCorrige.defaults.headers.common['accessToken'] = token;
