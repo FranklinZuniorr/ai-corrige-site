@@ -60,6 +60,10 @@ export const TEMPLATE_QUERY_AMQP = {
               alternativa_correta: {
                 type: "string",
                 description: "Alternativa correta entre A e D."
+              },
+              motivo_alternativa: {
+                type: "string",
+                description: "Resumo sobre o motivo da alternativa correta."
               }
             },
             required: [
@@ -68,7 +72,8 @@ export const TEMPLATE_QUERY_AMQP = {
               "B",
               "C",
               "D",
-              "alternativa_correta"
+              "alternativa_correta",
+              "motivo_alternativa"
             ]
           },
           questao2: {
@@ -98,6 +103,10 @@ export const TEMPLATE_QUERY_AMQP = {
               alternativa_correta: {
                 type: "string",
                 description: "Alternativa correta entre A e D."
+              },
+              motivo_alternativa: {
+                type: "string",
+                description: "Resumo sobre o motivo da alternativa correta."
               }
             },
             required: [
@@ -106,7 +115,8 @@ export const TEMPLATE_QUERY_AMQP = {
               "B",
               "C",
               "D",
-              "alternativa_correta"
+              "alternativa_correta",
+              "motivo_alternativa"
             ]
           },
           questao3: {
@@ -136,6 +146,10 @@ export const TEMPLATE_QUERY_AMQP = {
               alternativa_correta: {
                 type: "string",
                 description: "Alternativa correta entre A e D."
+              },
+              motivo_alternativa: {
+                type: "string",
+                description: "Resumo sobre o motivo da alternativa correta."
               }
             },
             required: [
@@ -144,7 +158,8 @@ export const TEMPLATE_QUERY_AMQP = {
               "B",
               "C",
               "D",
-              "alternativa_correta"
+              "alternativa_correta",
+              "motivo_alternativa"
             ]
           },
           questao4: {
@@ -174,6 +189,10 @@ export const TEMPLATE_QUERY_AMQP = {
               alternativa_correta: {
                 type: "string",
                 description: "Alternativa correta entre A e D."
+              },
+              motivo_alternativa: {
+                type: "string",
+                description: "Resumo sobre o motivo da alternativa correta."
               }
             },
             required: [
@@ -182,7 +201,8 @@ export const TEMPLATE_QUERY_AMQP = {
               "B",
               "C",
               "D",
-              "alternativa_correta"
+              "alternativa_correta",
+              "motivo_alternativa"
             ]
           },
           questao5: {
@@ -212,6 +232,10 @@ export const TEMPLATE_QUERY_AMQP = {
               alternativa_correta: {
                 type: "string",
                 description: "Alternativa correta entre A e D."
+              },
+              motivo_alternativa: {
+                type: "string",
+                description: "Resumo sobre o motivo da alternativa correta."
               }
             },
             required: [
@@ -220,7 +244,8 @@ export const TEMPLATE_QUERY_AMQP = {
               "B",
               "C",
               "D",
-              "alternativa_correta"
+              "alternativa_correta",
+              "motivo_alternativa"
             ]
           }
         },

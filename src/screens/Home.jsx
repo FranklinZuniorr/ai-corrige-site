@@ -4,7 +4,7 @@ import { Button, Divider, Dropdown, Form, Grid, Header, Icon, Image, Input, Labe
 import store, { setResAiCurrent, setUserData } from "../store";
 import suportLogoUser from "../img/suporte-user.png";
 import { KEY_COOKIE_ACCESS, OPTIONS_DIFFICULTY, OPTIONS_INPUT_THEME } from "../utils/constants";
-import { filterDifficulty, filterDifficultyColor, filterDifficultyText } from "../utils/FnUtils";
+import { filterDifficulty, filterDifficultyColor, filterDifficultyText, obterPorcentagem } from "../utils/FnUtils";
 import AiCorrigeApi from "../services/AiCorrigeApi";
 import { toast } from "react-hot-toast";
 import Cookies from "js-cookie";
@@ -12,7 +12,6 @@ import AiLoading from "../components/AiLoading";
 import CreateActivity from "../components/CreateActivity";
 import moment from "moment";
 import ViewActivityRes from "../components/ViewActivityRes";
-import logo from '../img/logo.svg';
 import { useNavigate } from "react-router-dom";
 import { Skeleton } from "@mui/material";
 
@@ -206,12 +205,14 @@ const Home = () => {
                                         <Form.Field>
                                             {
                                                 (textSubject != "" && currentUserData != null) &&
-                                                <Header 
-                                                size="small"
-                                                content={`Sua nota: ${currentUserData.queries != undefined && currentUserData.queries[textSubjectTitle] != undefined? 
-                                                currentUserData.queries[textSubjectTitle]["totalNote"]:0}`} 
-                                                subheader="Essa é a sua nota atual referente ao assunto escolhido."
-                                                />
+                                                <>
+                                                    <Header 
+                                                    size="small"
+                                                    content={`Sua nota: ${currentUserData.queries != undefined && currentUserData.queries[textSubjectTitle] != undefined? 
+                                                    currentUserData.queries[textSubjectTitle]["totalNote"]:0}`} 
+                                                    subheader="Essa é a sua nota atual referente ao assunto escolhido."
+                                                    />
+                                                </>
                                             }
                                         </Form.Field>
                                     </Form.Group>
@@ -254,6 +255,22 @@ const Home = () => {
                                                             difficultyColor == 3? "green":null
                                                         }/>
                                                     </Label.Group>
+                                                    <Progress 
+                                                    content={
+                                                        `${currentUserData.queries != undefined && currentUserData.queries[textSubjectTitle] != undefined? 
+                                                        currentUserData.queries[textSubjectTitle]["totalNote"]:0}/200 - ${obterPorcentagem(
+                                                            currentUserData.queries != undefined && currentUserData.queries[textSubjectTitle] != undefined? 
+                                                            currentUserData.queries[textSubjectTitle]["totalNote"]:0, 200
+                                                        )}`
+                                                    } 
+                                                    size="tiny" 
+                                                    value={
+                                                        currentUserData.queries != undefined && currentUserData.queries[textSubjectTitle] != undefined? 
+                                                        currentUserData.queries[textSubjectTitle]["totalNote"]:0
+                                                    } 
+                                                    total={200} 
+                                                    indicating 
+                                                    />
                                                 </Form.Field>
                                             </Form.Group>
                                             <Form.Group>
@@ -354,6 +371,7 @@ const Home = () => {
                                                             <Button onClick={() => {
                                                                 setCurrentActivity(question);
                                                                 setIsOpenModalActivitiesPending(false);
+                                                                setTextSubject("");
                                                             }} color="orange" size="mini" content="Responder"/>
                                                         </div>
                                                     </div>

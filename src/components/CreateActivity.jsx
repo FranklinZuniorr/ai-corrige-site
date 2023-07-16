@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Button, Checkbox, Container, Divider, Header, List, Segment } from "semantic-ui-react";
+import { Button, Checkbox, Container, Divider, Header, List, Modal, Segment } from "semantic-ui-react";
 import AiCorrigeApi from "../services/AiCorrigeApi";
 import { toast } from "react-hot-toast";
 import moment from "moment";
+import ViewActivityRes from "./ViewActivityRes";
 
 const CreateActivity = ({
     date = "Undefined", 
@@ -26,6 +27,7 @@ const CreateActivity = ({
     const [valueOfQuestion, setValueOfQuestion] = useState(0);
     const [textValueOfQuestion, setTextValueOfQuestion] = useState("");
     const [isLoadingSendActivity, setIsLoadingSendActivity] = useState(false);
+    const [dataQuery, setDataQuery] = useState(null);
 
     useEffect(() => {
         setValueOfQuestion(note);
@@ -68,7 +70,12 @@ const CreateActivity = ({
             return
         };
 
-        setCurrentActivity(null);
+        console.log(response);
+
+        const dataQuery = response.data;
+
+        setDataQuery(dataQuery.query);
+
         getPropsOfUser();
         toast.success(response.data.msg);
     };
@@ -139,6 +146,40 @@ const CreateActivity = ({
                 }} color="blue" content="Responder Depois" />
                 <Button className="margin-top-mini" onClick={uploadQueries} loading={isLoadingSendActivity} color="green" content="Enviar respostas" />
             </Segment>
+
+            <Modal
+            onClose={() => {
+                setDataQuery(null);
+                setCurrentActivity(null);
+            }}
+            open={dataQuery != null}
+            >
+            <Header content="Resultado:" />
+            <Modal.Content>
+                {
+                    dataQuery != null &&
+                    <ViewActivityRes
+                    note={dataQuery.note}
+                    question1={dataQuery.query.questao1}
+                    question2={dataQuery.query.questao2}
+                    question3={dataQuery.query.questao3}
+                    question4={dataQuery.query.questao4}
+                    question5={dataQuery.query.questao5}
+                    summary={dataQuery.query.resumo}
+                    noteObtained={dataQuery.totalNote}
+    
+                    />
+                }
+            </Modal.Content>
+            <Modal.Actions>
+                <Button color='red' onClick={() => {
+                    setDataQuery(null);
+                    setCurrentActivity(null);
+                }}>
+                    Fechar
+                </Button>
+            </Modal.Actions>
+            </Modal>
         </>
     );
 };

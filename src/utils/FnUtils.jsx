@@ -101,10 +101,12 @@ export const convertMoney = (value, isMoney, isNegative) => {
 export const obterPorcentagem = (realizado, total) => {
 
     if(total != undefined || total != null && realizado != undefined || realizado != null){
-        if(total > realizado || realizado >= total && realizado != 0 && total != 0){
+        if(realizado <= total){
             const data = realizado/total;
             return `${parseInt(realizado/total*100)}%`;
-        };
+        }else{
+            return "100%"
+        }
     };
 
     return "0%";

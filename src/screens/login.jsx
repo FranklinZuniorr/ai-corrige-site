@@ -6,7 +6,8 @@ import { gerarObjetoCondicional, verifyName, verifyPassword } from "../utils/FnU
 import { toast } from "react-hot-toast";
 import Cookies from "js-cookie";
 import { KEY_COOKIE_ACCESS, KEY_COOKIE_REFRESH } from "../utils/constants";
-import logo from '../img/logo.svg';
+import logo from '../img/logo.png';
+import blackLogo from '../img/blackLogo.png';
 import ai from '../img/ai.png';
 import PrivacyPolicy from "../components/PrivacyPolicy";
 import moment from "moment";
@@ -403,7 +404,7 @@ const Login = () => {
                 <Grid celled stackable>
                     <Grid.Row columns={3} verticalAlign="middle" textAlign="left">
                         <Grid.Column>
-                            <Header size="tiny" image={ai} content="Ai corrige" subheader="Desenvolvido por Franklin Vieira Barbosa." />
+                            <Header size="tiny" image={blackLogo} content="Ai corrige" subheader="Desenvolvido por Franklin Vieira Barbosa." />
                         </Grid.Column>
                         <Grid.Column>
                             <Header size="tiny" icon="mail" content="E-mail para contato:" subheader={
