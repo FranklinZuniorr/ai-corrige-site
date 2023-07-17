@@ -164,7 +164,7 @@ code {
 
 #top-menu{
   background-image: linear-gradient(to top, #bae7ff, #c9ecff, #d8f2fe, #e6f7ff, #f5fcff);
-  border-bottom: 1px solid #9898ff;
+  border-bottom: 1px solid #00b5ff;
   border-bottom-left-radius: 2rem;
   border-bottom-right-radius: 2rem;
   -webkit-backdrop-filter: blur(5px);
@@ -281,6 +281,13 @@ code {
   padding: 7rem 2rem 2rem 2rem;
 }
 
+.display-statistics{
+  background-image: linear-gradient(to bottom, #f8f8f8, #f6f7fa, #f4f5fb, #f0f5fd, #ecf4ff);
+  width: 100%;
+  min-height: 100vh;
+  padding: 7rem 2rem 2rem 2rem;
+}
+
 .btn-home-search-ai{
   margin-top: 1.8rem !important;
 }
@@ -294,9 +301,10 @@ code {
 
   @media only screen and (max-width: 360px) {
       display: flex;
-      flex-wrap: wrap;
       align-items: flex-start;
       justify-content: flex-start;
+      flex-wrap: wrap;
+      flex-direction: column;
 
       button {
           margin-top: 1rem !important;

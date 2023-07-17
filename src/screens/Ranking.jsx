@@ -164,7 +164,7 @@ const Ranking = () => {
                             <Container textAlign="left" fluid>
                                 <Header 
                                 textAlign="left"
-                                content={`Sua nota: ${access.queries[textSelectedInputActv] !== undefined? access.queries[textSelectedInputActv]["totalNote"]:0 }`} 
+                                content={`Sua nota: ${access.queries !== undefined && access.queries[textSelectedInputActv] !== undefined? access.queries[textSelectedInputActv]["totalNote"]:0 }`} 
                                 subheader="Essa é a sua nota atual referente ao assunto escolhido."
                                 />
                                 {

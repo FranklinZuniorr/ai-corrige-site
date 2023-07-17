@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Grid, GridColumn, Header, Icon, Item, Message } from "semantic-ui-react";
+import { Button, Grid, GridColumn, Header, Icon, Item, List, Message } from "semantic-ui-react";
 import AiCorrigeApi from "../../services/AiCorrigeApi";
 import { toast } from "react-hot-toast";
 
@@ -29,14 +29,16 @@ const Stripe = () => {
                     <Header size="large" icon="ticket" content="+10 Tickets" subheader="R$ 5.00" />
                 </div>
                 <div>
-                    <Button loading={isLoadingBtnBuy} color="green" onClick={() => stripeCheckout()}>
+                    <Button className="margin-top-mini" loading={isLoadingBtnBuy} color="green" onClick={() => stripeCheckout()}>
                     Comprar R$ 5.00
                     </Button>
                 </div>
             </div>
 
-            <Message color="green" content="Os tickets dão acesso à geração de atividades pela inteligência artificial." />
-            <Message color="blue" content="Um ticket dá direito a uma atividade, com R$ 5.00 você adquire 10 tickets = 10 atividades." />
+            <List bulleted>
+                <List.Item>Os tickets dão acesso à geração de atividades pela inteligência artificial.</List.Item>
+                <List.Item>Um ticket dá direito a uma atividade, com R$ 5.00 você adquire 10 tickets = 10 atividades.</List.Item>
+            </List>
         </>
     );
 };

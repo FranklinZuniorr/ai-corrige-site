@@ -210,6 +210,27 @@ class AiCorrigeApi{
         }
     };
 
+    static aiJsonAmqpCustom = async (title, msg) => {
+        try {
+
+            const data = {
+                ...TEMPLATE_QUERY_AMQP, 
+                title: title, 
+                msg: `Texto explicando sobre algum assunto aleatório referente a ${msg}`,
+                note: 0
+            };
+
+            console.log(data)
+            
+            const response = await AxiosAiCorrige.post(`ai/json-amqp`, data);
+
+            return response.data;
+
+        } catch (error) {
+            return verifyReqTokenExpiration({title, msg}, error, "BODY", "aiJsonAmqpCustom");
+        }
+    };
+
     static uploadQueries = async (data, date, note, theme) => {
         try {
 

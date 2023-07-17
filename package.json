@@ -20,6 +20,8 @@
     "react-redux": "^8.0.6",
     "react-router-dom": "^6.11.1",
     "react-scripts": "5.0.1",
+    "rechart": "^0.0.1",
+    "recharts": "^2.7.2",
     "redux": "^4.2.1",
     "sass": "^1.62.1",
     "semantic-ui-css": "^2.5.0",
@@ -29,7 +31,7 @@
   },
   "scripts": {
     "start": "node server.jsx",
-    "dev": "set PORT=3000 && react-scripts start",
+    "dev": "set PORT=3002 && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --transformIgnorePatterns 'node_modules/(?!my-library-dir)/'",
     "push": "",

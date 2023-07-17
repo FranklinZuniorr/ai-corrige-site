@@ -177,14 +177,12 @@ const Menu = () => {
                         setIsOpenedAreaMenu(!isOpenedAreaMenu);
                     }} 
                     />
-                    <Popup inverted content="Comprar tickets" trigger={
-                        <Button size="mini" color="green" floated="right" icon="dollar sign" content={
-                            sizeWidthScreen <= 450? null:"COMPRAR +10 TICKETS"
-                        } onClick={() => {
-                            setIsOpenModalBuyTickets(true);
-                        }} 
-                        />
-                    } />
+                    <Button size="mini" color="green" floated="right" icon="dollar sign" content={
+                        sizeWidthScreen <= 450? null:"COMPRAR +10 TICKETS"
+                    } onClick={() => {
+                        setIsOpenModalBuyTickets(true);
+                    }} 
+                    />
                 </div>
                 <div id="area-menu" className={isOpenedAreaMenu? "opened":"closed"}>
                     <div>
@@ -412,7 +410,7 @@ const Menu = () => {
             onOpen={() => setIsOpenModalBuyTickets(true)}
             open={isOpenModalBuyTickets}
             >
-            <Modal.Header>COMPRAR +10 TICKETS</Modal.Header>
+            <Modal.Header>Tickets de acesso</Modal.Header>
             <Modal.Content>
                 <Stripe/>
             </Modal.Content>

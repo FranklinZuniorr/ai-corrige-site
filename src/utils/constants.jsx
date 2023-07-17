@@ -5,21 +5,26 @@ export const OPTIONS_THEME = {
     CIÊNCIAS_HUMANAS_E_SUAS_TECNOLOGIAS: "História, Geografia, Filosofia e Sociologia.",
     CIÊNCIAS_DA_NATUREZA_E_SUAS_TECNOLOGIAS: "Biologia, Física e Química.",
     MATEMÁTICA_E_SUAS_TECNOLOGIAS: "Matemática, com contas, expressões, funções, álgebra, Geometria, Estatística, Trigonometria, Números, tudo.",
-    GERAL: "acontecimentos históricos no mundo."
+    GERAL: "acontecimentos históricos no mundo.",
+    CONHECIMENTOS_GERAIS: "conhecimentos gerais sobre o mundo."
 
 };
+
 export const OPTIONS_INPUT_THEME = [
     {key: OPTIONS_THEME.LINGUAGENS_CÓDIGOS_E_SUAS_TECNOLOGIAS, text: "Linguagens códigos e suas tecnologias", value: OPTIONS_THEME.LINGUAGENS_CÓDIGOS_E_SUAS_TECNOLOGIAS},
     {key: OPTIONS_THEME.CIÊNCIAS_HUMANAS_E_SUAS_TECNOLOGIAS, text: "Ciências humanas e suas tecnologias", value: OPTIONS_THEME.CIÊNCIAS_HUMANAS_E_SUAS_TECNOLOGIAS},
     {key: OPTIONS_THEME.CIÊNCIAS_DA_NATUREZA_E_SUAS_TECNOLOGIAS, text: "Ciências da natureza e suas tecnologias", value: OPTIONS_THEME.CIÊNCIAS_DA_NATUREZA_E_SUAS_TECNOLOGIAS},
     {key: OPTIONS_THEME.MATEMÁTICA_E_SUAS_TECNOLOGIAS, text: "Matemática e suas tecnologias", value: OPTIONS_THEME.MATEMÁTICA_E_SUAS_TECNOLOGIAS},
     {key: OPTIONS_THEME.GERAL, text: "Acontecimentos globais", value: OPTIONS_THEME.GERAL},
+    {key: OPTIONS_THEME.CONHECIMENTOS_GERAIS, text: "Conhecimentos gerais", value: OPTIONS_THEME.CONHECIMENTOS_GERAIS}
 ];
+
 export const OPTIONS_DIFFICULTY = [
     {key: "DIFÍCIL", text: "Difícil", value: "difícil"},
     {key: "MÉDIO", text: "Médio", value: "Médio"},
     {key: "FÁCIL", text: "Fácil", value: "Fácil"},
 ];
+
 export const TEMPLATE_QUERY_AMQP = {
     title: "",
     msg: "",

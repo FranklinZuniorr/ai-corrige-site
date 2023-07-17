@@ -63,7 +63,7 @@ export const gerarObjetoCondicional = (objetoInicial, incremento) => {
         if(data[item] != "" && data[item] != undefined && data[item] != null || typeof data[item] == 'boolean'){
         novoObjeto = {...novoObjeto, [item]: data[item]}
         };
-    
+
     });
 
     return novoObjeto;
@@ -172,13 +172,14 @@ export const filterDifficulty = (value) => {
         {key: "FÁCIL", text: "Fácil", value: "Fácil"},
     ];
     if(value >= 200) return [
-        {key: "DIFÍCIL", text: "Difícil", value: "difícil"},
+        {key: "DIFÍCIL", text: "Difícil", value: "Difícil"},
         {key: "MÉDIO", text: "Médio", value: "Médio"},
         {key: "FÁCIL", text: "Fácil", value: "Fácil"},
     ];
 };
 
 export const filterDifficultyColor = (value) => {
+    console.log(value)
     if(value < 100) return 1;
     if(value >= 100 && value < 200) return 2;
     if(value >= 200) return 3;
@@ -188,6 +189,12 @@ export const filterDifficultyText = (text) => {
     if(text === "Fácil") return 2;
     if(text === "Médio") return 3;
     if(text === "Difícil") return 5;
+};
+
+export const filterDifficultyNumber = (number) => {
+    if(number === 2) return "Fácil";
+    if(number === 3) return "Médio";
+    if(number === 5) return "Difícil";
 };
 
 export const verifyName = (text) => {
@@ -218,6 +225,7 @@ export const talk = (text, on) => {
         // Define o texto que será lido em voz alta
         utterance.text = text;
         utterance.rate = 2;
+        utterance.lang = 'pt-BR'
 
         utterance.onend = () => {
             store.dispatch(setIsTalking(false));

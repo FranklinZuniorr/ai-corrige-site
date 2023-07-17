@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Divider, Dropdown, Form, Grid, Header, Icon, Image, Input, Label, Loader, Message, Modal, Popup, Progress, Segment, Step } from "semantic-ui-react";
+import { Button, Divider, Dropdown, Form, Grid, Header, Icon, Image, Input, Label, Loader, Message, Modal, Popup, Progress, Segment, Step, Tab } from "semantic-ui-react";
 import store, { setResAiCurrent, setUserData } from "../store";
 import suportLogoUser from "../img/suporte-user.png";
 import { KEY_COOKIE_ACCESS, OPTIONS_DIFFICULTY, OPTIONS_INPUT_THEME } from "../utils/constants";
@@ -35,6 +35,10 @@ const Home = () => {
     const [isLoadingGenerateActivity, setIsLoadingGenerateActivity] = useState(false);
     // Search area
 
+    // Search area custom
+    const [textSubjectCustom, setTextSubjectCustom] = useState("");
+    // Search area custom
+
     // Modal activities pending
     const [isOpenModalActivitiesPending, setIsOpenModalActivitiesPending] = useState(false);
     const [dataModalActivitiesPending, setDataModalActivitiesPending] = useState(null);
@@ -68,7 +72,7 @@ const Home = () => {
         };
     }, [resAiCurrent]);
 
-    const getPropsOfUser = async () => {
+    const getPropsOfUser = async (textSubjectT) => {
         const accessToken = Cookies.get(KEY_COOKIE_ACCESS);
         const response = await AiCorrigeApi.verifyAccessToken(accessToken);
         setIsLoadingOnStart(false);
@@ -84,7 +88,7 @@ const Home = () => {
         setCurrentUserData(data);
         setDataModalActivitiesPending(data.questions);
         setDataModalActivitiesQueries(getAllActivitiesInQueries(data));
-        setDifficultyColor(filterDifficultyColor(data.queries != undefined && data.queries[textSubject] != undefined? currentUserData.queries[textSubject]["totalNote"]:0));
+        setDifficultyColor(filterDifficultyColor(data.queries != undefined && data.queries[textSubjectT] != undefined? parseInt(currentUserData.queries[textSubjectT]["totalNote"]):0));
     };
 
     const aiJsonAmqp = async () => {
@@ -104,6 +108,28 @@ const Home = () => {
         if(!response.r){
             toast.error(typeof response.data.msg == Array? response.data.msg.join("\n"):response.data.msg);
             setIsLoadingGenerateActivity(false);
+            return
+        };
+
+        toast.success(response.data.msg);
+    };
+
+    const aiJsonAmqpCustom = async () => {
+
+        setTextSubjectCustom("");
+        setIsLoadingGenerateActivity(true);
+
+        const data = {
+            title: textSubjectCustom.replaceAll(" ", "_").toLowerCase(),
+            msg: textSubjectCustom
+        };
+
+        const response = await AiCorrigeApi.aiJsonAmqpCustom(data.title, data.msg);
+
+        if(!response.r){
+            toast.error(typeof response.data.msg == Array? response.data.msg.join("\n"):response.data.msg);
+            setIsLoadingGenerateActivity(false);
+            return
         };
 
         toast.success(response.data.msg);
@@ -153,6 +179,172 @@ const Home = () => {
         return []
     };
 
+    const renderDefault = () => {
+        return(
+            <Segment>
+                <Header textAlign="left" content="Gerar atividade" />
+                <Grid>
+                    <Grid.Row verticalAlign="middle" textAlign="left">
+                        <Grid.Column>
+                            <Form className="area-form-home-search" onSubmit={() => aiJsonAmqp()}>
+                                <Form.Group>
+                                    <Form.Field width={16}>
+                                        <label>Assunto:</label>
+                                        <Dropdown
+                                        placeholder="Escolha um assunto!"
+                                        disabled={isLoadingGenerateActivity}
+                                        selection
+                                        clearable
+                                        value={textSubject}
+                                        options={OPTIONS_INPUT_THEME}
+                                        onChange={(ev, data) => {
+                                            getPropsOfUser(ev.target.innerText.replaceAll(" ", "_").toLowerCase());
+                                            setTextSubject(data.value);
+                                            setCurrentActivity(null);
+                                            setTextSubjectTitle(ev.target.innerText.replaceAll(" ", "_").toLowerCase());
+                                        }}
+                                        />
+                                    </Form.Field>
+                                </Form.Group>
+                                <Form.Group>
+                                    <Form.Field>
+                                        {
+                                            (textSubject != "" && currentUserData != null) &&
+                                            <>
+                                                <Header 
+                                                size="small"
+                                                content={`Sua nota: ${currentUserData.queries != undefined && currentUserData.queries[textSubjectTitle] != undefined? 
+                                                currentUserData.queries[textSubjectTitle]["totalNote"]:0}`} 
+                                                subheader="Essa é a sua nota atual referente ao assunto escolhido."
+                                                />
+                                            </>
+                                        }
+                                    </Form.Field>
+                                </Form.Group>
+                                {
+                                    (textSubject != "" && currentUserData != null) &&
+                                    <>
+                                        <Form.Group>
+                                            <Form.Field>
+                                                <Label.Group>
+                                                    <Label content={
+                                                        <>
+                                                            <Header icon={
+                                                                (difficultyColor == 1 ||
+                                                                difficultyColor == 2 ||
+                                                                difficultyColor == 3)? "lock open":"lock"
+                                                            } size="tiny" content="0 pontos" subheader="Nível fácil" />
+                                                        </>
+                                                    } color={
+                                                        (difficultyColor == 1 ||
+                                                        difficultyColor == 2 ||
+                                                        difficultyColor == 3)? "green":null
+                                                    }/>
+                                                    <Label content={
+                                                        <>
+                                                            <Header icon={
+                                                                (difficultyColor == 2 ||
+                                                                difficultyColor == 3)? "lock open":"lock"
+                                                            } size="tiny" content="100 pontos" subheader="Nível médio" />
+                                                        </>
+                                                    } color={
+                                                        (difficultyColor == 2 ||
+                                                        difficultyColor == 3)? "green":null
+                                                    }/>
+                                                    <Label content={
+                                                        <>
+                                                            <Header icon={difficultyColor == 3? "lock open":"lock"} 
+                                                            size="tiny" content="200 pontos" subheader="Nível difícil" />
+                                                        </>
+                                                    } color={
+                                                        difficultyColor == 3? "green":null
+                                                    }/>
+                                                </Label.Group>
+                                                <Progress 
+                                                content={
+                                                    `${currentUserData.queries != undefined && currentUserData.queries[textSubjectTitle] != undefined? 
+                                                    currentUserData.queries[textSubjectTitle]["totalNote"]:0}/200 - ${obterPorcentagem(
+                                                        currentUserData.queries != undefined && currentUserData.queries[textSubjectTitle] != undefined? 
+                                                        currentUserData.queries[textSubjectTitle]["totalNote"]:0, 200
+                                                    )}`
+                                                } 
+                                                size="tiny" 
+                                                value={
+                                                    currentUserData.queries != undefined && currentUserData.queries[textSubjectTitle] != undefined? 
+                                                    currentUserData.queries[textSubjectTitle]["totalNote"]:0
+                                                } 
+                                                total={200} 
+                                                indicating 
+                                                />
+                                            </Form.Field>
+                                        </Form.Group>
+                                        <Form.Group>
+                                            <Form.Field>
+                                                <label>Dificuldade:</label>
+                                                <Dropdown 
+                                                value={textDifficulty}
+                                                placeholder="Escolha um nível!"
+                                                selection
+                                                options={filterDifficulty(
+                                                    currentUserData.queries != undefined && currentUserData.queries[textSubjectTitle] != undefined? 
+                                                    currentUserData.queries[textSubjectTitle]["totalNote"]:0
+                                                )}
+                                                onChange={(ev, data) => setTextDifficulty(data.value)}
+                                                />
+                                            </Form.Field>
+                                        </Form.Group>
+                                        <Button type="submit" disabled={textDifficulty == ""} color="blue" floated="right" content="🤖 Gerar atividade" />
+                                    </>
+                                }
+
+                            </Form>
+
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+            </Segment>
+        );
+    };
+
+    const renderCustom = () => {
+        return(
+            <Segment textAlign="left">
+                <Header content="Gerar atividade personalizada" subheader="Atividades personalizadas não soman pontuação, não aparecem no ranking e não são estatísticas." />
+                <Form onSubmit={aiJsonAmqpCustom}>
+                    <Form.Group>
+                        <Form.Field width={16}>
+                            <label>Assunto:</label>
+                            <div className="area-cadastro-line-global">
+                                <Input 
+                                placeholder="Escreva um assunto!"
+                                value={textSubjectCustom}
+                                onChange={(ev, data) => {
+                                    setTextSubjectCustom(data.value.slice(0, 50));
+                                    setCurrentActivity(null);
+                                }}
+                                />
+                                <Button onClick={() => {
+                                    setCurrentActivity(null);
+                                }} disabled={isLoadingGenerateActivity} type="submit" color="green" icon="send" />
+                            </div>
+                        </Form.Field>
+                    </Form.Group>
+                </Form>
+            </Segment>
+        );
+    };
+
+    /* const panes = [
+        {
+          menuItem: 'Padrão',
+          render: () => renderDefault(),
+        },
+        {
+          menuItem: 'Personalizado',
+          render: () => renderCustom(),
+        },
+    ]; */
+
     return(
         <>
             <div className="display-home">
@@ -173,131 +365,13 @@ const Home = () => {
                         <Button onClick={() => {
                             navigate("ranking")
                         }} size="mini" icon="globe" color="blue" content="Ranking" />
+                        <Button onClick={() => {
+                            navigate("estatísticas")
+                        }} size="mini" icon="chart area" color="purple" content="Estatísticas" />
                     </div>
                 }
-                <Segment>
-                    <Header textAlign="left" content="Gerar atividade" />
-                    <Grid>
-                        <Grid.Row verticalAlign="middle" textAlign="left">
-                            <Grid.Column>
-                                <Form className="area-form-home-search" onSubmit={() => aiJsonAmqp()}>
-                                    <Form.Group>
-                                        <Form.Field width={16}>
-                                            <label>Assunto:</label>
-                                            <Dropdown
-                                            placeholder="Escolha um assunto!"
-                                            disabled={isLoadingGenerateActivity}
-                                            selection
-                                            clearable
-                                            value={textSubject}
-                                            options={OPTIONS_INPUT_THEME}
-                                            onChange={(ev, data) => {
-                                                getPropsOfUser();
-                                                setTextSubject(data.value);
-                                                setCurrentActivity(null);
-                                                setTextSubjectTitle(ev.target.innerText.replaceAll(" ", "_").toLowerCase());
-                                                console.log(ev.target.innerText.replaceAll(" ", "_").toLowerCase())
-                                            }}
-                                            />
-                                        </Form.Field>
-                                    </Form.Group>
-                                    <Form.Group>
-                                        <Form.Field>
-                                            {
-                                                (textSubject != "" && currentUserData != null) &&
-                                                <>
-                                                    <Header 
-                                                    size="small"
-                                                    content={`Sua nota: ${currentUserData.queries != undefined && currentUserData.queries[textSubjectTitle] != undefined? 
-                                                    currentUserData.queries[textSubjectTitle]["totalNote"]:0}`} 
-                                                    subheader="Essa é a sua nota atual referente ao assunto escolhido."
-                                                    />
-                                                </>
-                                            }
-                                        </Form.Field>
-                                    </Form.Group>
-                                    {
-                                        (textSubject != "" && currentUserData != null) &&
-                                        <>
-                                            <Form.Group>
-                                                <Form.Field>
-                                                    <Label.Group>
-                                                        <Label content={
-                                                            <>
-                                                                <Header icon={
-                                                                    (difficultyColor == 1 ||
-                                                                    difficultyColor == 2 ||
-                                                                    difficultyColor == 3)? "lock open":"lock"
-                                                                } size="tiny" content="0 pontos" subheader="Nível fácil" />
-                                                            </>
-                                                        } color={
-                                                            (difficultyColor == 1 ||
-                                                            difficultyColor == 2 ||
-                                                            difficultyColor == 3)? "green":null
-                                                        }/>
-                                                        <Label content={
-                                                            <>
-                                                                <Header icon={
-                                                                    (difficultyColor == 2 ||
-                                                                    difficultyColor == 3)? "lock open":"lock"
-                                                                } size="tiny" content="100 pontos" subheader="Nível médio" />
-                                                            </>
-                                                        } color={
-                                                            (difficultyColor == 2 ||
-                                                            difficultyColor == 3)? "green":null
-                                                        }/>
-                                                        <Label content={
-                                                            <>
-                                                                <Header icon={difficultyColor == 3? "lock open":"lock"} 
-                                                                size="tiny" content="200 pontos" subheader="Nível difícil" />
-                                                            </>
-                                                        } color={
-                                                            difficultyColor == 3? "green":null
-                                                        }/>
-                                                    </Label.Group>
-                                                    <Progress 
-                                                    content={
-                                                        `${currentUserData.queries != undefined && currentUserData.queries[textSubjectTitle] != undefined? 
-                                                        currentUserData.queries[textSubjectTitle]["totalNote"]:0}/200 - ${obterPorcentagem(
-                                                            currentUserData.queries != undefined && currentUserData.queries[textSubjectTitle] != undefined? 
-                                                            currentUserData.queries[textSubjectTitle]["totalNote"]:0, 200
-                                                        )}`
-                                                    } 
-                                                    size="tiny" 
-                                                    value={
-                                                        currentUserData.queries != undefined && currentUserData.queries[textSubjectTitle] != undefined? 
-                                                        currentUserData.queries[textSubjectTitle]["totalNote"]:0
-                                                    } 
-                                                    total={200} 
-                                                    indicating 
-                                                    />
-                                                </Form.Field>
-                                            </Form.Group>
-                                            <Form.Group>
-                                                <Form.Field>
-                                                    <label>Dificuldade:</label>
-                                                    <Dropdown 
-                                                    value={textDifficulty}
-                                                    placeholder="Escolha um nível!"
-                                                    selection
-                                                    options={filterDifficulty(
-                                                        currentUserData.queries != undefined && currentUserData.queries[textSubjectTitle] != undefined? 
-                                                        currentUserData.queries[textSubjectTitle]["totalNote"]:0
-                                                    )}
-                                                    onChange={(ev, data) => setTextDifficulty(data.value)}
-                                                    />
-                                                </Form.Field>
-                                            </Form.Group>
-                                            <Button type="submit" disabled={textDifficulty == ""} color="blue" floated="right" content="🤖 Gerar atividade" />
-                                        </>
-                                    }
-
-                                </Form>
-
-                            </Grid.Column>
-                        </Grid.Row>
-                    </Grid>
-                </Segment>
+                {/* <Tab menu={{ secondary: true, pointing: true }} panes={panes} /> */}
+                {renderDefault()}
                 <Segment>
                     {
                         isLoadingGenerateActivity?
