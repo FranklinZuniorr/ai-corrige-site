@@ -153,7 +153,7 @@ class AiCorrigeApi{
                 password
             };
 
-            const response = await AxiosAiCorrige.put(`edit-user`, data);
+            const response = await AxiosAiCorrige.patch(`edit-user`, data);
 
             return response.data;
             

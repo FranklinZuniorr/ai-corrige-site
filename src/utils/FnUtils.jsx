@@ -4,6 +4,7 @@ import AiCorrigeApi, { setTokenJwtAxios } from "../services/AiCorrigeApi";
 import Cookies from "js-cookie";
 import { KEY_COOKIE_ACCESS, KEY_COOKIE_REFRESH } from "./constants";
 import { toast } from "react-hot-toast";
+import store, { setIsTalking } from "../store";
 
 
 export const setUrlSearchParam = (object) => {
@@ -207,4 +208,29 @@ export const verifyPassword = (text) => {
     };
 
     return configs
+};
+
+export const talk = (text, on) => {
+    if ('speechSynthesis' in window) {
+        // Cria uma nova instância do objeto SpeechSynthesisUtterance
+        const utterance = new SpeechSynthesisUtterance();
+
+        // Define o texto que será lido em voz alta
+        utterance.text = text;
+        utterance.rate = 2;
+
+        utterance.onend = () => {
+            store.dispatch(setIsTalking(false));
+        };
+
+        if(on){
+            speechSynthesis.speak(utterance);
+        }else{
+            speechSynthesis.cancel();
+        };
+        return true
+    } else {
+        toast.error("Seu navegador não suporta essa funcionalidade!");
+        return false
+    };
 };

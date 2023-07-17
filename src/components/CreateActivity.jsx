@@ -4,6 +4,9 @@ import AiCorrigeApi from "../services/AiCorrigeApi";
 import { toast } from "react-hot-toast";
 import moment from "moment";
 import ViewActivityRes from "./ViewActivityRes";
+import { talk } from "../utils/FnUtils";
+import { useDispatch, useSelector } from "react-redux";
+import { setIsTalking } from "../store";
 
 const CreateActivity = ({
     date = "Undefined", 
@@ -18,6 +21,9 @@ const CreateActivity = ({
     setCurrentActivity,
     getPropsOfUser
     }) => {
+
+    const isTalking = useSelector(store => store.isTalking);
+    const dispatch = useDispatch();
     
     const [selectedQ1, setSelectedQ1] = useState("");
     const [selectedQ2, setSelectedQ2] = useState("");
@@ -45,6 +51,10 @@ const CreateActivity = ({
                 break;
         }
     }, []);
+
+    useEffect(() => {
+
+    }, [speechSynthesis.o]);
 
     const uploadQueries = async () => {
 
@@ -83,10 +93,20 @@ const CreateActivity = ({
     return(
         <>
             <Segment textAlign="left">
-                <Header size="small" 
-                content={title.charAt(0).toUpperCase().replaceAll("_", " ") + title.slice(1).replaceAll("_", " ")} 
-                subheader={`${moment(date).format("DD/MM/YYYY")} - ${textValueOfQuestion} - cada questão vale ${valueOfQuestion}`} 
-                />
+                <div className="area-modal-activity">
+                    <div className="info">
+                        <Header size="small" 
+                        content={title.charAt(0).toUpperCase().replaceAll("_", " ") + title.slice(1).replaceAll("_", " ")} 
+                        subheader={`${moment(date).format("DD/MM/YYYY")} - ${textValueOfQuestion} - cada questão vale ${valueOfQuestion}`} 
+                        />
+                    </div>
+                    <div className="btn">
+                        <Button onClick={() => {
+                            const isTalk = talk(summary, !isTalking); 
+                            isTalk && dispatch(setIsTalking(!isTalking));
+                        }} color={isTalking? "red":"green"} size="mini" icon={isTalking? "power off":"volume down"} content={isTalking? "Parar":"Ouvir resumo"}/>
+                    </div>
+                </div>
                 <Divider />
                 <Container textAlign="left" fluid>{summary}</Container>
                 <Divider />

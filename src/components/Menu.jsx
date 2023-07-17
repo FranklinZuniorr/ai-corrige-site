@@ -9,6 +9,7 @@ import { toast } from "react-hot-toast";
 import { gerarObjetoCondicional, getParamsInQs, verifyName, verifyPassword } from "../utils/FnUtils";
 import { verifyUser } from "../utils/Options";
 import Stripe from "./Stripe/Stripe";
+import logo from '../img/logo.png';
 
 const Menu = () => {
 
@@ -160,6 +161,7 @@ const Menu = () => {
         <>
             <div id="top-menu" className={isOpenedAreaMenu? "is-open-menu":"not-is-open-menu"}>
                 <Header 
+                size="small"
                 as="h3" 
                 floated="left" 
                 className="margin-top-mini" 

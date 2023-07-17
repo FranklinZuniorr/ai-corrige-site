@@ -280,7 +280,6 @@ const Home = () => {
                                                     value={textDifficulty}
                                                     placeholder="Escolha um nível!"
                                                     selection
-                                                    clearable
                                                     options={filterDifficulty(
                                                         currentUserData.queries != undefined && currentUserData.queries[textSubjectTitle] != undefined? 
                                                         currentUserData.queries[textSubjectTitle]["totalNote"]:0
@@ -364,7 +363,7 @@ const Home = () => {
                                                         <div className="info">
                                                             <Header 
                                                             content={question.data.data.title.charAt(0).toUpperCase().replaceAll("_", " ") + question.data.data.title.slice(1).replaceAll("_", " ")} 
-                                                            subheader={moment(question.createdAt).format("DD/MM/YYYY - HH:MM")} 
+                                                            subheader={moment(question.createdAt).utc().format("DD/MM/YYYY HH:mm:ss")} 
                                                             />
                                                         </div>
                                                         <div className="btn">
@@ -433,7 +432,7 @@ const Home = () => {
                                                         <div className="info">
                                                             <Header 
                                                             content={query.theme.charAt(0).toUpperCase().replaceAll("_", " ") + query.theme.slice(1).replaceAll("_", " ")} 
-                                                            subheader={moment(query.createdAt).format("DD/MM/YYYY - HH:MM")} 
+                                                            subheader={moment(query.createdAt).utc().format("DD/MM/YYYY HH:mm:ss")} 
                                                             />
                                                         </div>
                                                         <div className="btn">

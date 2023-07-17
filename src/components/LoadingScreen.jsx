@@ -1,11 +1,14 @@
 import React from "react";
-import { Dimmer, Loader } from "semantic-ui-react";
+import { Dimmer, Image, Loader } from "semantic-ui-react";
+import logo from '../img/logo.png';
 
 const LoadingScreen = () => {
     return(
         <>
             <Dimmer active>
-                <Loader />
+                <div className="loading-ai-screen">
+                    <Image size="small" src={logo} />
+                </div>
             </Dimmer>
         </>
     );

@@ -163,7 +163,7 @@ code {
 }
 
 #top-menu{
-  background-image: linear-gradient(to top, #b0d1ff, #b8d6ff, #c1dbff, #c9dfff, #d1e4ff);
+  background-image: linear-gradient(to top, #bae7ff, #c9ecff, #d8f2fe, #e6f7ff, #f5fcff);
   border-bottom: 1px solid #9898ff;
   border-bottom-left-radius: 2rem;
   border-bottom-right-radius: 2rem;
@@ -226,7 +226,7 @@ code {
 
     &.opened{
       width: 17rem;
-      height: fit-content;
+      height: 15rem;
       
       @media only screen and (max-width: 767px) {
         width: 17rem;
@@ -320,8 +320,7 @@ code {
 .ai-anim-loading{
   width: 100%;
     display: flex;
-    background-color: #90c9ff;
-    background-image: url(./img/805172.svg);
+    background-color: #000c16;
     background-size: cover;
     align-items: center;
     justify-content: center;
@@ -467,6 +466,23 @@ code {
   font-weight: bold;
   font-size: 16px;
   margin-top: 1rem;
+}
+
+.loading-ai-screen{
+  animation: loading-ai 1s ease 0s infinite normal forwards;
+  @keyframes loading-ai {
+    0% {
+      transform: scale(1);
+    }
+  
+    50% {
+      transform: scale(1.1);
+    }
+  
+    100% {
+      transform: scale(1);
+    }
+  }
 }
 
 // ---> xyz

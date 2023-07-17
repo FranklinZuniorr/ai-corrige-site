@@ -6,7 +6,8 @@ const INITIAL_STATE = {
     accessToken: "",
     refreshToken: "",
     userData: null,
-    resAiCurrent: null
+    resAiCurrent: null,
+    isTalking: false
 };
 
 const ACTIONS = {
@@ -15,7 +16,8 @@ const ACTIONS = {
     SET_ACCESS_TOKEN: 'SET_ACCESS_TOKEN',
     SET_REFRESH_TOKEN: 'SET_REFRESH_TOKE',
     SET_USER_DATA: 'SET_USER_DATA',
-    SET_RES_AI_CURRENT: 'SET_RES_AI_CURRENT'
+    SET_RES_AI_CURRENT: 'SET_RES_AI_CURRENT',
+    SET_IS_TALKING: 'SET_IS_TALKING'
 };
 
 const setState = (state = INITIAL_STATE, action) => {
@@ -32,6 +34,8 @@ const setState = (state = INITIAL_STATE, action) => {
             return {...state, userData: action.data};
         case ACTIONS.SET_RES_AI_CURRENT:
             return {...state, resAiCurrent: action.data};
+        case ACTIONS.SET_IS_TALKING:
+            return {...state, isTalking: action.data};
         default:
             return state;
     };
@@ -65,4 +69,8 @@ export const setUserData = (value) => {
 
 export const setResAiCurrent = (value) => {
     return { type: ACTIONS.SET_RES_AI_CURRENT, data: value };
+};
+
+export const setIsTalking = (value) => {
+    return { type: ACTIONS.SET_IS_TALKING, data: value };
 };

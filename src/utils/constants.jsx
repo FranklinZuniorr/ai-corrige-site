@@ -63,7 +63,7 @@ export const TEMPLATE_QUERY_AMQP = {
               },
               motivo_alternativa: {
                 type: "string",
-                description: "Resumo sobre o motivo da alternativa correta."
+                description: "Resumo detalhado sobre o motivo da alternativa correta."
               }
             },
             required: [
@@ -106,7 +106,7 @@ export const TEMPLATE_QUERY_AMQP = {
               },
               motivo_alternativa: {
                 type: "string",
-                description: "Resumo sobre o motivo da alternativa correta."
+                description: "Resumo detalhado sobre o motivo da alternativa correta."
               }
             },
             required: [
@@ -149,7 +149,7 @@ export const TEMPLATE_QUERY_AMQP = {
               },
               motivo_alternativa: {
                 type: "string",
-                description: "Resumo sobre o motivo da alternativa correta."
+                description: "Resumo detalhado sobre o motivo da alternativa correta."
               }
             },
             required: [
@@ -192,7 +192,7 @@ export const TEMPLATE_QUERY_AMQP = {
               },
               motivo_alternativa: {
                 type: "string",
-                description: "Resumo sobre o motivo da alternativa correta."
+                description: "Resumo detalhado sobre o motivo da alternativa correta."
               }
             },
             required: [
@@ -235,7 +235,7 @@ export const TEMPLATE_QUERY_AMQP = {
               },
               motivo_alternativa: {
                 type: "string",
-                description: "Resumo sobre o motivo da alternativa correta."
+                description: "Resumo detalhado sobre o motivo da alternativa correta."
               }
             },
             required: [
