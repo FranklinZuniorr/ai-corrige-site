@@ -18,14 +18,9 @@ export const OPTIONS_INPUT_THEME = [
     {key: OPTIONS_THEME.CONHECIMENTOS_GERAIS, text: "Conhecimentos gerais", value: OPTIONS_THEME.CONHECIMENTOS_GERAIS}
 ];
 
-export const OPTIONS_INPUT_THEME_PENDING_AND_QUERIES = [
-    {key: OPTIONS_THEME.LINGUAGENS_CÓDIGOS_E_SUAS_TECNOLOGIAS, text: "Linguagens códigos e suas tecnologias", value: OPTIONS_THEME.LINGUAGENS_CÓDIGOS_E_SUAS_TECNOLOGIAS},
-    {key: OPTIONS_THEME.CIÊNCIAS_HUMANAS_E_SUAS_TECNOLOGIAS, text: "Ciências humanas e suas tecnologias", value: OPTIONS_THEME.CIÊNCIAS_HUMANAS_E_SUAS_TECNOLOGIAS},
-    {key: OPTIONS_THEME.CIÊNCIAS_DA_NATUREZA_E_SUAS_TECNOLOGIAS, text: "Ciências da natureza e suas tecnologias", value: OPTIONS_THEME.CIÊNCIAS_DA_NATUREZA_E_SUAS_TECNOLOGIAS},
-    {key: OPTIONS_THEME.MATEMÁTICA_E_SUAS_TECNOLOGIAS, text: "Matemática e suas tecnologias", value: OPTIONS_THEME.MATEMÁTICA_E_SUAS_TECNOLOGIAS},
-    {key: OPTIONS_THEME.GERAL, text: "Acontecimentos globais", value: OPTIONS_THEME.GERAL},
-    {key: OPTIONS_THEME.CONHECIMENTOS_GERAIS, text: "Conhecimentos gerais", value: OPTIONS_THEME.CONHECIMENTOS_GERAIS}
-];
+export const OPTIONS_INPUT_THEME_QUERIES = [];
+
+export const OPTIONS_INPUT_THEME_PENDING = [];
 
 export const OPTIONS_DIFFICULTY = [
     {key: "DIFÍCIL", text: "Difícil", value: "difícil"},
