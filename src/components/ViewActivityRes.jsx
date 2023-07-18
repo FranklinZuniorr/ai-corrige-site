@@ -29,6 +29,8 @@ setViewMoreDetails
             case 5:
                 setTextValueOfQuestion("Difícil");
                 break;
+            case 0:
+                setTextValueOfQuestion("Personalizado");
             default:
                 break;
         }

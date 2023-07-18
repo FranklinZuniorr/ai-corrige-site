@@ -106,12 +106,13 @@ const Ranking = () => {
                     <label>Assunto:</label>
                     <Dropdown
                     placeholder="Escolha um assunto!"
+                    search
                     selection
                     fluid
                     clearable
                     options={OPTIONS_INPUT_THEME}
                     onChange={(ev, data) => {
-                        getTop10(ev.target.innerText.replaceAll(" ", "_").toLowerCase());
+                        data.value != "" && getTop10(ev.target.innerText.replaceAll(" ", "_").toLowerCase());
                         setTextSelectedInputActv(ev.target.innerText.replaceAll(" ", "_").toLowerCase());
                     }}
                     />

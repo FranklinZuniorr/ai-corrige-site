@@ -95,6 +95,7 @@ const Statistics = () => {
                     <label>Assunto:</label>
                     <Dropdown
                     placeholder="Escolha um assunto!"
+                    search
                     selection
                     fluid
                     clearable

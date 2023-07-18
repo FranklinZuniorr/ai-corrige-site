@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Button, Divider, Dropdown, Form, Grid, Header, Icon, Image, Input, Label, Loader, Message, Modal, Popup, Progress, Segment, Step, Tab } from "semantic-ui-react";
 import store, { setResAiCurrent, setUserData } from "../store";
 import suportLogoUser from "../img/suporte-user.png";
-import { KEY_COOKIE_ACCESS, OPTIONS_DIFFICULTY, OPTIONS_INPUT_THEME } from "../utils/constants";
+import { KEY_COOKIE_ACCESS, OPTIONS_DIFFICULTY, OPTIONS_INPUT_THEME, OPTIONS_INPUT_THEME_PENDING_AND_QUERIES, OPTIONS_THEME } from "../utils/constants";
 import { filterDifficulty, filterDifficultyColor, filterDifficultyText, obterPorcentagem } from "../utils/FnUtils";
 import AiCorrigeApi from "../services/AiCorrigeApi";
 import { toast } from "react-hot-toast";
@@ -84,6 +84,7 @@ const Home = () => {
 
         const data = response.data.user;
 
+        setAllKeysActivitiesInQueries(data);
         dispatch(setUserData(data));
         setCurrentUserData(data);
         setDataModalActivitiesPending(data.questions);
@@ -167,6 +168,23 @@ const Home = () => {
         return null
     };
 
+    const setAllKeysActivitiesInQueries = (data) => {
+        if(data.queries != undefined){
+            const dataAll = [];
+
+            Object.keys(data.queries).forEach(theme => {
+                if(!OPTIONS_INPUT_THEME_PENDING_AND_QUERIES.find(theme2 => theme2.text.replaceAll(" ", "_").toLowerCase() === theme)){
+                    OPTIONS_INPUT_THEME_PENDING_AND_QUERIES.push({
+                        key: theme, 
+                        text: theme.charAt(0).toUpperCase().replaceAll("_", " ") + theme.slice(1).replaceAll("_", " "), 
+                        value: theme
+                    })
+                };
+            });
+
+        }; 
+    };
+
     const filterActivitiesInQueriesByInput = (text) => {
         const replaceText = text.replaceAll(" ", "_").toLowerCase();
 
@@ -194,6 +212,7 @@ const Home = () => {
                                         placeholder="Escolha um assunto!"
                                         disabled={isLoadingGenerateActivity}
                                         selection
+                                        search
                                         clearable
                                         value={textSubject}
                                         options={OPTIONS_INPUT_THEME}
@@ -334,7 +353,7 @@ const Home = () => {
         );
     };
 
-    /* const panes = [
+    const panes = [
         {
           menuItem: 'Padrão',
           render: () => renderDefault(),
@@ -343,7 +362,7 @@ const Home = () => {
           menuItem: 'Personalizado',
           render: () => renderCustom(),
         },
-    ]; */
+    ];
 
     return(
         <>
@@ -370,8 +389,8 @@ const Home = () => {
                         }} size="mini" icon="chart area" color="purple" content="Estatísticas" />
                     </div>
                 }
-                {/* <Tab menu={{ secondary: true, pointing: true }} panes={panes} /> */}
-                {renderDefault()}
+                <Tab menu={{ secondary: true, pointing: true }} panes={panes} />
+                {/* {renderDefault()} */}
                 <Segment>
                     {
                         isLoadingGenerateActivity?
@@ -412,11 +431,12 @@ const Home = () => {
                                 <label>Assunto:</label>
                                 <Dropdown
                                 placeholder="Escolha um assunto!"
+                                search
                                 selection
                                 fluid
                                 value={textSelectedInputActvPending}
                                 clearable
-                                options={OPTIONS_INPUT_THEME}
+                                options={OPTIONS_INPUT_THEME_PENDING_AND_QUERIES}
                                 onChange={(ev, data) => {
                                     setDataModalActivitiesPending(filterActivitiesPendingByInput(ev.target.innerText));
                                     setTextSelectedInputActvPending(data.value);
@@ -481,11 +501,12 @@ const Home = () => {
                                 <label>Assunto:</label>
                                 <Dropdown
                                 placeholder="Escolha um assunto!"
+                                search
                                 selection
                                 fluid
                                 value={textSelectedInputActvQueries}
                                 clearable
-                                options={OPTIONS_INPUT_THEME}
+                                options={OPTIONS_INPUT_THEME_PENDING_AND_QUERIES}
                                 onChange={(ev, data) => {
                                     setDataModalActivitiesQueries(filterActivitiesInQueriesByInput(ev.target.innerText));
                                     setTextSelectedInputActvQueries(data.value);
