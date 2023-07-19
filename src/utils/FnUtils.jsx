@@ -224,7 +224,7 @@ export const talk = (text, on) => {
 
         // Define o texto que será lido em voz alta
         utterance.text = text;
-        utterance.rate = 2;
+        utterance.rate = 1.5;
         utterance.lang = 'pt-BR'
 
         utterance.onend = () => {

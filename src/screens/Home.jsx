@@ -229,7 +229,7 @@ const Home = () => {
                     </>:
                     <Segment textAlign="left">
                         <Header content="Buscas da comunidade" subheader="Assuntos pesquisados por outros usuários." />
-                        <Table celled>
+                        <Table size="mini" celled>
                             <Table.Header>
                             <Table.Row>
                                 <Table.HeaderCell>Assunto</Table.HeaderCell>
