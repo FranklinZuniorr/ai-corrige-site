@@ -39,7 +39,7 @@ setViewMoreDetails
     return(
         <>
             <Segment size="mini">
-                <Header size="small" content={`Valor de cada questão: ${valueOfQuestion}`} subheader={`Nível: ${textValueOfQuestion}`}/>
+                <Header size="small" content={`Valor de cada questão: ${valueOfQuestion}`}/>
                 <Divider />
                 <Container>{summary}</Container>
                 <Divider />

@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Breadcrumb, Container, Divider, Dropdown, Header, Icon, List, Message, Segment } from "semantic-ui-react";
-import { KEY_COOKIE_ACCESS, OPTIONS_INPUT_THEME } from "../utils/constants";
+import { KEY_COOKIE_ACCESS, OPTIONS_INPUT_THEME, OPTIONS_INPUT_THEME_QUERIES } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import AiCorrigeApi from "../services/AiCorrigeApi";
@@ -22,10 +22,6 @@ const Statistics = () => {
     const [noteTotal, setNoteTotal] = useState(0);
     const [useTotal, setUseTotal] = useState(0);
     const [media, setMedia] = useState(0);
-    const [mediaDays, setMediaDays] = useState(0);
-    const [easyTotal, setEasyTotal] = useState(0);
-    const [mediumTotal, setMediumTotal] = useState(0);
-    const [hardTotal, setHardTotal] = useState(0);
 
     const setDataChartFilter = (text) => {
         const queries = access.queries !== undefined? access.queries[text]:undefined;
@@ -35,14 +31,11 @@ const Statistics = () => {
             let data = [];
             let use = 0;
             let time = 0;
-            let easy = 0;
-            let medium = 0;
-            let hard = 0;
             
             // Data
             queries.arr.forEach((query, index) => {
                 data.push({
-                    name: `${moment(query.createdAt).utc().format("DD/MM/YYYY HH:mm:ss")} - ${filterDifficultyNumber(parseInt(query.note))}`, 
+                    name: `${moment(query.createdAt).utc().format("DD/MM/YYYY HH:mm:ss")}`, 
                     nota: query.totalNote,
                     max: query.note*5
                 })
@@ -58,15 +51,7 @@ const Statistics = () => {
 
                 use+=query.totalNote/(query.note*5);
                 time+= qtdDays
-
-                if(parseInt(query.note) === 2) easy++
-                if(parseInt(query.note) === 3) medium++
-                if(parseInt(query.note) === 5) hard++
             });
-
-            setEasyTotal(easy);
-            setMediumTotal(medium); 
-            setHardTotal(hard);
 
             console.log(data);
             setDataChart(data);
@@ -94,12 +79,11 @@ const Statistics = () => {
                     <Divider />
                     <label>Assunto:</label>
                     <Dropdown
-                    placeholder="Escolha um assunto!"
-                    search
+                    placeholder="Escolha um assunto referente as suas atividades respondidas!"
                     selection
                     fluid
                     clearable
-                    options={OPTIONS_INPUT_THEME}
+                    options={OPTIONS_INPUT_THEME_QUERIES}
                     onChange={(ev, data) => {
                         setDataChartFilter(ev.target.innerText.replaceAll(" ", "_").toLowerCase());
                         /* getTop10(ev.target.innerText.replaceAll(" ", "_").toLowerCase());
@@ -139,9 +123,6 @@ const Statistics = () => {
                                     <List.Item>Nota total: {noteTotal}</List.Item>
                                     <List.Item>Média de notas: {media.toFixed(2)}</List.Item>
                                     <List.Item>Atividades respondidas: {dataChart.length}</List.Item>
-                                    <List.Item>Atividades Fáceis: {easyTotal}</List.Item>
-                                    <List.Item>Atividades Médias: {mediumTotal}</List.Item>
-                                    <List.Item>Atividades difíceis: {hardTotal}</List.Item>
                                 </List>
                             </Segment>
                         </>:<Message content="Gere e responda atividades para ter acesso as métricas de evolução." />

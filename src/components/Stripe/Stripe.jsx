@@ -29,7 +29,7 @@ const Stripe = () => {
                     <Header size="large" icon="ticket" content="+10 Tickets" subheader="R$ 5.00" />
                 </div>
                 <div>
-                    <Button className="margin-top-mini" loading={isLoadingBtnBuy} color="green" onClick={() => stripeCheckout()}>
+                    <Button size="mini" className="margin-top-mini" loading={isLoadingBtnBuy} color="green" onClick={() => stripeCheckout()}>
                     Comprar R$ 5.00
                     </Button>
                 </div>

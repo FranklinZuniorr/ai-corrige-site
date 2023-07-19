@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, Divider, Dropdown, Form, Grid, Header, Icon, Image, Input, Label, Loader, Message, Modal, Popup, Progress, Segment, Step, Tab } from "semantic-ui-react";
+import { Button, Divider, Dropdown, Form, Grid, Header, Icon, Image, Input, Label, Loader, Message, Modal, Pagination, Popup, Progress, Segment, Step, Tab, Table } from "semantic-ui-react";
 import store, { setResAiCurrent, setUserData } from "../store";
 import suportLogoUser from "../img/suporte-user.png";
 import { KEY_COOKIE_ACCESS, OPTIONS_DIFFICULTY, OPTIONS_INPUT_THEME, OPTIONS_INPUT_THEME_PENDING, OPTIONS_INPUT_THEME_PENDING_AND_QUERIES, OPTIONS_INPUT_THEME_QUERIES, OPTIONS_THEME } from "../utils/constants";
@@ -26,18 +26,20 @@ const Home = () => {
     const [currentActivity, setCurrentActivity] = useState(null);
     const [difficultyColor, setDifficultyColor] = useState(0);
     const [isLoadingOnStart, setIsLoadingOnStart] = useState(true);
-    // Global
-
-    // Search area
-    const [textSubject, setTextSubject] = useState("");
-    const [textSubjectTitle, setTextSubjectTitle] = useState("");
-    const [textDifficulty, setTextDifficulty] = useState("Fácil");
     const [isLoadingGenerateActivity, setIsLoadingGenerateActivity] = useState(false);
-    // Search area
+    const [viewPane, setViewPane] = useState(0);
+    // Global
 
     // Search area custom
     const [textSubjectCustom, setTextSubjectCustom] = useState("");
     // Search area custom
+
+    // Community
+    const [page, setPage] = useState(1);
+    const [maxPage, setMaxPage] = useState(0);
+    const [dataTableCommunity, setDataTableCommunity] = useState(null);
+    const [isLoadingCommunity, setIsLoadingCommunity] = useState(false);
+    // Community
 
     // Modal activities pending
     const [isOpenModalActivitiesPending, setIsOpenModalActivitiesPending] = useState(false);
@@ -69,6 +71,7 @@ const Home = () => {
             dispatch(setResAiCurrent(null));
             getPropsOfUser();
             toast.success("Atividade gerada com sucesso!");
+            themes(1);
         };
     }, [resAiCurrent]);
 
@@ -93,38 +96,20 @@ const Home = () => {
         setDifficultyColor(filterDifficultyColor(data.queries != undefined && data.queries[textSubjectT] != undefined? parseInt(currentUserData.queries[textSubjectT]["totalNote"]):0));
     };
 
-    const aiJsonAmqp = async () => {
+    const aiJsonAmqpCustom = async (text = undefined) => {
 
-        setTextSubject("");
         setIsLoadingGenerateActivity(true);
 
+        const dataText = text || textSubjectCustom;
+
+        console.log(dataText)
+
         const data = {
-            title: OPTIONS_INPUT_THEME.find(input => input.value == textSubject).text.replaceAll(" ", "_").toLowerCase(),
-            msg: textSubject,
-            difficulty: textDifficulty,
-            note: filterDifficultyText(textDifficulty)
+            title: dataText.trim().replace(/\s/g, "_").toLowerCase(),
+            msg: dataText.charAt(0).toUpperCase().replaceAll("_", " ") + dataText.slice(1).replaceAll("_", " ")
         };
-
-        const response = await AiCorrigeApi.aiJsonAmqp(data.title, data.msg, data.difficulty, data.note);
-
-        if(!response.r){
-            toast.error(typeof response.data.msg == Array? response.data.msg.join("\n"):response.data.msg);
-            setIsLoadingGenerateActivity(false);
-            return
-        };
-
-        toast.success(response.data.msg);
-    };
-
-    const aiJsonAmqpCustom = async () => {
 
         setTextSubjectCustom("");
-        setIsLoadingGenerateActivity(true);
-
-        const data = {
-            title: textSubjectCustom.replaceAll(" ", "_").toLowerCase(),
-            msg: textSubjectCustom
-        };
 
         const response = await AiCorrigeApi.aiJsonAmqpCustom(data.title, data.msg);
 
@@ -140,6 +125,8 @@ const Home = () => {
     const filterActivitiesPendingByInput = (text) => {
         const replaceText = text.replaceAll(" ", "_").toLowerCase();
         let data = [];
+
+        console.log(text)
 
         if(text == "") return currentUserData.questions;
 
@@ -166,7 +153,7 @@ const Home = () => {
             return dataAll;
         }; 
 
-        return null
+        return []
     };
 
     const setAllKeysActivitiesInQueries = (data) => {
@@ -185,7 +172,7 @@ const Home = () => {
     };
 
     const setAllKeysActivitiesPending = (data) => {
-        if(data.queries != undefined){
+        if(data.questions != undefined){
             data.questions.forEach(theme => {
                 if(!OPTIONS_INPUT_THEME_PENDING.find(theme2 => theme2.text.replaceAll(" ", "_").toLowerCase() === theme.data.data.title)){
                     OPTIONS_INPUT_THEME_PENDING.push({
@@ -211,139 +198,99 @@ const Home = () => {
         return []
     };
 
-    const renderDefault = () => {
+    const themes = async (page, click = false) => {
+        !click && setIsLoadingCommunity(true);
+        const response = await AiCorrigeApi.themes(page);
+        setIsLoadingCommunity(false);
+
+        if(!response.r){
+            toast.error(response.data.msg);
+            return
+        };
+
+        const data = response.data;
+        const configsData = response.data;
+        console.log(response.data);
+        setDataTableCommunity(data.data);
+        setMaxPage(parseInt(configsData.pages));
+    };
+
+    const renderCommunity = () => {
+
         return(
-            <Segment>
-                <Header textAlign="left" content="Gerar atividade" />
-                <Grid>
-                    <Grid.Row verticalAlign="middle" textAlign="left">
-                        <Grid.Column>
-                            <Form className="area-form-home-search" onSubmit={() => aiJsonAmqp()}>
-                                <Form.Group>
-                                    <Form.Field width={16}>
-                                        <label>Assunto:</label>
-                                        <Dropdown
-                                        placeholder="Escolha um assunto!"
-                                        disabled={isLoadingGenerateActivity}
-                                        selection
-                                        search
-                                        clearable
-                                        value={textSubject}
-                                        options={OPTIONS_INPUT_THEME}
-                                        onChange={(ev, data) => {
-                                            getPropsOfUser(ev.target.innerText.replaceAll(" ", "_").toLowerCase());
-                                            setTextSubject(data.value);
-                                            setCurrentActivity(null);
-                                            setTextSubjectTitle(ev.target.innerText.replaceAll(" ", "_").toLowerCase());
-                                        }}
+            <>
+                {
+                    isLoadingCommunity || isLoadingGenerateActivity ? 
+                    <>
+                    <Skeleton animation="wave" />
+                    <Skeleton animation="wave" />
+                    <Skeleton animation="wave" />
+                    <Skeleton animation="wave" />
+                    </>:
+                    <Segment textAlign="left">
+                        <Header content="Buscas da comunidade" subheader="Assuntos pesquisados por outros usuários." />
+                        <Table celled>
+                            <Table.Header>
+                            <Table.Row>
+                                <Table.HeaderCell>Assunto</Table.HeaderCell>
+                                <Table.HeaderCell>Buscas</Table.HeaderCell>
+                                <Table.HeaderCell></Table.HeaderCell>
+                            </Table.Row>
+                            </Table.Header>
+
+                            <Table.Body>
+                                    {
+                                        dataTableCommunity != null && dataTableCommunity.reverse().map((query, index) => (
+                                            <Table.Row key={index}>
+                                                <Table.Cell>{query.theme.charAt(0).toUpperCase().replaceAll("_", " ") + query.theme.slice(1).replaceAll("_", " ")}</Table.Cell>
+                                                <Table.Cell>{query.total}</Table.Cell>
+                                                <Table.Cell collapsing>
+                                                    <Button 
+                                                    content="Gerar atividade sobre esse assunto"
+                                                    color="green"
+                                                    size="mini"
+                                                    onClick={() => {
+                                                        aiJsonAmqpCustom(
+                                                            query.theme.charAt(0).toUpperCase().replaceAll("_", " ") + query.theme.slice(1).replaceAll("_", " ")
+                                                        );
+                                                        setCurrentActivity(null);
+                                                    }}
+                                                    />
+                                                </Table.Cell>
+                                            </Table.Row>
+                                        ))
+                                    }
+                            </Table.Body>
+
+                            <Table.Footer>
+                                <Table.Row>
+                                    <Table.HeaderCell colSpan="8">
+                                        <Pagination
+                                            activePage={page}
+                                            totalPages={maxPage}
+                                            ellipsisItem={null}
+                                            boundaryRange={1}
+                                            siblingRange={0}
+                                            onPageChange={(e, data) => {
+                                                setPage(data.activePage);
+                                                themes(data.activePage, true);
+                                            }}
                                         />
-                                    </Form.Field>
-                                </Form.Group>
-                                <Form.Group>
-                                    <Form.Field>
-                                        {
-                                            (textSubject != "" && currentUserData != null) &&
-                                            <>
-                                                <Header 
-                                                size="small"
-                                                content={`Sua nota: ${currentUserData.queries != undefined && currentUserData.queries[textSubjectTitle] != undefined? 
-                                                currentUserData.queries[textSubjectTitle]["totalNote"]:0}`} 
-                                                subheader="Essa é a sua nota atual referente ao assunto escolhido."
-                                                />
-                                            </>
-                                        }
-                                    </Form.Field>
-                                </Form.Group>
-                                {
-                                    (textSubject != "" && currentUserData != null) &&
-                                    <>
-                                        <Form.Group>
-                                            <Form.Field>
-                                                <Label.Group>
-                                                    <Label content={
-                                                        <>
-                                                            <Header icon={
-                                                                (difficultyColor == 1 ||
-                                                                difficultyColor == 2 ||
-                                                                difficultyColor == 3)? "lock open":"lock"
-                                                            } size="tiny" content="0 pontos" subheader="Nível fácil" />
-                                                        </>
-                                                    } color={
-                                                        (difficultyColor == 1 ||
-                                                        difficultyColor == 2 ||
-                                                        difficultyColor == 3)? "green":null
-                                                    }/>
-                                                    <Label content={
-                                                        <>
-                                                            <Header icon={
-                                                                (difficultyColor == 2 ||
-                                                                difficultyColor == 3)? "lock open":"lock"
-                                                            } size="tiny" content="100 pontos" subheader="Nível médio" />
-                                                        </>
-                                                    } color={
-                                                        (difficultyColor == 2 ||
-                                                        difficultyColor == 3)? "green":null
-                                                    }/>
-                                                    <Label content={
-                                                        <>
-                                                            <Header icon={difficultyColor == 3? "lock open":"lock"} 
-                                                            size="tiny" content="200 pontos" subheader="Nível difícil" />
-                                                        </>
-                                                    } color={
-                                                        difficultyColor == 3? "green":null
-                                                    }/>
-                                                </Label.Group>
-                                                <Progress 
-                                                content={
-                                                    `${currentUserData.queries != undefined && currentUserData.queries[textSubjectTitle] != undefined? 
-                                                    currentUserData.queries[textSubjectTitle]["totalNote"]:0}/200 - ${obterPorcentagem(
-                                                        currentUserData.queries != undefined && currentUserData.queries[textSubjectTitle] != undefined? 
-                                                        currentUserData.queries[textSubjectTitle]["totalNote"]:0, 200
-                                                    )}`
-                                                } 
-                                                size="tiny" 
-                                                value={
-                                                    currentUserData.queries != undefined && currentUserData.queries[textSubjectTitle] != undefined? 
-                                                    currentUserData.queries[textSubjectTitle]["totalNote"]:0
-                                                } 
-                                                total={200} 
-                                                indicating 
-                                                />
-                                            </Form.Field>
-                                        </Form.Group>
-                                        <Form.Group>
-                                            <Form.Field>
-                                                <label>Dificuldade:</label>
-                                                <Dropdown 
-                                                value={textDifficulty}
-                                                placeholder="Escolha um nível!"
-                                                selection
-                                                options={filterDifficulty(
-                                                    currentUserData.queries != undefined && currentUserData.queries[textSubjectTitle] != undefined? 
-                                                    currentUserData.queries[textSubjectTitle]["totalNote"]:0
-                                                )}
-                                                onChange={(ev, data) => setTextDifficulty(data.value)}
-                                                />
-                                            </Form.Field>
-                                        </Form.Group>
-                                        <Button type="submit" disabled={textDifficulty == ""} color="blue" floated="right" content="🤖 Gerar atividade" />
-                                    </>
-                                }
-
-                            </Form>
-
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
-            </Segment>
+                                    </Table.HeaderCell>
+                                </Table.Row>
+                            </Table.Footer>
+                        </Table>
+                    </Segment>
+                }
+            </>
         );
     };
 
     const renderCustom = () => {
         return(
             <Segment textAlign="left">
-                <Header content="Gerar atividade personalizada" subheader="Atividades personalizadas não soman pontuação, não aparecem no ranking e não são estatísticas." />
-                <Form onSubmit={aiJsonAmqpCustom}>
+                <Header content="Gerar atividade personalizada" subheader="Atividades personalizadas não somam pontuação, não aparecem no ranking e não geram estatísticas." />
+                <Form onSubmit={() => aiJsonAmqpCustom()}>
                     <Form.Group>
                         <Form.Field width={16}>
                             <label>Assunto:</label>
@@ -358,7 +305,7 @@ const Home = () => {
                                 />
                                 <Button onClick={() => {
                                     setCurrentActivity(null);
-                                }} disabled={isLoadingGenerateActivity} type="submit" color="green" icon="send" />
+                                }} disabled={isLoadingGenerateActivity || textSubjectCustom === ""} type="submit" color="green" icon="send" />
                             </div>
                         </Form.Field>
                     </Form.Group>
@@ -369,12 +316,12 @@ const Home = () => {
 
     const panes = [
         {
-          menuItem: 'Padrão',
-          render: () => renderDefault(),
+          menuItem: 'Gerar atividade',
+          render: () => renderCustom(),
         },
         {
-          menuItem: 'Personalizado',
-          render: () => renderCustom(),
+          menuItem: 'Comunidade',
+          render: () => renderCommunity(),
         },
     ];
 
@@ -403,8 +350,14 @@ const Home = () => {
                         }} size="mini" icon="chart area" color="purple" content="Estatísticas" />
                     </div>
                 }
-                <Tab menu={{ secondary: true, pointing: true }} panes={panes} />
-                {/* {renderDefault()} */}
+                <Tab activeIndex={viewPane} onTabChange={(ev, data) => {
+                    setViewPane(data.activeIndex);
+
+                    if(data.activeIndex === 1){
+                        themes(1);
+                        setPage(1);
+                    };
+                }} menu={{ secondary: true, pointing: true }} panes={panes} />
                 <Segment>
                     {
                         isLoadingGenerateActivity?
@@ -445,18 +398,23 @@ const Home = () => {
                                 <label>Assunto:</label>
                                 <Dropdown
                                 placeholder="Escolha um assunto!"
-                                search
                                 selection
                                 fluid
                                 value={textSelectedInputActvPending}
                                 clearable
                                 options={OPTIONS_INPUT_THEME_PENDING}
                                 onChange={(ev, data) => {
-                                    setDataModalActivitiesPending(filterActivitiesPendingByInput(ev.target.innerText));
-                                    setTextSelectedInputActvPending(data.value);
+                                    if(ev.type !== "blur"){
+                                        setDataModalActivitiesPending(filterActivitiesPendingByInput(ev.target.innerText));
+                                        setTextSelectedInputActvPending(data.value);
+                                    };
                                 }}
                                 />
-                                <div  className="display-quantidade">Quantidade: {dataModalActivitiesPending != null && dataModalActivitiesPending.length}</div>
+                                <Label size="small" 
+                                content={`Quantidade: ${dataModalActivitiesPending != null && dataModalActivitiesPending.length}`} 
+                                className="margin-top-mini" 
+                                color="teal"
+                                />
                             </Grid.Column>
                         </Grid.Row>
                         <Grid.Row>
@@ -478,7 +436,6 @@ const Home = () => {
                                                             <Button onClick={() => {
                                                                 setCurrentActivity(question);
                                                                 setIsOpenModalActivitiesPending(false);
-                                                                setTextSubject("");
                                                             }} color="orange" size="mini" content="Responder"/>
                                                         </div>
                                                     </div>
@@ -513,20 +470,31 @@ const Home = () => {
                         <Grid.Row>
                             <Grid.Column>
                                 <label>Assunto:</label>
-                                <Dropdown
-                                placeholder="Escolha um assunto!"
-                                search
-                                selection
-                                fluid
-                                value={textSelectedInputActvQueries}
-                                clearable
-                                options={OPTIONS_INPUT_THEME_QUERIES}
-                                onChange={(ev, data) => {
-                                    setDataModalActivitiesQueries(filterActivitiesInQueriesByInput(ev.target.innerText));
-                                    setTextSelectedInputActvQueries(data.value);
-                                }}
+                                <div className="area-cadastro-line-global">
+                                    <Dropdown
+                                    placeholder="Escolha um assunto!"
+                                    selection
+                                    fluid
+                                    value={textSelectedInputActvQueries}
+                                    clearable
+                                    options={OPTIONS_INPUT_THEME_QUERIES}
+                                    onChange={(ev, data) => {
+                                        if(ev.type !== "blur"){
+                                            setDataModalActivitiesQueries(filterActivitiesInQueriesByInput(ev.target.innerText));
+                                            setTextSelectedInputActvQueries(data.value);
+                                        };
+                                    }}
+                                    />
+                                    <Button onClick={() => {
+                                        setIsOpenModalActivitiesQueries(false);
+                                        aiJsonAmqpCustom(textSelectedInputActvQueries);
+                                    }} content="Gerar novamente" color="green" size="mini" disabled={textSelectedInputActvQueries === ""} />
+                                </div>
+                                <Label size="small" 
+                                content={`Quantidade: ${dataModalActivitiesQueries != null && dataModalActivitiesQueries.length}`} 
+                                className="margin-top-mini" 
+                                color="teal"
                                 />
-                                <div  className="display-quantidade">Quantidade: {dataModalActivitiesQueries != null && dataModalActivitiesQueries.length}</div>
                             </Grid.Column>
                         </Grid.Row>
                         <Grid.Row>
@@ -570,7 +538,7 @@ const Home = () => {
                                                 </Segment>
                                             ))
                                         }
-                                    </div>:<Message content="Nenhuma atividade nessa área!" />
+                                    </div>:<Message content="Nenhuma atividade respondida!" />
                                 }
                             </Grid.Column>
                         </Grid.Row>

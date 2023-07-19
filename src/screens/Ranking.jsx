@@ -37,11 +37,12 @@ const Ranking = () => {
 
     useEffect(() => {
         getPropsOfUser();
+        getTop10();
     }, []);
 
-    const getTop10 = async (text) => {
+    const getTop10 = async () => {
         setIsLoadingTable(true);
-        const response = await AiCorrigeApi.getTop10(text);
+        const response = await AiCorrigeApi.getTop10();
         setIsLoadingTable(false);
 
         if(!response.r){
@@ -99,24 +100,6 @@ const Ranking = () => {
                         <Breadcrumb.Section active>Ranking</Breadcrumb.Section>
                     </Breadcrumb>
                 </Container>
-
-                <Segment textAlign="left">
-                    <Header content="Ranking" subheader="Top 10 melhores pontuações." />
-                    <Divider />
-                    <label>Assunto:</label>
-                    <Dropdown
-                    placeholder="Escolha um assunto!"
-                    search
-                    selection
-                    fluid
-                    clearable
-                    options={OPTIONS_INPUT_THEME}
-                    onChange={(ev, data) => {
-                        data.value != "" && getTop10(ev.target.innerText.replaceAll(" ", "_").toLowerCase());
-                        setTextSelectedInputActv(ev.target.innerText.replaceAll(" ", "_").toLowerCase());
-                    }}
-                    />
-                </Segment>
 
                 <Segment textAlign="left">
                     <Item className="margin-bottom-mini">
@@ -199,7 +182,7 @@ const Ranking = () => {
                                                         <Button onClick={() => window.open(user.externalUrl)} content="Descobrir" color="green" size="mini" />
                                                     }
                                                 </Table.Cell>
-                                                <Table.Cell>{user.queries[Object.keys(user.queries)[0]]["totalNote"]}</Table.Cell>
+                                                <Table.Cell>{user.queriesTotal}</Table.Cell>
                                             </Table.Row>
                                         ))
                                     }

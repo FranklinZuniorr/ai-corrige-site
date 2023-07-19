@@ -216,8 +216,8 @@ class AiCorrigeApi{
             const data = {
                 ...TEMPLATE_QUERY_AMQP, 
                 title: title, 
-                msg: `Texto explicando sobre algum assunto aleatório referente a ${msg}`,
-                note: 0
+                msg: `Texto detalhado explicando sobre algum assunto aleatório referente a ${msg.trim().toLowerCase()}`,
+                note: 5
             };
 
             console.log(data)
@@ -252,16 +252,12 @@ class AiCorrigeApi{
     static getTop10 = async (text) => {
         try {
 
-            const data = {
-                prop: text
-            };
-
-            const response = await AxiosAiCorrige.post('get-top-10', data);
+            const response = await AxiosAiCorrige.get('get-top-10');
 
             return response.data;
             
         } catch (error) {
-            return verifyReqTokenExpiration({text}, error, "BODY", "getTop10");
+            return verifyReqTokenExpiration(null, error, "BODY", "getTop10");
         }
     };
 
@@ -278,6 +274,22 @@ class AiCorrigeApi{
             
         } catch (error) {
             return verifyReqTokenExpiration({link}, error, "BODY", "setExternalUrl");
+        }
+    };
+
+    static themes = async (page) => {
+        try {
+
+            const data = {
+                page
+            };
+
+            const response = await AxiosAiCorrige.post('/themes', data);
+
+            return response.data;
+            
+        } catch (error) {
+            return verifyReqTokenExpiration({page}, error, "BODY", "themes");
         }
     };
 };

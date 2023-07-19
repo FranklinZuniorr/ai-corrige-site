@@ -99,7 +99,7 @@ const CreateActivity = ({
                     <div className="info">
                         <Header size="small" 
                         content={title.charAt(0).toUpperCase().replaceAll("_", " ") + title.slice(1).replaceAll("_", " ")} 
-                        subheader={`${moment(date).format("DD/MM/YYYY")} - ${textValueOfQuestion} - cada questão vale ${valueOfQuestion}`} 
+                        subheader={`${moment(date).format("DD/MM/YYYY")} - cada questão vale ${valueOfQuestion}`} 
                         />
                     </div>
                     <div className="btn">
