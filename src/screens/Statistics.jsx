@@ -58,7 +58,7 @@ const Statistics = () => {
                 time+= qtdDays
             });
 
-            console.log(data);
+            /* console.log(data); */
             setDataChart(data);
             setNoteTotal(queries.totalNote);
             setUseTotal(((use/queries.arr.length)*100).toFixed(2) >= 100? 100:((use/queries.arr.length)*100).toFixed(2));

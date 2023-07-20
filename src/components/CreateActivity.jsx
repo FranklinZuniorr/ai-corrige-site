@@ -70,7 +70,7 @@ const CreateActivity = ({
 
         setIsLoadingSendActivity(true);
 
-        console.log(JSON.stringify(valueOfQuestion))
+        /* console.log(JSON.stringify(valueOfQuestion)) */
 
         const response = await AiCorrigeApi.uploadQueries(data, date, JSON.stringify(valueOfQuestion), title);
 
@@ -82,7 +82,7 @@ const CreateActivity = ({
             return
         };
 
-        console.log(response);
+        /* console.log(response); */
 
         const dataQuery = response.data;
 

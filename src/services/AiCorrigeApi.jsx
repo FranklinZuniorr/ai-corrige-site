@@ -199,7 +199,7 @@ class AiCorrigeApi{
                 note: note
             };
 
-            console.log(data)
+            /* console.log(data) */
             
             const response = await AxiosAiCorrige.post(`ai/json-amqp`, data);
 
@@ -220,7 +220,7 @@ class AiCorrigeApi{
                 note: 5
             };
 
-            console.log(data)
+            /* console.log(data) */
             
             const response = await AxiosAiCorrige.post(`ai/json-amqp`, data);
 

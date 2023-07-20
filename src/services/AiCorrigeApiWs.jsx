@@ -1,11 +1,15 @@
-import store, { setResAiCurrent } from "../store";
+import Cookies from "js-cookie";
+import store, { setResAiCurrent, setWsAnotherConnection } from "../store";
+import { KEY_COOKIE_ACCESS, KEY_COOKIE_REFRESH } from "../utils/constants";
+import { setTokenJwtAxios } from "./AiCorrigeApi";
 
 export const startWs = (data) => {
+    /* console.log(data) */
     const socket = new WebSocket(`ws://ai-corrige-ws-9bf366fa3a3c.herokuapp.com/?userId=${data._id}`);
     
     // Evento de conexão estabelecida
     socket.onopen = () => {
-      console.log('Conexão estabelecida');
+      /* console.log('Conexão estabelecida'); */
     
       // Envie uma mensagem para o servidor
       socket.send(data);
@@ -13,7 +17,7 @@ export const startWs = (data) => {
     
     // Evento de recebimento de mensagem do servidor
     socket.onmessage = (event) => {
-      console.log('Mensagem recebida do servidor ws:', event.data);
+      console.log('Mensagem recebida do servidor ws:', event.data.content);
       const data = JSON.parse(event.data);
       
       if(data.type == "object"){
@@ -32,7 +36,7 @@ export const startWs = (data) => {
     
     // Evento de fechamento da conexão
     socket.onclose = () => {
-        console.log('Conexão fechada');
+        /* console.log('Conexão fechada'); */
         window.location.reload();
     };
     

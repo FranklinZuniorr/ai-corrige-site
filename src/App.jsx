@@ -35,7 +35,7 @@ function App() {
     };
 
     const execute = async () => {
-      console.log(window.location.pathname)
+      /* console.log(window.location.pathname) */
       setPathname(window.location.pathname);
     };
 
@@ -62,7 +62,7 @@ function App() {
         startWs(data);
       };
 
-      console.log(response);
+      /* console.log(response); */
     }else{
       dispatch(setIsLoggedUser(false));
       setIsLoadingOnStart(false);

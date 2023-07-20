@@ -24,7 +24,7 @@ export const verifyUser = async () => {
         setTokenJwtAxios(accessToken);
       };
 
-      console.log(response);
+      /* console.log(response); */
     }else{
         store.dispatch(setIsLoggedUser(false));
     }

@@ -40,6 +40,11 @@ const Login = () => {
     //Modal privacy policy
 
     useEffect(() => {
+        if(localStorage.getItem("PASSWORD") && localStorage.getItem("EMAIL")){
+            setTextUserEmailLogin(localStorage.getItem("EMAIL"));
+            setTextUserPasswordLogin(localStorage.getItem("PASSWORD"));
+            setShowPasswordLogin(false);
+        }
     },[]);
 
 
@@ -65,7 +70,7 @@ const Login = () => {
             setActiveIndexOfPane(0);
         };
 
-        console.log(response)
+        /* console.log(response) */
 
         setIsLoadingBtnSignUp(false);
     };
@@ -83,13 +88,15 @@ const Login = () => {
             toast.error(response.data.msg);
         }else{
             toast.success("Logado com sucesso!");
+            localStorage.setItem("EMAIL", textUserEmailCond);
+            localStorage.setItem("PASSWORD", textUserPasswordCond);
             const data = response.data;
             Cookies.set(KEY_COOKIE_ACCESS, data.token);
             Cookies.set(KEY_COOKIE_REFRESH, data.refreshToken);
             setTimeout(() => {
                 window.location.reload();
             }, 400);
-            console.log(response)
+            /* console.log(response) */
         };
 
         setIsLoadingBtnLogin(false);

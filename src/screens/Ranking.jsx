@@ -50,7 +50,7 @@ const Ranking = () => {
             return
         };
 
-        console.log(response)
+        /* console.log(response) */
 
         toast.success(response.data.msg);
         const data = response.data.list;
@@ -156,7 +156,7 @@ const Ranking = () => {
                         </Container>
                         {
                             dataTable != null && dataTable.length > 0?
-                            <Table celled>
+                            <Table size="small" celled>
                                 <Table.Header>
                                     <Table.Row>
                                         <Table.HeaderCell>N°</Table.HeaderCell>

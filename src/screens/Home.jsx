@@ -59,19 +59,26 @@ const Home = () => {
     }, []);
 
     useEffect(() => {
-        console.log(resAiCurrent);
-        setIsLoadingGenerateActivity(false);
-        if(resAiCurrent != null){
-            if(!resAiCurrent.r){
-                toast.error(resAiCurrent.msg);
-                return
+        /* console.log(resAiCurrent); */
+        if(isLoadingGenerateActivity){
+            setIsLoadingGenerateActivity(false);
+            if(resAiCurrent != null){
+                if(!resAiCurrent.r){
+                    toast.error(resAiCurrent.msg);
+                    return
+                };
+                
+                setCurrentActivity(resAiCurrent);
+                dispatch(setResAiCurrent(null));
+                getPropsOfUser();
+                toast.success("Atividade gerada com sucesso!");
+                themes(1);
             };
-            
-            setCurrentActivity(resAiCurrent);
-            dispatch(setResAiCurrent(null));
+        };
+
+        if(resAiCurrent !== null && !isLoadingGenerateActivity){
             getPropsOfUser();
-            toast.success("Atividade gerada com sucesso!");
-            themes(1);
+            toast.success("Nova atividade pendente!");
         };
     }, [resAiCurrent]);
 
@@ -104,7 +111,7 @@ const Home = () => {
 
         const dataText = text || textSubjectCustom;
 
-        console.log(dataText)
+        /* console.log(dataText) */
 
         const data = {
             title: dataText.trim().replace(/\s/g, "_").toLowerCase(),
@@ -128,7 +135,7 @@ const Home = () => {
         const replaceText = text.replaceAll(" ", "_").toLowerCase();
         let data = [];
 
-        console.log(text)
+        /* console.log(text) */
 
         if(text == "") return currentUserData.questions;
 
@@ -174,7 +181,7 @@ const Home = () => {
     };
 
     const setAllKeysActivitiesPending = (data) => {
-        console.log(data)
+        /* console.log(data) */
         if(data.questions != undefined){
             data.questions.forEach(theme => {
                 if(!OPTIONS_INPUT_THEME_PENDING.find(theme2 => theme2.text.replaceAll(" ", "_").toLowerCase() === theme.data.data.title)){
@@ -213,7 +220,7 @@ const Home = () => {
 
         const data = response.data;
         const configsData = response.data;
-        console.log(response.data);
+        /* console.log(response.data); */
         setDataTableCommunity(data.data);
         setMaxPage(parseInt(configsData.pages));
     };
@@ -244,7 +251,7 @@ const Home = () => {
 
                                 <Table.Body>
                                         {
-                                            dataTableCommunity != null && dataTableCommunity.reverse().map((query, index) => (
+                                            dataTableCommunity != null && dataTableCommunity.map((query, index) => (
                                                 <Table.Row key={index}>
                                                     <Table.Cell>{query.theme.charAt(0).toUpperCase().replaceAll("_", " ") + query.theme.slice(1).replaceAll("_", " ")}</Table.Cell>
                                                     <Table.Cell>{query.total}</Table.Cell>

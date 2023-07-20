@@ -42,7 +42,7 @@ const Menu = () => {
     // Modal - buy tickets
 
     useEffect(() => {
-        console.log(access)
+        /* console.log(access) */
 
         getSizeScreen();
 
@@ -56,7 +56,7 @@ const Menu = () => {
                 if("code" in filter){
                     setTextDropboxCode(code);
                     setIsOpenModalEditUser(true);
-                    console.log(window.location.pathname)
+                    /* console.log(window.location.pathname) */
                     window.history.pushState({}, '', window.location.pathname);
                 };
             }
@@ -136,7 +136,7 @@ const Menu = () => {
             textUserEmailEditCond: textUserEmailEdit, 
             textUserPasswordEditCond: textUserPasswordEdit
         });
-        console.log(data)
+        /* console.log(data) */
 
         const {textUserNameEditCond, textUserEmailEditCond, textUserPasswordEditCond} = data;
 

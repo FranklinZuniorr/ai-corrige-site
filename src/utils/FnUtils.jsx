@@ -126,7 +126,7 @@ export const verifyReqTokenExpiration = async (data, error, type, fn) => {
         const refreshToken = Cookies.get(KEY_COOKIE_REFRESH);
         const response = await AiCorrigeApi.verifyRefreshToken(refreshToken);
 
-        console.log(response)
+        /* console.log(response) */
 
         if(!response.r){
             return response;
@@ -179,7 +179,7 @@ export const filterDifficulty = (value) => {
 };
 
 export const filterDifficultyColor = (value) => {
-    console.log(value)
+    /* console.log(value) */
     if(value < 100) return 1;
     if(value >= 100 && value < 200) return 2;
     if(value >= 200) return 3;
