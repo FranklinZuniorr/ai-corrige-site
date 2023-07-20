@@ -162,6 +162,47 @@ code {
   margin-top: 0.5rem !important;
 }
 
+#menu-background{
+  background-color: #ffffff00;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  right: 0;
+  position: absolute;
+  z-index: 1;
+  display: none;
+  border-bottom-left-radius: 2rem;
+
+  &.is-open-menu{
+    display: block;
+    animation: menu-anim-background-in 1s ease 0s 1 normal forwards;
+  }
+
+  &.not-is-open-menu{
+    animation: menu-anim-background-out 1s ease 0s 1 normal forwards;
+  }
+
+  @keyframes menu-anim-background-in {
+    0% {
+      backdrop-filter: blur(0px);
+    }
+  
+    100% {
+      backdrop-filter: blur(2px);
+    }
+  }
+
+  @keyframes menu-anim-background-out {
+    0% {
+      backdrop-filter: blur(2px);
+    }
+  
+    100% {
+      backdrop-filter: blur(0px);
+    }
+  }
+}
+
 #top-menu{
   background-image: linear-gradient(to top, #bae7ff, #c9ecff, #d8f2fe, #e6f7ff, #f5fcff);
   border-bottom: 1px solid #00b5ff;
@@ -491,6 +532,10 @@ code {
       transform: scale(1);
     }
   }
+}
+
+.community-area-overflow{
+  overflow-x: auto;
 }
 
 // ---> xyz

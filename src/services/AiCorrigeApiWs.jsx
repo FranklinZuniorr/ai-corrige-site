@@ -13,7 +13,7 @@ export const startWs = (data) => {
     
     // Evento de recebimento de mensagem do servidor
     socket.onmessage = (event) => {
-      /* console.log('Mensagem recebida do servidor ws:', event.data); */
+      console.log('Mensagem recebida do servidor ws:', event.data);
       const data = JSON.parse(event.data);
       
       if(data.type == "object"){

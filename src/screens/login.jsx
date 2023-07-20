@@ -353,15 +353,6 @@ const Login = () => {
                             </List.Item>
                         </List>
 
-                        <Header content="Foco:" />
-
-                        <List>
-                            <List.Item>
-                            <List.Icon name='address book' />
-                            <List.Content>Estudantes do Enem.</List.Content>
-                            </List.Item>
-                        </List>
-
                         <Divider />
 
                         <Header content="Curtiu? Que tal fazer o seu cadastro!?" subheader="É fácil, só vai precisar do seu melhor e-mail, nome de usuário e uma senha. Simples, não?" />

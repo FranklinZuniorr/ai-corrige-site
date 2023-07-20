@@ -15,7 +15,7 @@ const Menu = () => {
 
     const access = useSelector(store => store.userData);
     const cookies = Cookies.get();
-    const [isOpenedAreaMenu, setIsOpenedAreaMenu] = useState(false);
+    const [isOpenedAreaMenu, setIsOpenedAreaMenu] = useState(null);
     const [sizeWidthScreen, setSizeWidthScreen] = useState(0);
 
     // Modal - confirm delete user
@@ -159,6 +159,7 @@ const Menu = () => {
 
     return(
         <>
+            <div id="menu-background" onClick={() => setIsOpenedAreaMenu(false)} className={isOpenedAreaMenu !== null? isOpenedAreaMenu? "is-open-menu":"not-is-open-menu":""}/>
             <div id="top-menu" className={isOpenedAreaMenu? "is-open-menu":"not-is-open-menu"}>
                 <Header 
                 size="small"
@@ -318,7 +319,7 @@ const Menu = () => {
                                                 value={textUserNameEdit}
                                                 fluid
                                                 size="mini"
-                                                placeholder="Termo de edição..."
+                                                placeholder="Nome..."
                                                 onChange={(ev, data) => setTextUserNameEdit(data.value)}
                                                 />
                                             } />
@@ -331,7 +332,7 @@ const Menu = () => {
                                             value={textUserEmailEdit}
                                             fluid
                                             size="mini"
-                                            placeholder="Termo de edição..."
+                                            placeholder="E-mail..."
                                             onChange={(ev, data) => setTextUserEmailEdit(data.value)}
                                             />
                                         </Form.Field>
@@ -372,7 +373,7 @@ const Menu = () => {
                                                 value={textUserPasswordEdit}
                                                 fluid
                                                 size="mini"
-                                                placeholder="Termo de edição..."
+                                                placeholder="Senha..."
                                                 onChange={(ev, data) => setTextUserPasswordEdit(data.value)}
                                                 icon={{ name: showPasswordEdit? "eye":"eye slash", circular: true, link: true, 
                                                 onClick: () => setShowPasswordEdit(!showPasswordEdit)}}

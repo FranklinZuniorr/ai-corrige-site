@@ -143,20 +143,17 @@ const Ranking = () => {
                     <Skeleton height={100} animation="wave" variant="rectangular" />
                     </>:
                     <>
-                        {
-                            textSelectedInputActv != "" &&
-                            <Container textAlign="left" fluid>
-                                <Header 
-                                textAlign="left"
-                                content={`Sua nota: ${access.queries !== undefined && access.queries[textSelectedInputActv] !== undefined? access.queries[textSelectedInputActv]["totalNote"]:0 }`} 
-                                subheader="Essa é a sua nota atual referente ao assunto escolhido."
-                                />
-                                {
-                                    dataTable != null && !dataTable.find(user => user.email == access.email) &&
-                                    <Message size="small" color="blue" content="Solicite e responda atividades para ficar entre os 10 melhores. (:" />
-                                }
-                            </Container>
-                        }
+                        <Container textAlign="left" fluid>
+                            <Header 
+                            textAlign="left"
+                            content={`Sua nota: ${access.queriesTotal || 0}`} 
+                            subheader="Essa é a sua nota atual referente a todas as atividades respondidas."
+                            />
+                            {
+                                dataTable != null && !dataTable.find(user => user.email == access.email) &&
+                                <Message size="small" color="blue" content="Solicite e responda atividades para ficar entre os 10 melhores. (:" />
+                            }
+                        </Container>
                         {
                             dataTable != null && dataTable.length > 0?
                             <Table celled>

@@ -87,6 +87,8 @@ const Home = () => {
 
         const data = response.data.user;
 
+        OPTIONS_INPUT_THEME_PENDING.splice(0, OPTIONS_INPUT_THEME_PENDING.length+1);
+        OPTIONS_INPUT_THEME_QUERIES.splice(0, OPTIONS_INPUT_THEME_QUERIES.length+1);
         setAllKeysActivitiesInQueries(data);
         setAllKeysActivitiesPending(data);
         dispatch(setUserData(data));
@@ -172,6 +174,7 @@ const Home = () => {
     };
 
     const setAllKeysActivitiesPending = (data) => {
+        console.log(data)
         if(data.questions != undefined){
             data.questions.forEach(theme => {
                 if(!OPTIONS_INPUT_THEME_PENDING.find(theme2 => theme2.text.replaceAll(" ", "_").toLowerCase() === theme.data.data.title)){
@@ -228,58 +231,61 @@ const Home = () => {
                     <Skeleton animation="wave" />
                     </>:
                     <Segment textAlign="left">
-                        <Header content="Buscas da comunidade" subheader="Assuntos pesquisados por outros usuários." />
-                        <Table size="mini" celled>
-                            <Table.Header>
-                            <Table.Row>
-                                <Table.HeaderCell>Assunto</Table.HeaderCell>
-                                <Table.HeaderCell>Buscas</Table.HeaderCell>
-                                <Table.HeaderCell></Table.HeaderCell>
-                            </Table.Row>
-                            </Table.Header>
-
-                            <Table.Body>
-                                    {
-                                        dataTableCommunity != null && dataTableCommunity.reverse().map((query, index) => (
-                                            <Table.Row key={index}>
-                                                <Table.Cell>{query.theme.charAt(0).toUpperCase().replaceAll("_", " ") + query.theme.slice(1).replaceAll("_", " ")}</Table.Cell>
-                                                <Table.Cell>{query.total}</Table.Cell>
-                                                <Table.Cell collapsing>
-                                                    <Button 
-                                                    content="Gerar atividade sobre esse assunto"
-                                                    color="green"
-                                                    size="mini"
-                                                    onClick={() => {
-                                                        aiJsonAmqpCustom(
-                                                            query.theme.charAt(0).toUpperCase().replaceAll("_", " ") + query.theme.slice(1).replaceAll("_", " ")
-                                                        );
-                                                        setCurrentActivity(null);
-                                                    }}
-                                                    />
-                                                </Table.Cell>
-                                            </Table.Row>
-                                        ))
-                                    }
-                            </Table.Body>
-
-                            <Table.Footer>
+                        <Header content="Buscas da comunidade" subheader="Assuntos mais pesquisados por outros usuários." />
+                        <div className="community-area-overflow">
+                            <Table size="small" unstackable celled>
+                                <Table.Header>
                                 <Table.Row>
-                                    <Table.HeaderCell colSpan="8">
-                                        <Pagination
-                                            activePage={page}
-                                            totalPages={maxPage}
-                                            ellipsisItem={null}
-                                            boundaryRange={1}
-                                            siblingRange={0}
-                                            onPageChange={(e, data) => {
-                                                setPage(data.activePage);
-                                                themes(data.activePage, true);
-                                            }}
-                                        />
-                                    </Table.HeaderCell>
+                                    <Table.HeaderCell>Assunto</Table.HeaderCell>
+                                    <Table.HeaderCell>Buscas</Table.HeaderCell>
+                                    <Table.HeaderCell></Table.HeaderCell>
                                 </Table.Row>
-                            </Table.Footer>
-                        </Table>
+                                </Table.Header>
+
+                                <Table.Body>
+                                        {
+                                            dataTableCommunity != null && dataTableCommunity.reverse().map((query, index) => (
+                                                <Table.Row key={index}>
+                                                    <Table.Cell>{query.theme.charAt(0).toUpperCase().replaceAll("_", " ") + query.theme.slice(1).replaceAll("_", " ")}</Table.Cell>
+                                                    <Table.Cell>{query.total}</Table.Cell>
+                                                    <Table.Cell collapsing>
+                                                        <Button 
+                                                        content="Gerar atividade sobre esse assunto"
+                                                        color="green"
+                                                        size="mini"
+                                                        onClick={() => {
+                                                            aiJsonAmqpCustom(
+                                                                query.theme.charAt(0).toUpperCase().replaceAll("_", " ") + query.theme.slice(1).replaceAll("_", " ")
+                                                            );
+                                                            setCurrentActivity(null);
+                                                        }}
+                                                        />
+                                                    </Table.Cell>
+                                                </Table.Row>
+                                            ))
+                                        }
+                                </Table.Body>
+
+                                <Table.Footer>
+                                    <Table.Row>
+                                        <Table.HeaderCell colSpan="8">
+                                            <Pagination
+                                                activePage={page}
+                                                totalPages={maxPage}
+                                                ellipsisItem={null}
+                                                boundaryRange={1}
+                                                size="mini"
+                                                siblingRange={0}
+                                                onPageChange={(e, data) => {
+                                                    setPage(data.activePage);
+                                                    themes(data.activePage, true);
+                                                }}
+                                            />
+                                        </Table.HeaderCell>
+                                    </Table.Row>
+                                </Table.Footer>
+                            </Table>
+                        </div>
                     </Segment>
                 }
             </>
@@ -289,7 +295,7 @@ const Home = () => {
     const renderCustom = () => {
         return(
             <Segment textAlign="left">
-                <Header content="Gerar atividade personalizada" subheader="Atividades personalizadas não somam pontuação, não aparecem no ranking e não geram estatísticas." />
+                <Header content="Nova atividade" subheader="Solicite uma atividade sobre qualquer assunto que você imaginar, pode deixar comigo. (;" />
                 <Form onSubmit={() => aiJsonAmqpCustom()}>
                     <Form.Group>
                         <Form.Field width={16}>

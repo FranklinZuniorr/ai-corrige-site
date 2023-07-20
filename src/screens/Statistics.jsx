@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Breadcrumb, Container, Divider, Dropdown, Header, Icon, List, Message, Segment } from "semantic-ui-react";
-import { KEY_COOKIE_ACCESS, OPTIONS_INPUT_THEME, OPTIONS_INPUT_THEME_QUERIES } from "../utils/constants";
+import { KEY_COOKIE_ACCESS, OPTIONS_INPUT_THEME, OPTIONS_INPUT_THEME_PENDING, OPTIONS_INPUT_THEME_QUERIES } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import AiCorrigeApi from "../services/AiCorrigeApi";
@@ -11,6 +11,7 @@ import { toast } from "react-hot-toast";
 import { setUserData } from "../store";
 import moment from "moment";
 import { filterDifficultyNumber } from "../utils/FnUtils";
+import { useEffect } from "react";
 
 const Statistics = () => {
 
@@ -23,9 +24,13 @@ const Statistics = () => {
     const [useTotal, setUseTotal] = useState(0);
     const [media, setMedia] = useState(0);
 
+    useEffect(() => {
+        setAllKeysActivitiesInQueries(access);
+        setAllKeysActivitiesPending(access);
+    }, []);
+
     const setDataChartFilter = (text) => {
         const queries = access.queries !== undefined? access.queries[text]:undefined;
-        
         
         if(queries != undefined){
             let data = [];
@@ -61,6 +66,36 @@ const Statistics = () => {
         }else{
             setDataChart(null);
         };
+    };
+
+    const setAllKeysActivitiesInQueries = (data) => {
+        if(data.queries != undefined){
+            Object.keys(data.queries).forEach(theme => {
+                if(!OPTIONS_INPUT_THEME_QUERIES.find(theme2 => theme2.text.replaceAll(" ", "_").toLowerCase() === theme)){
+                    OPTIONS_INPUT_THEME_QUERIES.push({
+                        key: theme, 
+                        text: theme.charAt(0).toUpperCase().replaceAll("_", " ") + theme.slice(1).replaceAll("_", " "), 
+                        value: theme
+                    })
+                };
+            });
+
+        }; 
+    };
+
+    const setAllKeysActivitiesPending = (data) => {
+        if(data.questions != undefined){
+            data.questions.forEach(theme => {
+                if(!OPTIONS_INPUT_THEME_PENDING.find(theme2 => theme2.text.replaceAll(" ", "_").toLowerCase() === theme.data.data.title)){
+                    OPTIONS_INPUT_THEME_PENDING.push({
+                        key: theme.data.data.title, 
+                        text: theme.data.data.title.charAt(0).toUpperCase().replaceAll("_", " ") + theme.data.data.title.slice(1).replaceAll("_", " "), 
+                        value: theme.data.data.title
+                    })
+                };
+            });
+
+        }; 
     };
 
     return(
@@ -112,7 +147,7 @@ const Statistics = () => {
                                 <YAxis />
                                 <Tooltip />
                                 <Area name="Nota máxima" type="monotone" dataKey="max" stroke="#73cf93" fill="#73cf93" />
-                                <Area name="Nota" type="monotone" dataKey="nota" stroke="#287242" fill="#287242" />
+                                <Area name="Nota obtida" type="monotone" dataKey="nota" stroke="#287242" fill="#287242" />
                                 </AreaChart>
                             </ResponsiveContainer>
                             <Divider />
