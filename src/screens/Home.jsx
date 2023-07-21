@@ -127,9 +127,11 @@ const Home = () => {
             setIsLoadingGenerateActivity(false);
 
             if(response.data.msg === "Tickets insuficientes!"){
-                store.dispatch(setBadTicket(true));
+                setTimeout(() => {
+                    store.dispatch(setBadTicket(true));
+                }, 500);
             };
-            
+
             return
         };
 
