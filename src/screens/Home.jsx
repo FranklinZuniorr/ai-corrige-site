@@ -59,9 +59,8 @@ const Home = () => {
     }, []);
 
     useEffect(() => {
-        /* console.log(resAiCurrent); */
+        setIsLoadingGenerateActivity(false);
         if(isLoadingGenerateActivity){
-            setIsLoadingGenerateActivity(false);
             if(resAiCurrent != null){
                 if(!resAiCurrent.r){
                     toast.error(resAiCurrent.msg);
@@ -75,11 +74,12 @@ const Home = () => {
                 themes(1);
             };
         };
-
+        
         if(resAiCurrent !== null && !isLoadingGenerateActivity){
             getPropsOfUser();
             toast.success("Nova atividade pendente!");
         };
+
     }, [resAiCurrent]);
 
     const getPropsOfUser = async (textSubjectT) => {
@@ -257,8 +257,9 @@ const Home = () => {
                                                     <Table.Cell>{query.total}</Table.Cell>
                                                     <Table.Cell collapsing>
                                                         <Button 
-                                                        content="Gerar atividade sobre esse assunto"
                                                         color="green"
+                                                        icon="send"
+                                                        content="Gerar atividade"
                                                         size="mini"
                                                         onClick={() => {
                                                             aiJsonAmqpCustom(

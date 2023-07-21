@@ -5,7 +5,8 @@ import { setTokenJwtAxios } from "./AiCorrigeApi";
 
 export const startWs = (data) => {
     /* console.log(data) */
-    const socket = new WebSocket(`ws://ai-corrige-ws-9bf366fa3a3c.herokuapp.com/?userId=${data._id}`);
+    const socket = new WebSocket(`wss://ai-corrige-ws-9bf366fa3a3c.herokuapp.com/?userId=${data._id}&token=${data.validToken}`);
+    console.log(data.validToken)
     
     // Evento de conexão estabelecida
     socket.onopen = () => {
@@ -17,8 +18,9 @@ export const startWs = (data) => {
     
     // Evento de recebimento de mensagem do servidor
     socket.onmessage = (event) => {
-      console.log('Mensagem recebida do servidor ws:', event.data.content);
       const data = JSON.parse(event.data);
+      
+      data.type == "string" && console.log('Mensagem recebida do servidor ws:', data.content);
       
       if(data.type == "object"){
         switch (data.content.event) {

@@ -281,6 +281,7 @@ const Login = () => {
                                     </Form.Field>
                                 </Form.Group>
 
+                                <Message size="mini" content="Fique de olho na caixa de spam." />
                                 <Button className="margin-top-min" type="submit" loading={isLoadingBtnForgetPassword} size="mini" floated="right" color="green" content="Enviar e-mail de restauração" />
 
                             </Form>
@@ -337,10 +338,6 @@ const Login = () => {
                             <List.Item>
                             <List.Icon name='check' />
                             <List.Content>Gerar feedback com gráficos sobre a evolução do usuário ao decorrer do tempo.</List.Content>
-                            </List.Item>
-                            <List.Item>
-                            <List.Icon name='check' />
-                            <List.Content>Motivar a evolução com um sistema de níveis.</List.Content>
                             </List.Item>
                             <List.Item>
                             <List.Icon name='check' />

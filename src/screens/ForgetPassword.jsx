@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { getParamsInQs, resetUrlSearchParam } from "../utils/FnUtils";
-import { Button, Form, Grid, Header, Input, Message, Segment } from "semantic-ui-react";
+import { getParamsInQs, resetUrlSearchParam, verifyPassword } from "../utils/FnUtils";
+import { Button, Form, Grid, Header, Icon, Input, Message, Popup, Segment } from "semantic-ui-react";
 import AiCorrigeApi, { setTokenJwtAxios } from "../services/AiCorrigeApi";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import logo from '../img/logo.png';
 
 const ForgetPassword = () => {
 
@@ -61,6 +62,7 @@ const ForgetPassword = () => {
         <>
             <div className="screen-forget-password">
                 <div className="area-forget-password">
+                    <Header content="Ai corrige" subheader="Alteração de senha." image={logo} />
                     <Segment>
                         <Grid>
                             <Grid.Row>
@@ -72,15 +74,44 @@ const ForgetPassword = () => {
                                             <Form.Group widths={16}>
                                                 <Form.Field width={16}>
                                                 <label>Nova senha:</label>
-                                                <Input
-                                                type={showPasswordNewPassword? "text":"password"}
-                                                value={textUserPasswordNewPassword}
-                                                fluid
-                                                size="mini"
-                                                placeholder="Termo de cadastro..."
-                                                onChange={(ev, data) => setTextUserPasswordNewPassword(data.value)}
-                                                icon={{ name: showPasswordNewPassword? "eye":"eye slash", circular: true, link: true, onClick: () => setShowPasswordNewPassword(!showPasswordNewPassword)}}
-                                                />
+                                                    <Popup inverted size="mini" on="click" content={
+                                                        <>
+                                                            <div>
+                                                                <Icon className="info" />
+                                                                Caracteres: {textUserPasswordNewPassword.length}
+                                                            </div>
+                                                            <div>
+                                                                {verifyPassword(textUserPasswordNewPassword).capitalLetter? <Icon color="green" className="check" />:<Icon color="red" className="x" />}
+                                                                Letra maiúscula
+                                                            </div>
+                                                            <div>
+                                                                {verifyPassword(textUserPasswordNewPassword).lowerCase? <Icon color="green" className="check" />:<Icon color="red" className="x" />}
+                                                                Letra minúscula
+                                                            </div>
+                                                            <div>
+                                                                {verifyPassword(textUserPasswordNewPassword).oneNumber? <Icon color="green" className="check" />:<Icon color="red" className="x" />}
+                                                                Número
+                                                            </div>
+                                                            <div>
+                                                                {verifyPassword(textUserPasswordNewPassword).specialCharacter? <Icon color="green" className="check" />:<Icon color="red" className="x" />}
+                                                                Caractere especial
+                                                            </div>
+                                                            <div>
+                                                                {verifyPassword(textUserPasswordNewPassword).eightCharacters? <Icon color="green" className="check" />:<Icon color="red" className="x" />}
+                                                                Quantidade maior ou igual a 8
+                                                            </div>
+                                                        </>
+                                                    } trigger={
+                                                        <Input
+                                                        type={showPasswordNewPassword? "text":"password"}
+                                                        value={textUserPasswordNewPassword}
+                                                        fluid
+                                                        size="mini"
+                                                        placeholder="Senha..."
+                                                        onChange={(ev, data) => setTextUserPasswordNewPassword(data.value)}
+                                                        icon={{ name: showPasswordNewPassword? "eye":"eye slash", circular: true, link: true, onClick: () => setShowPasswordNewPassword(!showPasswordNewPassword)}}
+                                                        />
+                                                    } />
                                                 </Form.Field>
                                             </Form.Group>
 
