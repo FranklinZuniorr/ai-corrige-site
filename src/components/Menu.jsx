@@ -14,6 +14,7 @@ import logo from '../img/logo.png';
 const Menu = () => {
 
     const access = useSelector(store => store.userData);
+    const badTicket = useSelector(store => store.badTicket);
     const cookies = Cookies.get();
     const [isOpenedAreaMenu, setIsOpenedAreaMenu] = useState(null);
     const [sizeWidthScreen, setSizeWidthScreen] = useState(0);
@@ -409,7 +410,7 @@ const Menu = () => {
             <Modal
             onClose={() => setIsOpenModalBuyTickets(false)}
             onOpen={() => setIsOpenModalBuyTickets(true)}
-            open={isOpenModalBuyTickets}
+            open={isOpenModalBuyTickets || badTicket}
             >
             <Modal.Header>Tickets de acesso</Modal.Header>
             <Modal.Content>

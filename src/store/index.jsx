@@ -7,7 +7,8 @@ const INITIAL_STATE = {
     refreshToken: "",
     userData: null,
     resAiCurrent: null,
-    isTalking: false
+    isTalking: false,
+    badTicket: false
 };
 
 const ACTIONS = {
@@ -17,7 +18,8 @@ const ACTIONS = {
     SET_REFRESH_TOKEN: 'SET_REFRESH_TOKE',
     SET_USER_DATA: 'SET_USER_DATA',
     SET_RES_AI_CURRENT: 'SET_RES_AI_CURRENT',
-    SET_IS_TALKING: 'SET_IS_TALKING'
+    SET_IS_TALKING: 'SET_IS_TALKING',
+    SET_BAD_TICKET: 'SET_BAD_TICKET'
 };
 
 const setState = (state = INITIAL_STATE, action) => {
@@ -36,6 +38,8 @@ const setState = (state = INITIAL_STATE, action) => {
             return {...state, resAiCurrent: action.data};
         case ACTIONS.SET_IS_TALKING:
             return {...state, isTalking: action.data};
+        case ACTIONS.SET_BAD_TICKET:
+            return {...state, badTicket: action.data};
         default:
             return state;
     };
@@ -73,4 +77,8 @@ export const setResAiCurrent = (value) => {
 
 export const setIsTalking = (value) => {
     return { type: ACTIONS.SET_IS_TALKING, data: value };
+};
+
+export const setBadTicket = (value) => {
+    return { type: ACTIONS.SET_BAD_TICKET, data: value };
 };

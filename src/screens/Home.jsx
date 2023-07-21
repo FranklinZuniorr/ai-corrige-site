@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Divider, Dropdown, Form, Grid, Header, Icon, Image, Input, Label, Loader, Message, Modal, Pagination, Popup, Progress, Segment, Step, Tab, Table } from "semantic-ui-react";
-import store, { setResAiCurrent, setUserData } from "../store";
+import store, { setBadTicket, setResAiCurrent, setUserData } from "../store";
 import suportLogoUser from "../img/suporte-user.png";
 import { KEY_COOKIE_ACCESS, OPTIONS_DIFFICULTY, OPTIONS_INPUT_THEME, OPTIONS_INPUT_THEME_PENDING, OPTIONS_INPUT_THEME_PENDING_AND_QUERIES, OPTIONS_INPUT_THEME_QUERIES, OPTIONS_THEME } from "../utils/constants";
 import { filterDifficulty, filterDifficultyColor, filterDifficultyText, obterPorcentagem } from "../utils/FnUtils";
@@ -125,6 +125,11 @@ const Home = () => {
         if(!response.r){
             toast.error(typeof response.data.msg == Array? response.data.msg.join("\n"):response.data.msg);
             setIsLoadingGenerateActivity(false);
+
+            if(response.data.msg === "Tickets insuficientes!"){
+                store.dispatch(setBadTicket(true));
+            };
+            
             return
         };
 
