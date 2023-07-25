@@ -7,7 +7,7 @@ import { isArray } from "lodash";
 
 const AxiosAiCorrige = axios.create({
 
-    baseURL: "https://ai-corrige.herokuapp.com",
+    baseURL: "https://ai-corrige.herokuapp.com/",
 
 });
 

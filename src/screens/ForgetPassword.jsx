@@ -74,7 +74,7 @@ const ForgetPassword = () => {
                                             <Form.Group widths={16}>
                                                 <Form.Field width={16}>
                                                 <label>Nova senha:</label>
-                                                    <Popup inverted size="mini" on="click" content={
+                                                    <Popup inverted size="mini" on="focus" content={
                                                         <>
                                                             <div>
                                                                 <Icon className="info" />

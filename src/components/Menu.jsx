@@ -1,21 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { Button, Form, Grid, Header, Icon, Image, Input, Message, Modal, Popup, Segment } from "semantic-ui-react";
-import store from "../store";
+import { useDispatch, useSelector } from "react-redux";
+import { Button, Form, Grid, Header, Icon, Image, Input, Label, List, Message, Modal, Popup, Segment } from "semantic-ui-react";
+import store, { setBadTicket, setIsTalking } from "../store";
 import suportLogoUser from "../img/suporte-user.png";
 import AiCorrigeApi from "../services/AiCorrigeApi";
 import Cookies from "js-cookie";
 import { toast } from "react-hot-toast";
-import { gerarObjetoCondicional, getParamsInQs, verifyName, verifyPassword } from "../utils/FnUtils";
+import { convertMoney, gerarObjetoCondicional, getParamsInQs, talk, verifyName, verifyPassword } from "../utils/FnUtils";
 import { verifyUser } from "../utils/Options";
 import Stripe from "./Stripe/Stripe";
 import logo from '../img/logo.png';
+import moment from "moment/moment";
+import IdToCopy from "./IdToCopy";
 
 const Menu = () => {
 
     const access = useSelector(store => store.userData);
     const badTicket = useSelector(store => store.badTicket);
     const cookies = Cookies.get();
+    const dispatch = useDispatch();
     const [isOpenedAreaMenu, setIsOpenedAreaMenu] = useState(null);
     const [sizeWidthScreen, setSizeWidthScreen] = useState(0);
 
@@ -41,6 +44,10 @@ const Menu = () => {
     // Modal - buy tickets
     const [isOpenModalBuyTickets, setIsOpenModalBuyTickets] = useState(false);
     // Modal - buy tickets
+
+    // Modal - shopping
+    const [isOpenModalShopping, setIsOpenModalShopping] = useState(false);
+    // Modal - shopping
 
     useEffect(() => {
         /* console.log(access) */
@@ -176,12 +183,16 @@ const Menu = () => {
                 />
                 <div className="area-action-btns">
                     <Button size="mini" color="black" floated="right" icon={isOpenedAreaMenu? "x":"bars"}  onClick={() => {
+                        dispatch(setIsTalking(false));
+                        talk("", false);
                         setIsOpenedAreaMenu(!isOpenedAreaMenu);
                     }} 
                     />
                     <Button size="mini" color="green" floated="right" icon="dollar sign" content={
-                        sizeWidthScreen <= 450? null:"COMPRAR +10 TICKETS"
+                        sizeWidthScreen <= 450? null:"TICKETS"
                     } onClick={() => {
+                        dispatch(setIsTalking(false));
+                        talk("", false);
                         setIsOpenModalBuyTickets(true);
                     }} 
                     />
@@ -191,6 +202,13 @@ const Menu = () => {
                         Editar usuário
                         <Button color="blue" size="mini" icon="edit" onClick={() => {
                             setIsOpenModalEditUser(true);
+                        }}
+                        />
+                    </div>
+                    <div>
+                        Compras
+                        <Button color="purple" size="mini" icon="shopping bag" onClick={() => {
+                            setIsOpenModalShopping(true);
                         }}
                         />
                     </div>
@@ -217,15 +235,15 @@ const Menu = () => {
             onOpen={() => setIsOpenModalConfirmDeleteUser(true)}
             open={isOpenModalConfirmDeleteUser}
             >
-            <Modal.Header>Atenção!</Modal.Header>
+            <Header size="tiny" icon="exclamation triangle" content="Atenção!" />
             <Modal.Content>
                 <Message color="red" content="Deseja deletar sua conta de forma permanente?" />
             </Modal.Content>
             <Modal.Actions>
-                <Button color="red" onClick={() => setIsOpenModalConfirmDeleteUser(false)}>
+                <Button size="mini" color="red" onClick={() => setIsOpenModalConfirmDeleteUser(false)}>
                 Não
                 </Button>
-                <Button color="green" onClick={() => deleteUser()}>
+                <Button size="mini" color="green" onClick={() => deleteUser()}>
                 Sim
                 </Button>
             </Modal.Actions>
@@ -238,7 +256,7 @@ const Menu = () => {
             onOpen={() => setIsOpenModalEditUser(true)}
             open={isOpenModalEditUser}
             >
-            <Modal.Header>Editar usuário</Modal.Header>
+            <Header size="tiny" icon="user" content="Editar usuário" />
             <Modal.Content>
                 <Segment>
                     <Header size="medium" content="Foto de perfil:" />
@@ -304,7 +322,7 @@ const Menu = () => {
                                     <Form.Group widths={16}>
                                         <Form.Field width={16}>
                                             <label>Nome de usuário:</label>
-                                            <Popup inverted size="mini" on="click" content={
+                                            <Popup inverted size="mini" on="focus" content={
                                             <>
                                                 <div>
                                                     <Icon className="info" />
@@ -341,7 +359,7 @@ const Menu = () => {
                                     <Form.Group widths={16}>
                                         <Form.Field width={16}>
                                             <label>Senha:</label>
-                                            <Popup inverted size="mini" on="click" content={
+                                            <Popup inverted size="mini" on="focus" content={
                                                 <>
                                                     <div>
                                                         <Icon className="info" />
@@ -399,7 +417,7 @@ const Menu = () => {
                 </Segment>
             </Modal.Content>
             <Modal.Actions>
-                <Button color="red" onClick={() => setIsOpenModalEditUser(false)}>
+                <Button size="mini" color="red" onClick={() => setIsOpenModalEditUser(false)}>
                 Fechar
                 </Button>
             </Modal.Actions>
@@ -408,21 +426,82 @@ const Menu = () => {
 
             {/*  Modal - buy tickets */}
             <Modal
-            onClose={() => setIsOpenModalBuyTickets(false)}
+            onClose={() => {
+                setIsOpenModalBuyTickets(false);
+                dispatch(setBadTicket(false));
+            }}
             onOpen={() => setIsOpenModalBuyTickets(true)}
             open={isOpenModalBuyTickets || badTicket}
             >
-            <Modal.Header>Tickets de acesso</Modal.Header>
+            <Header size="tiny" icon="dollar sign" content="Tickets de acesso" />
             <Modal.Content>
                 <Stripe/>
             </Modal.Content>
             <Modal.Actions>
-                <Button color="red" onClick={() => setIsOpenModalBuyTickets(false)}>
+                <Button size="mini" color="red" onClick={() => {
+                    setIsOpenModalBuyTickets(false);
+                    dispatch(setBadTicket(false));
+                }}>
                 Fechar
                 </Button>
             </Modal.Actions>
             </Modal>
             {/*  Modal - buy tickets */}
+
+            {/* Modal - shopping */}
+            <Modal
+            onClose={() => setIsOpenModalShopping(false)}
+            onOpen={() => setIsOpenModalShopping(true)}
+            open={isOpenModalShopping}
+            >  
+            <Header size="tiny" icon="shopping bag" content="Compras" />
+            <Modal.Content>
+                {
+                    access.shopping.length > 0?
+                    <div className="area-modal-shopping">
+                        {
+                            access.shopping.map((buy, index) => (
+                                <Segment key={index}>
+                                    <Header size="small" 
+                                    icon="ticket"
+                                    textAlign="left"
+                                    content={moment(buy.createdAt).format("DD/MM/YYYY HH:mm:ss")} 
+                                    subheader="Informações sobre a compra:"
+                                    />
+
+                                    <List size="mini" bulleted>
+                                        <List.Item>Id da compra: <IdToCopy id={buy.data.object.payment_intent} /></List.Item>
+                                        <List.Item>Id do cliente: <IdToCopy id={buy.data.object.client_reference_id} /></List.Item>
+                                        <List.Item>Moeda: {buy.data.object.currency}</List.Item>
+                                        <List.Item>Comprador: {buy.data.object.customer_details.name}</List.Item>
+                                        <List.Item>E-mail: {buy.data.object.customer_details.email}</List.Item>
+                                        <List.Item>
+                                            Meio: 
+                                            {
+                                                buy.data.object.payment_method_types.map(method => (
+                                                    ` ${method}\n`
+                                                ))
+                                            }
+                                        </List.Item>
+                                    </List>
+
+                                    <Label color="green" size="mini" content={`Total gasto: ${convertMoney(buy.data.object.amount_total, false)}`} />
+                                </Segment>
+                            ))
+                        }
+                    </div>:
+                    <Message size="mini" content="Nenhuma compra realizada até o momento." />
+                }
+            </Modal.Content>
+            <Modal.Actions>
+                <Button size="mini" color="red" onClick={() => {
+                    setIsOpenModalShopping(false);
+                }}>
+                Fechar
+                </Button>
+            </Modal.Actions>
+            </Modal>
+            {/* Modal - shopping */}
         </>
     )
 };

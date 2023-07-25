@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Divider, Dropdown, Form, Grid, Header, Icon, Image, Input, Label, Loader, Message, Modal, Pagination, Popup, Progress, Segment, Step, Tab, Table } from "semantic-ui-react";
-import store, { setBadTicket, setResAiCurrent, setUserData } from "../store";
+import store, { setBadTicket, setIsTalking, setResAiCurrent, setUserData } from "../store";
 import suportLogoUser from "../img/suporte-user.png";
 import { KEY_COOKIE_ACCESS, OPTIONS_DIFFICULTY, OPTIONS_INPUT_THEME, OPTIONS_INPUT_THEME_PENDING, OPTIONS_INPUT_THEME_PENDING_AND_QUERIES, OPTIONS_INPUT_THEME_QUERIES, OPTIONS_THEME } from "../utils/constants";
-import { filterDifficulty, filterDifficultyColor, filterDifficultyText, obterPorcentagem } from "../utils/FnUtils";
+import { filterDifficulty, filterDifficultyColor, filterDifficultyText, obterPorcentagem, talk } from "../utils/FnUtils";
 import AiCorrigeApi from "../services/AiCorrigeApi";
 import { toast } from "react-hot-toast";
 import Cookies from "js-cookie";
@@ -60,6 +60,8 @@ const Home = () => {
 
     useEffect(() => {
         setIsLoadingGenerateActivity(false);
+        getPropsOfUser();
+
         if(isLoadingGenerateActivity){
             if(resAiCurrent != null){
                 if(!resAiCurrent.r){
@@ -69,16 +71,16 @@ const Home = () => {
                 
                 setCurrentActivity(resAiCurrent);
                 dispatch(setResAiCurrent(null));
-                getPropsOfUser();
                 toast.success("Atividade gerada com sucesso!");
                 themes(1);
             };
         };
         
         if(resAiCurrent !== null && !isLoadingGenerateActivity){
-            getPropsOfUser();
             toast.success("Nova atividade pendente!");
         };
+
+        setPage(1);
 
     }, [resAiCurrent]);
 
@@ -127,9 +129,7 @@ const Home = () => {
             setIsLoadingGenerateActivity(false);
 
             if(response.data.msg === "Tickets insuficientes!"){
-                setTimeout(() => {
-                    store.dispatch(setBadTicket(true));
-                }, 500);
+                dispatch(setBadTicket(true));
             };
 
             return
@@ -358,16 +358,24 @@ const Home = () => {
                     currentUserData != null &&
                     <div className="area-action-buttons">
                         <Button onClick={() => {
-                            setIsOpenModalActivitiesPending(true)
+                            dispatch(setIsTalking(false));
+                            talk("", false);
+                            setIsOpenModalActivitiesPending(true);
                         }} color="orange" icon="clock outline" size="mini" content={`Atividades pendentes: ${currentUserData.questions.length}`} />
                         <Button onClick={() => {
-                            setIsOpenModalActivitiesQueries(true)
+                            dispatch(setIsTalking(false));
+                            talk("", false);
+                            setIsOpenModalActivitiesQueries(true);
                         }} color="green" icon="edit" size="mini" content={`Atividades respondidas: ${sumTotalActivitiesInQueries()}`} />
                         <Button onClick={() => {
-                            navigate("ranking")
+                            dispatch(setIsTalking(false));
+                            talk("", false);
+                            navigate("ranking");
                         }} size="mini" icon="globe" color="blue" content="Ranking" />
                         <Button onClick={() => {
-                            navigate("estatísticas")
+                            dispatch(setIsTalking(false));
+                            talk("", false);
+                            navigate("estatísticas");
                         }} size="mini" icon="chart area" color="purple" content="Estatísticas" />
                     </div>
                 }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Breadcrumb, Button, Container, Divider, Dropdown, Form, Header, Icon, Input, Item, Label, Loader, Message, Segment, Table } from "semantic-ui-react";
+import { Breadcrumb, Button, Container, Divider, Dropdown, Form, Header, Icon, Image, Input, Item, Label, Loader, Message, Segment, Table } from "semantic-ui-react";
 import { KEY_COOKIE_ACCESS, OPTIONS_INPUT_THEME } from "../utils/constants";
 import AiCorrigeApi from "../services/AiCorrigeApi";
 import { toast } from "react-hot-toast";
@@ -54,6 +54,8 @@ const Ranking = () => {
 
         toast.success(response.data.msg);
         const data = response.data.list;
+
+        /* console.log(data) */
 
         setDataTable(data);
     };
@@ -143,17 +145,28 @@ const Ranking = () => {
                     <Skeleton height={100} animation="wave" variant="rectangular" />
                     </>:
                     <>
-                        <Container textAlign="left" fluid>
-                            <Header 
-                            textAlign="left"
-                            content={`Sua nota: ${access.queriesTotal || 0}`} 
-                            subheader="Essa é a sua nota atual referente a todas as atividades respondidas."
-                            />
+                        <Segment textAlign="left">
+                            {
+                                dataTable !== null &&
+                                <>
+                                    <Header 
+                                    textAlign="left"
+                                    content={`Sua nota: ${access.queriesTotal || 0}`} 
+                                    subheader="Essa é a sua nota atual referente a todas as atividades respondidas."
+                                    />
+                                    <Message size="mini" content={`Você precisa de 
+                                    ${
+                                        dataTable[0].queriesTotal-(access.queriesTotal || 0) === 0? 0:
+                                        dataTable[0].queriesTotal-(access.queriesTotal || 0) +1
+                                    } 
+                                    pontos para ficar em 1° lugar.`} />
+                                </>
+                            }
                             {
                                 dataTable != null && !dataTable.find(user => user.email == access.email) &&
-                                <Message size="small" color="blue" content="Solicite e responda atividades para ficar entre os 10 melhores. (:" />
+                                <Message size="mini" color="blue" content="Solicite e responda atividades para ficar entre os 10 melhores. (:" />
                             }
-                        </Container>
+                        </Segment>
                         {
                             dataTable != null && dataTable.length > 0?
                             <Table size="small" celled>
@@ -171,7 +184,9 @@ const Ranking = () => {
                                         dataTable != null && dataTable.map((user, index) => (
                                             <Table.Row key={index}>
                                                 <Table.Cell collapsing>{`${index+1}°`}</Table.Cell>
-                                                <Table.Cell><Header size="small" content={user.username} subheader={user.email} image={user.img || suportImage}/></Table.Cell>
+                                                <Table.Cell><Header size="small" content={user.username} subheader={user.email} image={
+                                                    <Image className="image-profile" src={user.img || suportImage} rounded circular />
+                                                }/></Table.Cell>
                                                 <Table.Cell>
                                                     {
                                                         user.externalUrl === ""?

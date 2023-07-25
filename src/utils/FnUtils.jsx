@@ -242,3 +242,7 @@ export const talk = (text, on) => {
         return false
     };
 };
+
+export const toClipboard = (value) => {
+    navigator.clipboard.writeText(value)
+}

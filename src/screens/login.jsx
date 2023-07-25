@@ -126,7 +126,7 @@ const Login = () => {
                                 <Form.Group widths={16}>
                                     <Form.Field width={16}>
                                         <label>Nome de usuário:</label>
-                                        <Popup inverted size="mini" on="click" content={
+                                        <Popup inverted size="mini" on="focus" content={
                                             <>
                                                 <div>
                                                     <Icon className="info" />
@@ -163,7 +163,7 @@ const Login = () => {
                                 <Form.Group widths={16}>
                                     <Form.Field width={16}>
                                         <label>Senha:</label>
-                                        <Popup inverted size="mini" on="click" content={
+                                        <Popup inverted size="mini" on="focus" content={
                                             <>
                                                 <div>
                                                     <Icon className="info" />

@@ -77,6 +77,8 @@ code {
           width: 100%;
           background-color: #e1e1e1;
           padding: 1rem;
+          height: 100%;
+          position: relative;
 
           @media only screen and (max-width: 1150px) {
             padding-bottom: 5rem;
@@ -93,6 +95,7 @@ code {
         border-radius: 1rem;
         position: sticky;
         padding-bottom: 3rem;
+        padding-top: 2rem;
         top: 4rem;
   
         @media only screen and (max-width: 1150px) {
@@ -111,6 +114,7 @@ code {
     border-top-right-radius: 1rem;
     border-top: 1px solid #41a0ff;
     box-shadow: 0px 0px 31px -16px #2c90e2;
+    z-index: 1;
 
     @media only screen and (max-width: 1150px) {
       margin-top: -3rem;
@@ -301,6 +305,12 @@ code {
   border: 2px solid black !important;
 }
 
+.image-profile{
+  width: 3rem !important;
+  height: 3rem !important;
+  border-radius: 2rem !important;
+}
+
 .area-stripe-buy-tickets{
   display: flex;
   width: 100%;
@@ -462,6 +472,12 @@ code {
   overflow-y: auto;
   max-height: 29rem;
   min-height: 29rem;
+  padding: 1rem;
+}
+
+.area-modal-shopping{
+  overflow-y: auto;
+  max-height: 29rem;
   padding: 1rem;
 }
 

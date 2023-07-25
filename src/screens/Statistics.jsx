@@ -110,7 +110,7 @@ const Statistics = () => {
                 </Container>
 
                 <Segment textAlign="left" >
-                    <Header content="Estatísticas" subheader="Métricas relacionadas as respostas de atividades." />
+                    <Header content="Estatísticas" subheader="Métricas relacionadas às respostas de atividades." />
                     <Divider />
                     <label>Assunto:</label>
                     <Dropdown
@@ -160,7 +160,7 @@ const Statistics = () => {
                                     <List.Item>Atividades respondidas: {dataChart.length}</List.Item>
                                 </List>
                             </Segment>
-                        </>:<Message content="Gere e responda atividades para ter acesso as métricas de evolução." />
+                        </>:<Message content="Gere e responda atividades para ter acesso às métricas de evolução." />
                     }
                 </Segment>
             </div>
